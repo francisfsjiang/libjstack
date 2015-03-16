@@ -7,15 +7,16 @@
 
 #include <pthread.h>
 
-//#include "noncopyable.hpp"
+#include "util/noncopyable.hpp"
 
 namespace dc {
 
-    class IOLoop {
+    class IOLoop: noncopyable {
     private:
         IOLoop* _instance;
     public:
         IOLoop();
+        void Loop();
     };
 
 }
