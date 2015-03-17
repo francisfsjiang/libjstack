@@ -9,6 +9,9 @@
 
 #include "Event.h"
 #include "util/noncopyable.h"
+#include "poller/Poller.h"
+#include "poller/KqueuePoller.h"
+#include "poller/EpollPoller.h"
 
 namespace dc {
 
@@ -16,6 +19,7 @@ class IOLoop : noncopyable {
 private:
     IOLoop *instance_;
     bool quit_;
+    Poller *poller_ = new KqueuePoller();
 public:
     IOLoop();
 

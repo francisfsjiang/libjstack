@@ -8,11 +8,13 @@
 #include "Poller.h"
 
 namespace dc {
-class KqueuePoller : Poller {
+class KqueuePoller : public Poller {
 private:
-    int _kqueue;
+    int kqueue_;
 public:
     KqueuePoller();
+
+    virtual void Poll();
 
     virtual void AddEvent(const Event &e);
 

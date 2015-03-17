@@ -13,14 +13,14 @@ namespace dc {
 class Poller : noncopyable {
 private:
 public:
-    
-    virtual void Poll();
 
-    virtual void AddEvent(const Event &e);
+    virtual void Poll() = 0;
 
-    virtual void UpdateEvent(const Event &e);
+    virtual void AddEvent(const Event &e) = 0;
 
-    virtual void DeleteEvent(const Event &e);
+    virtual void UpdateEvent(const Event &e) = 0;
+
+    virtual void DeleteEvent(const Event &e) = 0;
 };
 }
 

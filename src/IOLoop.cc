@@ -4,7 +4,7 @@
 
 #include "IOLoop.h"
 
-#include <iostream>
+#include "Log.h"
 
 namespace dc {
 
@@ -21,6 +21,7 @@ IOLoop::IOLoop() {
 }
 
 void IOLoop::Loop() {
+    LOG_INFO << "Loop start.";
     while (!quit_) {
 
     }

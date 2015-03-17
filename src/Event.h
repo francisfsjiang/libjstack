@@ -9,9 +9,13 @@ namespace dc {
 
 class Event {
 private:
+    int fd_;
     void *read_call_back_;
     void *write_call_back_;
 public:
+    Event(int fd);
+
+    int GetFD() const;
 
     void set_read_call_back(void *call_back);
 

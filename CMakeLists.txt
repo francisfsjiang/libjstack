@@ -7,9 +7,12 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 set(SRC_FILE
 src/IOLoop.cc
+src/Event.cc
+src/Log.cc
 src/poller/KqueuePoller.cc
 src/poller/EpollPoller.cc
 src/util/error.cc
 )
 
 add_executable(ioloop_test test/ioloop_test.cc ${SRC_FILE})
+add_executable(log_test test/log_test.cc ${SRC_FILE})
