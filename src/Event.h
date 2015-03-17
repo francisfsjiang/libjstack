@@ -15,6 +15,8 @@ private:
 public:
     Event(int fd);
 
+    ~Event();
+
     int GetFD() const;
 
     void set_read_call_back(void *call_back);

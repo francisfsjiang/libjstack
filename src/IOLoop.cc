@@ -22,8 +22,9 @@ IOLoop::IOLoop() {
 
 void IOLoop::Loop() {
     LOG_INFO << "Loop start.";
+    int count=0;
     while (!quit_) {
-
+        LOG_DEBUG << "Looped " <<count++;
     }
 
 }

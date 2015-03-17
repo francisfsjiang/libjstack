@@ -21,4 +21,6 @@ void Event::set_write_call_back(void *call_back) {
     write_call_back_ = call_back;
 }
 
+Event::~Event() {
+}
 }

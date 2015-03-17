@@ -14,5 +14,10 @@ src/poller/EpollPoller.cc
 src/util/error.cc
 )
 
-add_executable(ioloop_test test/ioloop_test.cc ${SRC_FILE})
-add_executable(log_test test/log_test.cc ${SRC_FILE})
+add_library(demoniac_lib ${SRC_FILE})
+
+add_executable(ioloop_test test/ioloop_test.cc)
+add_executable(log_test test/log_test.cc)
+
+target_link_libraries(ioloop_test demoniac_lib)
+target_link_libraries(log_test demoniac_lib)

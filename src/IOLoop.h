@@ -6,6 +6,7 @@
 #define _DEMONIAC_IOLOOP_H_
 
 #include <iostream>
+#include <vector>
 
 #include "Event.h"
 #include "util/noncopyable.h"
@@ -20,6 +21,7 @@ private:
     IOLoop *instance_;
     bool quit_;
     Poller *poller_ = new KqueuePoller();
+    std::vector<Event> event_list_;
 public:
     IOLoop();
 
