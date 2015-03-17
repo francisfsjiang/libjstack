@@ -2,7 +2,7 @@
 // Created by Neveralso on 15/3/16.
 //
 
-#include "error.hpp"
+#include "error.h"
 
 using namespace dc;
 

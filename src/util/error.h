@@ -5,10 +5,9 @@
 #ifndef _DEMONIAC_ERROR_H_
 #define _DEMONIAC_ERROR_H_
 
-#include <exception>
 #include <string>
 
-#include "noncopyable.hpp"
+#include "noncopyable.h"
 
 using namespace std;
 

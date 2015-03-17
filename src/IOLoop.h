@@ -5,18 +5,18 @@
 #ifndef _DEMONIAC_IOLOOP_H_
 #define _DEMONIAC_IOLOOP_H_
 
-#include <pthread.h>
-
-#include "util/noncopyable.hpp"
+#include "util/noncopyable.h"
 
 namespace dc {
 
     class IOLoop: noncopyable {
     private:
         IOLoop* _instance;
+        bool _quit;
     public:
         IOLoop();
         void Loop();
+        ~IOLoop();
     };
 
 }
