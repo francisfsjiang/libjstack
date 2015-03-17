@@ -12,17 +12,17 @@
 using namespace std;
 
 namespace dc {
-    class BaseError: noncopyable{
-    protected:
-        string event;
-    public:
-        BaseError(string e);
-    };
+class BaseError : noncopyable {
+protected:
+    string event;
+public:
+    BaseError(string e);
+};
 
-    class IOLoopConstructorError: BaseError {
-    public:
-        IOLoopConstructorError(string e);
-    };
+class IOLoopConstructorError : BaseError {
+public:
+    IOLoopConstructorError(string e);
+};
 }
 
 

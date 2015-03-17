@@ -6,6 +6,8 @@
 
 using namespace dc;
 
-BaseError::BaseError(string e):event(e) {}
+BaseError::BaseError(string e) : event(e) {
+}
 
-IOLoopConstructorError::IOLoopConstructorError(string e):BaseError(e) {}
+IOLoopConstructorError::IOLoopConstructorError(string e) : BaseError(e) {
+}

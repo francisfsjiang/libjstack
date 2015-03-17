@@ -5,19 +5,28 @@
 #ifndef _DEMONIAC_IOLOOP_H_
 #define _DEMONIAC_IOLOOP_H_
 
+#include <iostream>
+
+#include "Event.h"
 #include "util/noncopyable.h"
 
 namespace dc {
 
-    class IOLoop: noncopyable {
-    private:
-        IOLoop* _instance;
-        bool _quit;
-    public:
-        IOLoop();
-        void Loop();
-        ~IOLoop();
-    };
+class IOLoop : noncopyable {
+private:
+    IOLoop *instance_;
+    bool quit_;
+public:
+    IOLoop();
+
+    void Loop();
+
+    void AddEvent(const Event& e);
+
+    void RemoveEvent(const Event& e);
+
+    ~IOLoop();
+};
 
 }
 

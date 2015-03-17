@@ -10,15 +10,18 @@
 
 namespace dc {
 
-    class Poller: noncopyable {
-    private:
-    public:
-        virtual void AddEvent(const Event& e);
-        virtual void UpdateEvent(const Event& e);
-        virtual void DeleteEvent(const Event& e);
-    };
-}
+class Poller : noncopyable {
+private:
+public:
+    virtual void Poll();
 
+    virtual void AddEvent(const Event &e);
+
+    virtual void UpdateEvent(const Event &e);
+
+    virtual void DeleteEvent(const Event &e);
+};
+}
 
 
 #endif //_DEMONIAC_POLLER_H_

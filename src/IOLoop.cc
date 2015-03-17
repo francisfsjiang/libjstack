@@ -5,31 +5,30 @@
 #include "IOLoop.h"
 
 #include <iostream>
-#include <pthread.h>
 
-using namespace std;
-using namespace dc;
+namespace dc {
 
-__thread IOLoop* _IOLoopInstanceInThread = NULL;
+__thread IOLoop* kIOLoopInstanceInThread = NULL;
 
 IOLoop::IOLoop() {
-    if (_IOLoopInstanceInThread != NULL) {
-        _instance = _IOLoopInstanceInThread;
+    if (kIOLoopInstanceInThread != NULL) {
+        instance_ = kIOLoopInstanceInThread;
     }
     else {
-        _IOLoopInstanceInThread = this;
-        _instance = this;
+        kIOLoopInstanceInThread = this;
+        instance_ = this;
     }
 }
 
 void IOLoop::Loop() {
-    auto p = [](auto a, auto b){return a+b;};
-    while (!_quit) {
+    while (!quit_) {
 
     }
 
 }
 
 IOLoop::~IOLoop() {
-    _IOLoopInstanceInThread = NULL;
+    kIOLoopInstanceInThread = NULL;
+}
+
 }
