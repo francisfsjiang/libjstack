@@ -19,10 +19,10 @@ public:
 
 
 int main() {
-    dc::Application app();
+    dc::Application app;
     app.listen(8888)
     app.add_handler<MainHandler>("/");
-    dc::IOLoop ioloop();
+    dc::IOLoop ioloop;
     ioloop.start();
 }
 
