@@ -4,25 +4,23 @@
 
 #include "KqueuePoller.h"
 
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
-
 #include "../Log.h"
 
 namespace dc {
 
-
 KqueuePoller::KqueuePoller() {
     kqueue_ = kqueue();
+    if (kqueue_ < 0) {
+        LOG_CRITICAL<<"kqueue init failed.";
+    }
 }
 
 void KqueuePoller::AddEvent(const Event &e) {
-    struct kevent event;
+    poll_event event;
     EV_SET(&event, e.GetFD(), EVFILT_READ, EV_ADD, 0, 0, NULL);
     int ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
     if (ret < 0) {
-        LOG_CRITICAL<<"kqueue init failed.";
+        LOG_CRITICAL<<"event add failed. fd= "<<e.GetFD();
     }
 }
 
@@ -34,7 +32,10 @@ void KqueuePoller::DeleteEvent(const Event &e) {
     LOG_DEBUG<<e.GetFD()<<" event add to "<<kqueue_;
 }
 
-void KqueuePoller::Poll() {
-
+int KqueuePoller::Poll(std::vector<poll_event> &events, int max_num_of_events) {
+    int ret = kevent(kqueue_, NULL, 0, events.data(), max_num_of_events, NULL);
+    return ret;
 }
+
+
 }

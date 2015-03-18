@@ -7,14 +7,22 @@
 
 #include "Poller.h"
 
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
 namespace dc {
+
+typedef struct kevent poll_event;
+
 class KqueuePoller : public Poller {
 private:
     int kqueue_;
+
 public:
     KqueuePoller();
 
-    virtual void Poll();
+    int Poll(std::vector<poll_event>& events, int max_num_of_events);
 
     virtual void AddEvent(const Event &e);
 

@@ -33,4 +33,7 @@ IOLoop::~IOLoop() {
     kIOLoopInstanceInThread = NULL;
 }
 
+void IOLoop::AddEvent(const Event &e) {
+    events_list_.push_back(e);
+}
 }
