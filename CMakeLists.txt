@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(Demoniac)
 
-message(${CMAKE_HOST_SYSTEM_NAME})
+
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++1y -pedantic -Wall -Werror -Wextra")
 
@@ -11,12 +11,19 @@ set(SRC_FILE
 src/IOLoop.cc
 src/Event.cc
 src/Log.cc
-src/poller/KqueuePoller.cc
-src/poller/EpollPoller.cc
+src/poller/GetPoller.cc
 src/util/error.cc
 )
 
-add_library(demoniac_lib STATIC ${SRC_FILE})
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
+    message(${CMAKE_HOST_SYSTEM_NAME})
+    set(SRC_FILE ${SRC_FILE} src/poller/KqueuePoller.cc)
+elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
+    message(${CMAKE_HOST_SYSTEM_NAME})
+    set(SRC_FILE ${SRC_FILE} src/poller/EpollPoller.cc)
+endif()
+
+add_library(demoniac_lib STATIC ${SRC_FILE} src/poller/GetPoller.cc src/poller/GetPoller.h)
 
 
 add_executable(ioloop_test test/ioloop_test.cc)

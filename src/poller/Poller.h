@@ -10,24 +10,30 @@
 #include "../util/noncopyable.h"
 #include "../Event.h"
 
-#if defined(__linux__)
-    #include <sys/epoll.h>
-#elif defined(__unix__) || defined(__MACH__)
-    #include <sys/types.h>
-    #include <sys/event.h>
-    #include <sys/time.h>
-#endif
 
+#if defined(__linux__)
+
+#include <sys/epoll.h>
+
+#elif defined(__unix__) || defined(__MACH__)
+
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
+#endif
 
 namespace dc {
 
+#if defined(__linux__)
 
-#if defined(__unix__) || defined(__MACH__)
-typedef struct kevent poll_event;
-#elif defined(__linux__)
 typedef struct epoll_event poll_event;
-#endif
 
+#elif defined(__unix__) || defined(__MACH__)
+
+typedef struct kevent poll_event;
+
+#endif
 
 class Poller : noncopyable {
 private:

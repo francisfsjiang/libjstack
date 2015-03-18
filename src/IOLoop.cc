@@ -17,6 +17,7 @@ IOLoop::IOLoop() {
     else {
         kIOLoopInstanceInThread = this;
         instance_ = this;
+        poller_ = GetPoller();
     }
 }
 
@@ -34,6 +35,7 @@ IOLoop::~IOLoop() {
 }
 
 void IOLoop::AddEvent(const Event &e) {
-    events_list_.push_back(e);
+    //events_list_.push_back(e);
+    LOG_DEBUG<<"Loop add fd= "<<e.GetFD();
 }
 }

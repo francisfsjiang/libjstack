@@ -10,13 +10,8 @@
 
 #include "Event.h"
 #include "util/noncopyable.h"
-#include "poller/Poller.h"
 
-#if defined(__linux__)
-#include "poller/EpollPoller.h"
-#elif defined(__unix__) || defined(__MACH__)
-#include "poller/KqueuePoller.h"
-#endif
+#include "poller/GetPoller.h"
 
 namespace dc {
 
@@ -24,9 +19,9 @@ class IOLoop : noncopyable {
 private:
     IOLoop *instance_;
     bool quit_;
-    Poller *poller_ = new KqueuePoller();
+    Poller *poller_;
     std::vector<Event> events_list_;
-    std::vector<poll_event> events_ready_;
+    //std::vector<poll_event> events_ready_;
 
 public:
     IOLoop();

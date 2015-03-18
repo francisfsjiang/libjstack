@@ -13,7 +13,6 @@
 
 namespace dc {
 
-typedef struct kevent poll_event;
 
 class KqueuePoller : public Poller {
 private:
