@@ -10,7 +10,7 @@ Demoniac can scale to tens of thousands of open connections.
 #include <iostream>
 #include "Demoniac.h"
 
-class MainHandler(dc::RequestHandler) {
+class MainHandler: dc::RequestHandler {
 public:
     dc::Response get() {
         return "Hello, GFW";
