@@ -12,10 +12,10 @@
 #include "util/noncopyable.h"
 #include "poller/Poller.h"
 
-#if defined(__unix__) || defined(__MACH__)
-#include "poller/KqueuePoller.h"
-#elif defined(__linux__)
+#if defined(__linux__)
 #include "poller/EpollPoller.h"
+#elif defined(__unix__) || defined(__MACH__)
+#include "poller/KqueuePoller.h"
 #endif
 
 namespace dc {

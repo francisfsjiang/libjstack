@@ -10,14 +10,12 @@
 #include "../util/noncopyable.h"
 #include "../Event.h"
 
-
-
-#if defined(__unix__) || defined(__MACH__)
+#if defined(__linux__)
+    #include <sys/epoll.h>
+#elif defined(__unix__) || defined(__MACH__)
     #include <sys/types.h>
     #include <sys/event.h>
     #include <sys/time.h>
-#elif defined(__linux__)
-    #include <sys/epoll.h>
 #endif
 
 
