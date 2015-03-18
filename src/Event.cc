@@ -7,7 +7,7 @@
 namespace dc {
 
 Event::Event(int fd):fd_(fd) {
-};
+}
 
 int Event::GetFD() const {
     return fd_;
