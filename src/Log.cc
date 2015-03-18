@@ -34,6 +34,8 @@ std::string Log::get_level() {
             return "ERROR";
         case CRITICAL:
             return "CRITICAL";
+        default:
+            return NULL;
     }
 }
 
