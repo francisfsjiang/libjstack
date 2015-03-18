@@ -12,7 +12,7 @@ Demoniac can scale to tens of thousands of open connections.
 
 class MainHandler(dc::RequestHandler) {
 public:
-    Response get() {
+    dc::Response get() {
         return "Hello, GFW";
     }
 }
