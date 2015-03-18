@@ -13,11 +13,11 @@ int Event::GetFD() const {
     return fd_;
 }
 
-void Event::set_read_call_back(void *call_back) {
+void Event::set_read_call_back(std::function<void(int)> call_back) {
     read_call_back_ = call_back;
 }
 
-void Event::set_write_call_back(void *call_back) {
+void Event::set_write_call_back(std::function<void(int)> call_back) {
     write_call_back_ = call_back;
 }
 

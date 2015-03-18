@@ -5,13 +5,15 @@
 #ifndef _DEMONIAC_EVENT_H_
 #define _DEMONIAC_EVENT_H_
 
+#include <functional>
+
 namespace dc {
 
 class Event {
 private:
     int fd_;
-    void *read_call_back_;
-    void *write_call_back_;
+    std::function<void(int)> read_call_back_;
+    std::function<void(int)> write_call_back_;
 public:
     Event(int fd);
 
@@ -19,9 +21,9 @@ public:
 
     int GetFD() const;
 
-    void set_read_call_back(void *call_back);
+    void set_read_call_back(std::function<void(int)> call_back);
 
-    void set_write_call_back(void *call_back);
+    void set_write_call_back(std::function<void(int)> call_back);
 };
 
 }
