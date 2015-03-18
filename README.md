@@ -15,7 +15,7 @@ public:
     dc::Response get() {
         return "Hello, GFW";
     }
-}
+};
 
 int main() {
     dc::Application app;
