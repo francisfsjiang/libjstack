@@ -1,10 +1,16 @@
 language: cpp
 
 compiler:
-- gcc
-- clang
+    - gcc
+    - clang
 
 before_script:
-- cmake .
+    - cmake .
 
 script: make
+
+notifications:
+    email:
+    - neveralso@qq.com
+    - neveralso@gmail.com
+
