@@ -1,5 +1,7 @@
 # Demoniac
 
+[![Build Status](https://travis-ci.org/neveralso/Demoniac.svg?branch=master)](https://travis-ci.org/neveralso/Demoniac)
+
 Demoniac is a C++ web framework and asynchronous networking library.
 By using non-blocking network I/O,
 Demoniac can scale to tens of thousands of open connections.
