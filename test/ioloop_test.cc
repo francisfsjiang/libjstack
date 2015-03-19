@@ -8,7 +8,7 @@
 #include "../src/Event.h"
 #include "../src/Log.h"
 
-#define LISTEN_PORT 8000
+#define LISTEN_PORT 8001
 #define LISTEN_ADDR "0.0.0.0"
 
 char buffer[1000];
