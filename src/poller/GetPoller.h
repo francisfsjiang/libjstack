@@ -8,7 +8,9 @@
 #if defined(__linux__)
     #include "EpollPoller.h"
 #elif defined(__unix__) || defined(__MACH__)
-    #include "KqueuePoller.h"
+
+#include "KqueuePoller.h"
+
 #endif
 
 namespace dc {
@@ -19,7 +21,7 @@ EpollPoller* GetPoller();
 
 #elif defined(__unix__) || defined(__MACH__)
 
-KqueuePoller* GetPoller();
+KqueuePoller *GetPoller();
 
 #endif
 

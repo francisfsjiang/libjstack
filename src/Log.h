@@ -45,9 +45,9 @@ public:
 
     ~Log();
 
-    std::ofstream& log(int i);
+    std::ofstream &log(int i);
 
-    std::ofstream& log(LogLevel level);
+    std::ofstream &log(LogLevel level);
 
 };
 

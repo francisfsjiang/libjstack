@@ -21,7 +21,9 @@ private:
 public:
     KqueuePoller();
 
-    int Poll(std::vector<poll_event>& events, int max_num_of_events);
+    int Poll(std::vector<poll_event> &events,
+            int max_num_of_events,
+            int time_out);
 
     virtual void AddEvent(const Event &e);
 

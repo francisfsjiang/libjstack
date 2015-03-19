@@ -14,7 +14,7 @@ EpollPoller* GetPoller() {
 
 #elif defined(__unix__) || defined(__MACH__)
 
-KqueuePoller* GetPoller() {
+KqueuePoller *GetPoller() {
     return new KqueuePoller();
 }
 

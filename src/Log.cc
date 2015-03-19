@@ -18,7 +18,7 @@ Log::Log(std::string file) {
 
 std::string Log::get_date() {
     time_t te = time(NULL);
-    strftime(buffer_, 80, "%m-%d-%Y %H:%M:%S",gmtime(&te));
+    strftime(buffer_, 80, "%m-%d-%Y %H:%M:%S", gmtime(&te));
     return std::string(buffer_);
 }
 
@@ -42,13 +42,13 @@ std::string Log::get_level() {
 std::ofstream &Log::log(LogLevel level) {
     log_level_ = level;
     *out_stream_
-            <<std::endl
-            <<get_pid()
-            <<" "
-            <<get_date()
-            <<" "
-            <<get_level()
-            <<" ";
+            << std::endl
+            << get_pid()
+            << " "
+            << get_date()
+            << " "
+            << get_level()
+            << " ";
     return *out_stream_;
 }
 
@@ -57,11 +57,11 @@ int Log::get_pid() {
 }
 
 std::ofstream &Log::log(int i) {
-    return Log::log((LogLevel)i);
+    return Log::log((LogLevel) i);
 }
 
 Log::~Log() {
-    *out_stream_<<std::endl;
+    *out_stream_ << std::endl;
 }
 
 }

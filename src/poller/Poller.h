@@ -39,7 +39,9 @@ class Poller : noncopyable {
 private:
 public:
 
-    virtual int Poll(std::vector<poll_event>& events, int max_num_of_events) = 0;
+    virtual int Poll(std::vector<poll_event> &events,
+            int max_num_of_events,
+            int time_out) = 0;
 
     virtual void AddEvent(const Event &e) = 0;
 

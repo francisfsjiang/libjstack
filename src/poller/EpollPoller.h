@@ -11,7 +11,8 @@
 
 namespace dc {
 class Poller;
-class EpollPoller: public Poller {
+
+class EpollPoller : public Poller {
 
 };
 
