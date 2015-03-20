@@ -19,7 +19,7 @@ IOLoop::IOLoop() {
     }
     else {
         kIOLoopInstanceInThread = this;
-        instance_ = this;
+        //instance_ = this;
         poller_ = GetPoller();
         events_.clear();
         quit_ = 0;

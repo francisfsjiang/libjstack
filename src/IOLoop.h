@@ -20,7 +20,7 @@ class IOLoop : noncopyable {
 private:
     const int MAX_EVENTS_READY_NUM = 100;
 
-    IOLoop *instance_;
+    //IOLoop *instance_;
     bool quit_;
     Poller *poller_;
     std::map<int, Event> events_;
