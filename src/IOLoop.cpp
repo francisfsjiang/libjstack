@@ -37,7 +37,7 @@ void IOLoop::Loop() {
 #if defined(DC_DEBUG)
         LOG_DEBUG << "Looped " << count++;
 #endif
-        ready_num = poller_->Poll(events_ready_, MAX_EVENTS_READY_NUM, 5);
+        ready_num = poller_->Poll(events_ready_, MAX_EVENTS_READY_NUM, 10);
 
         //if (ready_num == 0) {
 
@@ -65,7 +65,6 @@ void IOLoop::Loop() {
                         events_ready_[i].data);
             }
         }
-
 
     }
 }

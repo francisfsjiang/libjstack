@@ -44,7 +44,8 @@ int KqueuePoller::Poll(std::vector<poll_event> &events,
 #if defined(DC_DEBUG)
     LOG_DEBUG << "Poll timeout " << time_out;
 #endif
-    int ret = kevent(kqueue_, NULL, 0, events.data(), max_num_of_events, NULL);
+    struct timespec time_sec = {time_out, 0};
+    int ret = kevent(kqueue_, NULL, 0, events.data(), max_num_of_events, &time_sec);
     return ret;
 }
 
