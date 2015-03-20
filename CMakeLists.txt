@@ -11,12 +11,11 @@ set(SRC_FILE
 src/IOLoop.cpp
 src/Event.cpp
 src/Log.cpp
+#src/TCPServer.cpp
+#src/TCPConnection.cpp
+#src/TCPHandler.cpp
 src/poller/GetPoller.cpp
 src/util/error.cpp
-src/poller/GetPoller.cpp
-src/TCPServer.cpp
-src/TCPConnection.cpp
-src/TCPHandler.cpp
 )
 
 if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
@@ -31,8 +30,10 @@ add_library(demoniac STATIC ${SRC_FILE})
 
 
 add_executable(ioloop_test test/ioloop_test.cc)
+add_executable(ioloop_test2 test/ioloop_test2.cc)
 add_executable(log_test test/log_test.cc)
 
 
 target_link_libraries(ioloop_test demoniac)
 target_link_libraries(log_test demoniac)
+target_link_libraries(ioloop_test2 demoniac)

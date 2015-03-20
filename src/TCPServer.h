@@ -6,6 +6,8 @@
 #define _DEMONIAC_TCPSERVER_H_
 
 #include <map>
+#include <functional>
+#include <sys/socket.h>
 
 #include "IOLoop.h"
 #include "TCPHandler.h"
@@ -13,11 +15,14 @@
 
 namespace dc {
 
-class TCPServer: noncopyable {
+class TCPServer : noncopyable {
 private:
-    std::map<int, TCPHandler> handler_map;
+    std::map<int, std::function<void*()>> port_route_map;
 public:
+    template<typename T>
+    void AddHandler(sa_family_t sock_type, sockaddr* sock_addr);
 
+    void AddListenEvent(sa_family_t sock_type, sockaddr* sock_addr);
 };
 
 }
