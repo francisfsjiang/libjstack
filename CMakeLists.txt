@@ -18,12 +18,13 @@ src/poller/GetPoller.cpp
 src/util/error.cpp
 )
 
-if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
-    message(${CMAKE_HOST_SYSTEM_NAME})
-    set(SRC_FILE ${SRC_FILE} src/poller/KqueuePoller.cpp)
-elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
+
+if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
     message(${CMAKE_HOST_SYSTEM_NAME})
     set(SRC_FILE ${SRC_FILE} src/poller/EpollPoller.cpp)
+else()
+    message(${CMAKE_HOST_SYSTEM_NAME})
+    set(SRC_FILE ${SRC_FILE} src/poller/KqueuePoller.cpp)
 endif()
 
 add_library(demoniac STATIC ${SRC_FILE})
