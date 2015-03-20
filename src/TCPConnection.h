@@ -5,10 +5,12 @@
 #ifndef _DEMONIAC_TCPCONNECTION_H_
 #define _DEMONIAC_TCPCONNECTION_H_
 
+namespace dc {
 
 class TCPConnection {
 
 };
 
+}
 
 #endif //_DEMONIAC_TCPCONNECTION_H_
