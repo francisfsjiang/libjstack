@@ -10,9 +10,12 @@
 #include <sys/epoll.h>
 
 namespace dc {
-class Poller;
 
 class EpollPoller : public Poller {
+private:
+public:
+
+    typedef struct epoll_event poll_event;
 
 };
 

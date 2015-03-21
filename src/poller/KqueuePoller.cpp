@@ -4,6 +4,8 @@
 
 #include "KqueuePoller.h"
 
+#include <unistd.h>
+
 #include "../Log.h"
 
 namespace dc {
@@ -11,7 +13,7 @@ namespace dc {
 KqueuePoller::KqueuePoller() {
     kqueue_ = kqueue();
     if (kqueue_ < 0) {
-        LOG_CRITICAL << "kqueue init failed.";
+        LOG_ERROR << "kqueue init failed.";
     }
 #if defined(DC_DEBUG)
     LOG_DEBUG << "Kqueue created fd=" << kqueue_;
@@ -20,34 +22,56 @@ KqueuePoller::KqueuePoller() {
 
 void KqueuePoller::AddEvent(const Event &e) {
     poll_event event;
+    int ret;
+    //Add read event
     EV_SET(&event, e.GetFD(), EVFILT_READ, EV_ADD, 0, 0, NULL);
-    int ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
+    ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
     if (ret < 0) {
-        LOG_CRITICAL << "event add failed. fd= " << e.GetFD();
+        LOG_ERROR << e.GetFD() << "event read add failed.";
     }
+    //Add write event
+    EV_SET(&event, e.GetFD(), EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+    ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
+    if (ret < 0) {
+        LOG_ERROR << e.GetFD() << "event write add failed.";
+    }
+
 #if defined(DC_DEBUG)
     LOG_DEBUG << "Kqueue add fd=" << e.GetFD();
 #endif
 }
 
 void KqueuePoller::UpdateEvent(const Event &e) {
-    LOG_DEBUG << e.GetFD() << " event add to " << kqueue_;
+    LOG_DEBUG << e.GetFD() << " undefined update event " << kqueue_;
 }
 
 void KqueuePoller::DeleteEvent(const Event &e) {
-    LOG_DEBUG << e.GetFD() << " event add to " << kqueue_;
+    close(e.GetFD());
+    LOG_DEBUG << e.GetFD() << " undefined delete event " << kqueue_;
 }
 
-int KqueuePoller::Poll(std::vector<poll_event> &events,
-        int max_num_of_events,
-        int time_out) {
+int KqueuePoller::Poll(int time_out) {
 #if defined(DC_DEBUG)
     LOG_DEBUG << "Poll timeout " << time_out;
 #endif
     struct timespec time_sec = {time_out, 0};
-    int ret = kevent(kqueue_, NULL, 0, events.data(), max_num_of_events, &time_sec);
+    int ret = kevent(kqueue_, NULL, 0, events_ready_.data(), MAX_READY_EVENTS_NUM, &time_sec);
     return ret;
 }
 
+void KqueuePoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
+    for (int i = 0; i < ready_num; ++i) {
 
+#if defined(DC_DEBUG)
+        LOG_DEBUG << "fd " << events_ready_[i].ident;
+        LOG_DEBUG << "data " << events_ready_[i].data;
+#endif
+        auto iter = events.find(static_cast<int>(events_ready_[i].ident));
+        if (iter != events.end()) {
+            iter->second.exec_read_callback(
+                    events_ready_[i].ident,
+                    events_ready_[i].data);
+        }
+    }
+}
 }

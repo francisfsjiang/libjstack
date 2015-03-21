@@ -5,25 +5,30 @@
 #ifndef _DEMONIAC_KQUEUEPOLLER_H_
 #define _DEMONIAC_KQUEUEPOLLER_H_
 
-#include "Poller.h"
-
 #include <sys/types.h>
 #include <sys/event.h>
 #include <sys/time.h>
 
-namespace dc {
+#include "Poller.h"
 
+namespace dc {
 
 class KqueuePoller : public Poller {
 private:
+    typedef struct kevent poll_event;
+
     int kqueue_;
+
+    std::vector<poll_event> events_ready_;
+
+    const int MAX_READY_EVENTS_NUM = 500;
 
 public:
     KqueuePoller();
 
-    int Poll(std::vector<poll_event> &events,
-            int max_num_of_events,
-            int time_out);
+    virtual int Poll(int time_out);
+
+    virtual void HandleEvents(int ready_num, std::map<int, Event>& events);
 
     virtual void AddEvent(const Event &e);
 

@@ -18,13 +18,11 @@ namespace dc {
 
 class IOLoop : noncopyable {
 private:
-    const int MAX_EVENTS_READY_NUM = 100;
 
     //IOLoop *instance_;
     bool quit_;
     Poller *poller_;
     std::map<int, Event> events_;
-    std::vector<poll_event> events_ready_;
 
 public:
     IOLoop();
@@ -35,7 +33,7 @@ public:
 
     void AddEvent(const Event &e);
 
-    void quit();
+    void Quit();
 
     ~IOLoop();
 };

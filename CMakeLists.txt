@@ -32,9 +32,9 @@ endif()
 add_library(demoniac STATIC ${SRC_FILES})
 
 
-add_executable(ioloop_test test/ioloop_test.cc)
-add_executable(ioloop_test2 test/ioloop_test2.cc)
-add_executable(log_test test/log_test.cc)
+add_executable(ioloop_test test/ioloop_test.cpp)
+add_executable(ioloop_test2 test/ioloop_test2.cpp)
+add_executable(log_test test/log_test.cpp)
 
 
 target_link_libraries(ioloop_test demoniac)

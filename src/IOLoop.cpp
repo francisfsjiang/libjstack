@@ -23,7 +23,6 @@ IOLoop::IOLoop() {
         poller_ = GetPoller();
         events_.clear();
         quit_ = 0;
-        events_ready_.resize(MAX_EVENTS_READY_NUM);
     }
 }
 
@@ -37,34 +36,21 @@ void IOLoop::Loop() {
 #if defined(DC_DEBUG)
         LOG_DEBUG << "Looped " << count++;
 #endif
-        ready_num = poller_->Poll(events_ready_, MAX_EVENTS_READY_NUM, 10);
+        ready_num = poller_->Poll(10);
 
         //if (ready_num == 0) {
 
 #if defined(DC_DEBUG)
-            LOG_DEBUG << "sleeping";
+        LOG_DEBUG << "sleeping";
 #endif
 
-            sleep(5);
-        //}
+        poller_->HandleEvents(ready_num, events_);
 
 #if defined(DC_DEBUG)
         LOG_DEBUG << ready_num << " events ready";
 #endif
 
-        for (int i = 0; i < ready_num; ++i) {
 
-#if defined(DC_DEBUG)
-            LOG_DEBUG << "fd " << events_ready_[i].ident;
-            LOG_DEBUG << "data " << events_ready_[i].data;
-#endif
-            auto iter = events_.find(static_cast<int>(events_ready_[i].ident));
-            if (iter != events_.end()) {
-                iter->second.exec_read_call_back(
-                        events_ready_[i].ident,
-                        events_ready_[i].data);
-            }
-        }
 
     }
 }
@@ -81,7 +67,7 @@ void IOLoop::AddEvent(const Event &e) {
     poller_->AddEvent(e);
 }
 
-void IOLoop::quit() {
+void IOLoop::Quit() {
     quit_ = 1;
 
 }
