@@ -7,6 +7,8 @@
 
 #include <functional>
 
+#include "util/error.h"
+
 namespace dc {
 
 class Event {
@@ -25,17 +27,38 @@ public:
     int GetFD() const;
 
     template<typename T>
-    void set_read_callback(void(T::*callback)(int, int));
+    void set_read_callback(void(T::*callback)(int, int)) {
+        if (!obj_ptr_)
+            throw IllegalFunctionError("Object not set");
+        auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+        read_callback_ = [](int fd, int data) {
+            f(fd, data);
+        };
+    }
 
     void set_read_callback(callback_func callback);
 
     template<typename T>
-    void set_write_callback(void(T::*callback)(int, int));
+    void set_write_callback(void(T::*callback)(int, int)) {
+        if (!obj_ptr_)
+            throw IllegalFunctionError("Object not set");
+        auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+        write_callback_ = [](int fd, int data) {
+            f(fd, data);
+        };
+    }
 
     void set_write_callback(callback_func callback);
 
     template<typename T>
-    void set_close_callback(void(T::*callback)(int, int));
+    void set_close_callback(void(T::*callback)(int, int)) {
+        if (!obj_ptr_)
+            throw IllegalFunctionError("Object not set");
+        auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+        close_callback_ = [](int fd, int data) {
+            f(fd, data);
+        };
+    }
 
     void set_close_callback(callback_func callback);
 
