@@ -9,15 +9,21 @@
 
 namespace dc {
 
-class TCPHandler {
-private:
+class TCPConnection;
 
+class TCPHandler {
+protected:
+    TCPConnection* coon_;
+    std::string from_;
 public:
     TCPHandler();
 
-    virtual std::string recv(const std::string msg) = 0;
+    void _SetTcpConnection(TCPConnection* coon);
+    void _SetFromAddress(const std::string from);
 
-    virtual std::string send(const std::string msg) = 0;
+    virtual std::string Recv(const std::string msg) = 0;
+
+    void Send(const std::string msg);
 };
 
 }

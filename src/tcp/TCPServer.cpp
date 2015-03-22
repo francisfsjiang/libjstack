@@ -11,8 +11,12 @@
 
 namespace dc {
 
+TCPServer::TCPServer() {
+
+}
+
 template<typename T>
-void TCPServer::AddHandler(const struct sockaddr &sock_addr) {
+void TCPServer::AddHandler(const sockaddr &sock_addr) {
 
     if (!std::is_base_of<TCPHandler, T>::value) {
         LOG_ERROR << "Wrong handler type" << typeid(T).name();
@@ -45,7 +49,7 @@ void TCPServer::AddHandler(const struct sockaddr &sock_addr) {
     }
 
     auto f = [=]() {
-        return (void*)(new T);
+        return (void *) (new T);
     };
 
     route_map_.insert(std::make_pair(sock_fd, f));
@@ -73,7 +77,7 @@ void TCPServer::CreateConnection(int fd, int data) {
     LOG_DEBUG << fd << "has" << data << "connections";
 #endif
 
-    struct sockaddr sock_addr;
+    sockaddr sock_addr;
     socklen_t sock_addr_len;
 
     for (int i = 0; i < data; ++i) {
@@ -86,8 +90,8 @@ void TCPServer::CreateConnection(int fd, int data) {
             from_address += sock_addr.sa_data;
         }
         else {
-            from_address += inet_ntoa(((struct sockaddr_in *) &sock_addr)->sin_addr);
-            from_address += std::to_string(((struct sockaddr_in *) &sock_addr)->sin_port);
+            from_address += inet_ntoa(((sockaddr_in *) &sock_addr)->sin_addr);
+            from_address += std::to_string(((sockaddr_in *) &sock_addr)->sin_port);
         }
 
         LOG_INFO << fd

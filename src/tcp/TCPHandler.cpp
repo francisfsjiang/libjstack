@@ -3,6 +3,7 @@
 //
 
 #include "TCPHandler.h"
+#include "TCPConnection.h"
 
 #include <string>
 
@@ -13,4 +14,16 @@ TCPHandler::TCPHandler() {
 
 }
 
+void TCPHandler::Send(const std::string msg) {
+    coon_->_WriteMsg(msg);
+}
+
+void TCPHandler::_SetFromAddress(const std::string from) {
+    from_ = from;
+}
+
+
+void TCPHandler::_SetTcpConnection(TCPConnection *coon) {
+    coon_ = coon;
+}
 }

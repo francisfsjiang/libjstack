@@ -16,20 +16,22 @@ TCPConnection::TCPConnection(const int& fd,
     fd_ = fd;
     from_address_ = from_address;
     handler_ = (TCPHandler*)(handler_generator());
+    handler_->_SetTcpConnection(this);
+    handler_->_SetFromAddress(from_address);
 
 }
 
 void TCPConnection::_ReadEvent(int fd, int data) {
-    LOG_INFO << from_address_ << " recv " << data << " bytes data";
+    LOG_INFO << from_address_ << " Recv " << data << " bytes data";
     std::string msg;
     msg.resize((size_t)data);
     recv(fd, &msg.front(), (size_t)data, 0);
-    handler_->recv(msg);
+    _WriteMsg(handler_->Recv(msg));
 }
 
 void TCPConnection::_WriteEvent(int fd, int data) {
-    LOG_INFO << fd << from_address_ << " send " << data << " bytes data ";
-    //send(fd, )
+    LOG_INFO << fd << from_address_ << " Send " << data << " bytes data ";
+    //Send(fd, )
 
 }
 
