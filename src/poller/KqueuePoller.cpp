@@ -11,6 +11,7 @@
 namespace dc {
 
 KqueuePoller::KqueuePoller() {
+    events_ready_.resize(MAX_READY_EVENTS_NUM);
     kqueue_ = kqueue();
     if (kqueue_ < 0) {
         LOG_ERROR << "kqueue init failed.";
@@ -75,11 +76,24 @@ void KqueuePoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
         LOG_DEBUG << "data " << events_ready_[i].data;
 #endif
         auto iter = events.find(static_cast<int>(events_ready_[i].ident));
-        if (iter != events.end()) {
-            iter->second.exec_read_callback(
-                    events_ready_[i].ident,
-                    events_ready_[i].data);
+        if (iter == events.end()) {
+            LOG_ERROR << events_ready_[i].ident << "event not found";
+
         }
+        if (iter->second.has_close_callback() &&
+            (events_ready_[i].flags & EV_EOF) == EV_EOF) {
+            iter->second.exec_close_callback(events_ready_[i].ident,
+                                             events_ready_[i].data);
+        }
+        else if (events_ready_[i].filter == EVFILT_READ) {
+            iter->second.exec_read_callback(events_ready_[i].ident,
+                                            events_ready_[i].data);
+        }
+        else if (events_ready_[i].filter == EVFILT_WRITE) {
+            iter->second.exec_write_callback(events_ready_[i].ident,
+                                             events_ready_[i].data);
+        }
+
     }
 }
 }

@@ -16,7 +16,7 @@ char buffer[1000];
 
 void read_cb(int fd, int data) {
     read(fd, buffer, data);
-    buffer[data+1] = '\0';
+    buffer[data + 1] = '\0';
     std::cout << "read_cb fd = " << fd << "data = " << buffer << std::endl;
 }
 
@@ -25,6 +25,7 @@ void write_cb(int fd, int data) {
 }
 
 void close_cb(int fd, int data) {
+    close(fd);
     std::cout << "close_cb fd = " << fd << "data = " << data << std::endl;
 }
 
@@ -34,13 +35,13 @@ void accept_cb(int fd, int data) {
     socklen_t sock_addr_len;
 
     for (int i = 0; i < data; ++i) {
-        int coon_fd = accept(fd, (struct sockaddr *)&sock_addr, &sock_addr_len);
+        int coon_fd = accept(fd, (struct sockaddr *) &sock_addr, &sock_addr_len);
         std::cout << "from " << inet_ntoa(sock_addr.sin_addr) << std::endl;
 
-        std::cout << "add conn " << coon_fd <<std::endl;
+        std::cout << "add conn " << coon_fd << std::endl;
         dc::Event e(coon_fd, NULL);
         e.set_read_callback(read_cb);
-        e.set_write_callback(write_cb);
+        //e.set_write_callback(write_cb);
         e.set_close_callback(close_cb);
         dc::IOLoop::Current()->AddEvent(e);
     }

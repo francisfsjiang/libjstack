@@ -24,17 +24,17 @@ public:
 
     int GetFD() const;
 
-    template <typename T>
+    template<typename T>
     void set_read_callback(void(T::*callback)(int, int));
 
     void set_read_callback(callback_func callback);
 
-    template <typename T>
+    template<typename T>
     void set_write_callback(void(T::*callback)(int, int));
 
     void set_write_callback(callback_func callback);
 
-    template <typename T>
+    template<typename T>
     void set_close_callback(void(T::*callback)(int, int));
 
     void set_close_callback(callback_func callback);

@@ -3,3 +3,14 @@
 //
 
 #include "TCPHandler.h"
+
+#include <string>
+
+namespace dc {
+
+
+TCPHandler::TCPHandler() {
+
+}
+
+}

@@ -4,7 +4,6 @@
 
 #include "Log.h"
 
-#include <ctime>
 #include <unistd.h>
 
 namespace dc {
@@ -42,13 +41,13 @@ std::string Log::get_level() {
 std::ofstream &Log::log(LogLevel level) {
     log_level_ = level;
     *out_stream_
-            << std::endl
-            << get_pid()
-            << " "
-            << get_date()
-            << " "
-            << get_level()
-            << " ";
+    << std::endl
+    << get_pid()
+    << " "
+    << get_date()
+    << " "
+    << get_level()
+    << " ";
     return *out_stream_;
 }
 

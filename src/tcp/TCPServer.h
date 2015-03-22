@@ -7,14 +7,15 @@
 
 #include <map>
 #include <iostream>
-//#include <functional>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <unistd.h>
+
 
 #include "../IOLoop.h"
 #include "../util/noncopyable.h"
+#include "TCPConnection.h"
 
 namespace dc {
 
@@ -23,7 +24,9 @@ private:
 
     const int MAX_PENDING_CONNECTIONS_NUM = 200;
 
-    std::map<int, std::function<void *()>> port_route_map;
+    std::map<int, std::function<void *()>> route_map_;
+
+    std::map<int, TCPConnection*> connection_poll_;
 public:
     template<typename T>
     void AddHandler(const struct sockaddr &sock_addr);

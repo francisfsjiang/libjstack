@@ -17,7 +17,6 @@ src/tcp/TCPServer.cpp
 src/tcp/TCPConnection.cpp
 src/tcp/TCPHandler.cpp
 src/poller/GetPoller.cpp
-src/util/error.cpp
 )
 
 

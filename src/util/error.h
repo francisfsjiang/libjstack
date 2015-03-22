@@ -7,8 +7,6 @@
 
 #include <string>
 
-#include "noncopyable.h"
-
 using namespace std;
 
 namespace dc {
@@ -16,7 +14,8 @@ class BaseError {
 protected:
     string event;
 public:
-    BaseError(string e);
+    BaseError(string e) : event(e) {
+    };
 };
 
 class IOLoopConstructorError : public BaseError {
@@ -26,17 +25,32 @@ public:
 
 class SocketError : public BaseError {
 public:
-    SocketError(string e);
+    SocketError(string e) : BaseError(e) {
+    };
 };
 
 class IllegalFunctionError : public BaseError {
 public:
-    IllegalFunctionError(string e);
+    IllegalFunctionError(string e) : BaseError(e) {
+    };
+};
+
+class EventNotFoundError : public BaseError {
+public:
+    EventNotFoundError(string e) : BaseError(e) {
+    };
+};
+
+class HandlerTypeError : public BaseError {
+public:
+    HandlerTypeError(string e) : BaseError(e) {
+    };
 };
 
 class NotSupportYetError : public BaseError {
 public:
-    NotSupportYetError(string e);
+    NotSupportYetError(string e) : BaseError(e) {
+    };
 };
 
 }
