@@ -2,33 +2,54 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include <Python/Python.h>
 #include "Event.h"
+
+#include "util/error.h"
 
 namespace dc {
 
-Event::Event(int fd,
-        cb_func read_callback,
-        cb_func write_callback,
-        cb_func close_callback) : fd_(fd),
-                                  read_callback_(read_callback),
-                                  write_callback_(write_callback),
-                                  close_callback_(close_callback) {
+Event::Event(int fd, void *obj_ptr) : fd_(fd), obj_ptr_(obj_ptr){
 }
 
 int Event::GetFD() const {
     return fd_;
 }
 
-void Event::set_read_callback(std::function<void(int, int)> callback) {
+template <typename T>
+void Event::set_read_callback(void(T::*callback)(int, int)) {
+    if (!obj_ptr_)
+        throw IllegalFunctionError("Object not set");
+    auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+    read_callback_ = [](int fd, int data) {
+        f(fd, data);
+    };
+}
+
+void Event::set_read_callback(callback_func callback) {
     read_callback_ = callback;
 }
 
-void Event::set_write_callback(std::function<void(int, int)> callback) {
+template <typename T>
+void Event::set_write_callback(void(T::*callback)(int, int)) {
+    auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+    write_callback_ = [](int fd, int data) {
+        f(fd, data);
+    };
+}
+
+void Event::set_write_callback(callback_func callback) {
     write_callback_ = callback;
 }
 
-void Event::set_close_callback(std::function<void(int, int)> callback) {
+template <typename T>
+void Event::set_close_callback(void(T::*callback)(int, int)) {
+    auto f = std::bind(obj_ptr_, callback, std::placeholders::_1, std::placeholders::_2);
+    close_callback_ = [](int fd, int data) {
+        f(fd, data);
+    };
+}
+
+void Event::set_close_callback(callback_func callback) {
     close_callback_ = callback;
 }
 
@@ -59,5 +80,6 @@ bool Event::has_close_callback() const {
 bool Event::has_read_callback() const {
     return !(read_callback_ == NULL);
 }
+
 
 }

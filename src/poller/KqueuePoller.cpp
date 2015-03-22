@@ -24,30 +24,35 @@ void KqueuePoller::AddEvent(const Event &e) {
     poll_event event;
     int ret;
     //Add read event
-    EV_SET(&event, e.GetFD(), EVFILT_READ, EV_ADD, 0, 0, NULL);
-    ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
-    if (ret < 0) {
-        LOG_ERROR << e.GetFD() << "event read add failed.";
+    if (e.has_read_callback()) {
+        EV_SET(&event, e.GetFD(), EVFILT_READ, EV_ADD, 0, 0, NULL);
+        ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
+        if (ret < 0) {
+            LOG_ERROR << e.GetFD() << "event read add failed." << strerror(errno);
+        }
     }
-    //Add write event
-    EV_SET(&event, e.GetFD(), EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-    ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
-    if (ret < 0) {
-        LOG_ERROR << e.GetFD() << "event write add failed.";
+
+    if (e.has_write_callback()) {
+        //Add write event
+        EV_SET(&event, e.GetFD(), EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
+        if (ret < 0) {
+            LOG_ERROR << e.GetFD() << "event write add failed." << strerror(errno);
+        }
     }
 
 #if defined(DC_DEBUG)
-    LOG_DEBUG << "Kqueue add fd=" << e.GetFD();
+    LOG_DEBUG << e.GetFD() << "Kqueue add fd=";
 #endif
 }
 
 void KqueuePoller::UpdateEvent(const Event &e) {
-    LOG_DEBUG << e.GetFD() << " undefined update event " << kqueue_;
+    LOG_DEBUG << e.GetFD() << " undefined update event int kqueue " << kqueue_;
 }
 
 void KqueuePoller::DeleteEvent(const Event &e) {
     close(e.GetFD());
-    LOG_DEBUG << e.GetFD() << " undefined delete event " << kqueue_;
+    LOG_DEBUG << e.GetFD() << " undefined delete event int kqueue " << kqueue_;
 }
 
 int KqueuePoller::Poll(int time_out) {
@@ -56,6 +61,9 @@ int KqueuePoller::Poll(int time_out) {
 #endif
     struct timespec time_sec = {time_out, 0};
     int ret = kevent(kqueue_, NULL, 0, events_ready_.data(), MAX_READY_EVENTS_NUM, &time_sec);
+    if (ret < 0) {
+        LOG_ERROR << "kevent poll error occured. " << strerror(errno);
+    }
     return ret;
 }
 

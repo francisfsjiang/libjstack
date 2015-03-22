@@ -28,7 +28,7 @@ public:
 
     virtual int Poll(int time_out);
 
-    virtual void HandleEvents(int ready_num, std::map<int, Event>& events);
+    virtual void HandleEvents(int ready_num, std::map<int, Event> &events);
 
     virtual void AddEvent(const Event &e);
 

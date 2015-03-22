@@ -13,9 +13,9 @@ set(SRC_FILES
 src/IOLoop.cpp
 src/Event.cpp
 src/Log.cpp
-#src/TCPServer.cpp
-#src/TCPConnection.cpp
-#src/TCPHandler.cpp
+src/tcp/TCPServer.cpp
+src/tcp/TCPConnection.cpp
+src/tcp/TCPHandler.cpp
 src/poller/GetPoller.cpp
 src/util/error.cpp
 )

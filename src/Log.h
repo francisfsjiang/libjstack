@@ -14,6 +14,8 @@
 
 #include <fstream>
 
+#include <errno.h>
+
 namespace dc {
 
 enum LogLevel {

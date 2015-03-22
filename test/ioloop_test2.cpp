@@ -39,8 +39,10 @@ void accept_cb(int fd, int data) {
         std::cout << "from " << sock_addr.sa_data << std::endl;
 
         std::cout << "add conn " << coon_fd <<std::endl;
-        dc::Event e(coon_fd, read_cb, write_cb, close_cb);
+        dc::Event e(coon_fd, NULL);
         e.set_read_callback(read_cb);
+        e.set_write_callback(write_cb);
+        e.set_close_callback(close_cb);
 
         dc::IOLoop::Current()->AddEvent(e);
     }
@@ -76,7 +78,9 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    dc::Event e(socket_fd, accept_cb, NULL, close_cb);
+    dc::Event e(socket_fd, NULL);
+    e.set_read_callback(read_cb);
+    e.set_write_callback(write_cb);
 
     dc::IOLoop::Current()->AddEvent(e);
     dc::IOLoop::Current()->Loop();
