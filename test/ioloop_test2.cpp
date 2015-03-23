@@ -61,7 +61,7 @@ int main() {
     sock_addr.sa_family = PF_UNIX;
     strcpy(sock_addr.sa_data, "test.sock\0");
 
-    ret = bind(socket_fd, &sock_addr, sizeof(sock_addr));
+    ret = ::bind(socket_fd, &sock_addr, sizeof(sock_addr));
     if (ret < 0) {
         std::cout << "socket bind failed." << std::endl;
         exit(EXIT_FAILURE);

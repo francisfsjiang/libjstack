@@ -35,13 +35,11 @@ add_library(demoniac STATIC ${SRC_FILES})
 add_executable(ioloop_test     test/ioloop_test.cpp)
 add_executable(ioloop_test2    test/ioloop_test2.cpp)
 add_executable(log_test        test/log_test.cpp)
-
+add_executable(tcp_echo_server test/tcp_echo_server.cpp)
 
 target_link_libraries(ioloop_test     demoniac)
 target_link_libraries(ioloop_test2    demoniac)
 target_link_libraries(log_test        demoniac)
+target_link_libraries(tcp_echo_server demoniac)
 
-#target_link_libraries(tcp_echo_server demoniac)
 
-
-add_executable(tcp_echo_server test/tcp_echo_server.cpp ${SRC_FILES})

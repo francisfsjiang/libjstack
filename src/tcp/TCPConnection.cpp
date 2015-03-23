@@ -21,25 +21,29 @@ TCPConnection::TCPConnection(const int& fd,
 
 }
 
-void TCPConnection::_ReadEvent(int fd, int data) {
-    LOG_INFO << from_address_ << " Recv " << data << " bytes data";
-    std::string msg;
-    msg.resize((size_t)data);
-    recv(fd, &msg.front(), (size_t)data, 0);
-    _WriteMsg(handler_->Recv(msg));
-}
-
-void TCPConnection::_WriteEvent(int fd, int data) {
-    LOG_INFO << fd << from_address_ << " Send " << data << " bytes data ";
-    //Send(fd, )
-
-}
-
-void TCPConnection::_WriteMsg(const std::string& msg) {
+void TCPConnection::WriteMsg(const std::string &msg) {
     //Event e(fd_, this);
-    //e.set_write_callback<TCPConnection>(&TCPConnection::_WriteEvent);
+    //e.set_write_callback<TCPConnection>(&TCPConnection::_WriteCallback);
     //IOLoop::Current()->AddEvent(e);
     send(fd_, &msg.front(), msg.size(), 0);
 
 }
+
+void TCPConnection::_ReadCallback(int fd, int data) {
+    LOG_INFO << from_address_ << " Recv " << data << " bytes data";
+    std::string msg;
+    msg.resize((size_t)data);
+    recv(fd, &msg.front(), (size_t)data, 0);
+    WriteMsg(handler_->Recv(msg));
+}
+
+void TCPConnection::_WriteCallback(int fd, int data) {
+    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+
+}
+
+void TCPConnection::_CloseCallback(int fd, int data) {
+    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+}
+
 }

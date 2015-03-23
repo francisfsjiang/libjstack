@@ -12,12 +12,12 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-
 #include "TCPHandler.h"
+#include "../util/EventHandler.h"
 
 namespace dc {
 
-class TCPConnection {
+class TCPConnection : public EventHandler {
 private:
     int fd_;
     std::string from_address_ = "";
@@ -29,11 +29,14 @@ public:
                   const std::string& from_address,
                   const std::function<void *()> handler_generator);
 
-    void _ReadEvent(int fd, int data);
+    void WriteMsg(const std::string &msg);
 
-    void _WriteMsg(const std::string& msg);
+    void _ReadCallback(int fd, int data);
 
-    void _WriteEvent(int fd, int data);
+    void _WriteCallback(int fd, int data);
+
+    void _CloseCallback(int fd, int data);
+
 };
 
 }

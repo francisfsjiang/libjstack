@@ -62,7 +62,7 @@ int main() {
     sock_addr.sin_port = htons(LISTEN_PORT);
     sock_addr.sin_addr.s_addr = htonl(inet_addr(LISTEN_ADDR));
 
-    ret = bind(socket_fd, (struct sockaddr *) &sock_addr, sizeof(sock_addr));
+    ret = ::bind(socket_fd, (struct sockaddr *) &sock_addr, sizeof(sock_addr));
     if (ret < 0) {
         std::cout << "socket bind failed." << std::endl;
         exit(EXIT_FAILURE);

@@ -19,8 +19,7 @@ private:
     char buffer_[BUFFER_SIZE];
 public:
     EchoHandler() : TCPHandler() {};
-
-    std::string recv(const std::string msg) {
+    std::string Recv(const std::string msg) {
         time_t te = time(NULL);
         strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S \0", gmtime(&te));
         std::string s(buffer_);

@@ -15,7 +15,7 @@ TCPHandler::TCPHandler() {
 }
 
 void TCPHandler::Send(const std::string msg) {
-    coon_->_WriteMsg(msg);
+    coon_->WriteMsg(msg);
 }
 
 void TCPHandler::_SetFromAddress(const std::string from) {
