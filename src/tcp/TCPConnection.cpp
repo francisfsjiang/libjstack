@@ -45,7 +45,7 @@ void TCPConnection::_WriteCallback(int fd, int data) {
 
 void TCPConnection::_CloseCallback(int fd, int data) {
 #if defined(DC_DEBUG)
-    LOG_DEBUG << fd << " Connection disconnected " << data;
+    LOG_DEBUG << "fd" << fd << " Connection disconnected " << data;
 #endif
     IOLoop::Current()->RemoveEvent(fd);
     close(fd);

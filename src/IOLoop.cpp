@@ -53,7 +53,7 @@ IOLoop::~IOLoop() {
 
 void IOLoop::AddEvent(const Event &e) {
 #if defined(DC_DEBUG)
-    LOG_DEBUG << e.GetFD() << "Loop event added";
+    LOG_DEBUG << "fd" << e.GetFD() << " Loop event added";
 #endif
     events_.insert(std::make_pair(e.GetFD(), e));
     poller_->AddEvent(e);
@@ -76,7 +76,7 @@ IOLoop *IOLoop::Current() {
 
 void IOLoop::RemoveEvent(const int &fd) {
 #if defined(DC_DEBUG)
-    LOG_DEBUG << fd << "Loop event removed";
+    LOG_DEBUG << "fd" << fd << " Loop event removed";
 #endif
     events_.erase(fd);
 }

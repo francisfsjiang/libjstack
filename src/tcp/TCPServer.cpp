@@ -14,7 +14,7 @@ TCPServer::TCPServer() {
 void TCPServer::CreateConnection(int fd, int data) {
 
 #if defined(DC_DEBUG)
-    LOG_DEBUG << fd << "has" << data << "connections";
+    LOG_DEBUG << "fd" << fd << " has " << data << " connections";
 #endif
 
     sockaddr sock_addr;
@@ -31,11 +31,12 @@ void TCPServer::CreateConnection(int fd, int data) {
         }
         else {
             from_address += inet_ntoa(((sockaddr_in *) &sock_addr)->sin_addr);
-            from_address += std::to_string(htonl(((sockaddr_in *) &sock_addr)->sin_port));
+            from_address += ":";
+            from_address += std::to_string(htons(((sockaddr_in *) &sock_addr)->sin_port));
         }
 
-        LOG_INFO << fd
-        << "Incoming connection from "
+        LOG_INFO << "fd" << fd
+        << " Incoming connection from "
         << from_address;
 
         coon = new TCPConnection(coon_fd,
@@ -88,7 +89,7 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
     IOLoop::Current()->AddEvent(e);
 
 #if defined(DC_DEBUG)
-    LOG_DEBUG << sock_fd << "Connection connected";
+    LOG_DEBUG << "fd" << sock_fd << " Listen established";
 #endif
 
     if (sock_addr.sa_family == PF_UNIX) {
@@ -99,7 +100,7 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
         LOG_INFO << "Listen event on "
         << inet_ntoa(in_addr->sin_addr)
         << ":"
-        << ntohl(in_addr->sin_port)
+        << ntohs(in_addr->sin_port)
         << " successfully";
     }
 }

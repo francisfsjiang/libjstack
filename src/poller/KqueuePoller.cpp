@@ -17,7 +17,7 @@ KqueuePoller::KqueuePoller() {
         LOG_ERROR << "kqueue init failed.";
     }
 #if defined(DC_DEBUG)
-    LOG_DEBUG << "Kqueue created fd=" << kqueue_;
+    LOG_DEBUG << "fd" << kqueue_ << " Kqueue created";
 #endif
 }
 
@@ -43,7 +43,7 @@ void KqueuePoller::AddEvent(const Event &e) {
     }
 
 #if defined(DC_DEBUG)
-    LOG_DEBUG << "Kqueue add event fd = " << e.GetFD() ;
+    LOG_DEBUG << "fd" << e.GetFD() << " Kqueue add event";
 #endif
 }
 
@@ -70,8 +70,8 @@ void KqueuePoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
     for (int i = 0; i < ready_num; ++i) {
 
 #if defined(DC_DEBUG)
-        LOG_DEBUG << "event num:" << i << " fd:" << events_ready_[i].ident;
-        LOG_DEBUG << "event num:" << i << " data:" << events_ready_[i].data;
+        LOG_DEBUG << "event num:" << i << " fd" << events_ready_[i].ident;
+        LOG_DEBUG << "event num:" << i << " data" << events_ready_[i].data;
 #endif
         auto iter = events.find(static_cast<int>(events_ready_[i].ident));
         if (iter == events.end()) {

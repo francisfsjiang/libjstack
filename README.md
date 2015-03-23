@@ -29,4 +29,21 @@ int main() {
 
 ```
 
+
+##First example is avaliable on MacOS X
+
+    git clone https://github.com/neveralso/Demoniac.git
+    cd Demoniac
+    cmake .
+    make
+    cd example
+    make
+    ./echo_server
+
+then
+
+    telnet 127.0.0.1 8000
+
+have fun~~
+
 #STILL IN DEVELOPING →_→

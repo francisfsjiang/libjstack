@@ -1,0 +1,65 @@
+
+27597 03-23-2015 13:42:42 DEBUG fd5 Kqueue created
+27597 03-23-2015 13:42:42 DEBUG fd4 Loop event added
+27597 03-23-2015 13:42:42 DEBUG fd4 Kqueue add event
+27597 03-23-2015 13:42:42 DEBUG fd4 Listen established
+27597 03-23-2015 13:42:42 INFO Listen event on 0.0.0.0:8002 successfully
+27597 03-23-2015 13:42:42 INFO Loop start.
+27597 03-23-2015 13:42:42 DEBUG Loop 0 with 1 events
+27597 03-23-2015 13:42:52 DEBUG 0 events ready
+27597 03-23-2015 13:42:52 DEBUG Loop 1 with 1 events
+27597 03-23-2015 13:42:59 DEBUG 1 events ready
+27597 03-23-2015 13:42:59 DEBUG event num:0 fd4
+27597 03-23-2015 13:42:59 DEBUG event num:0 data1
+27597 03-23-2015 13:42:59 DEBUG fd4 has 1 connections
+27597 03-23-2015 13:42:59 INFO fd4 Incoming connection from 127.0.0.1:65249
+27597 03-23-2015 13:42:59 DEBUG fd6 Loop event added
+27597 03-23-2015 13:42:59 DEBUG fd6 Kqueue add event
+27597 03-23-2015 13:42:59 DEBUG Loop 2 with 2 events
+27597 03-23-2015 13:42:59 DEBUG 1 events ready
+27597 03-23-2015 13:42:59 DEBUG event num:0 fd4
+27597 03-23-2015 13:42:59 DEBUG event num:0 data2
+27597 03-23-2015 13:42:59 DEBUG fd4 has 2 connections
+27597 03-23-2015 13:42:59 INFO fd4 Incoming connection from 127.0.0.1:65250
+27597 03-23-2015 13:42:59 DEBUG fd7 Loop event added
+27597 03-23-2015 13:42:59 DEBUG fd7 Kqueue add event
+27597 03-23-2015 13:42:59 INFO fd4 Incoming connection from 127.0.0.1:65251
+27597 03-23-2015 13:42:59 DEBUG fd8 Loop event added
+27597 03-23-2015 13:42:59 DEBUG fd8 Kqueue add event
+27597 03-23-2015 13:42:59 DEBUG Loop 3 with 4 events
+27597 03-23-2015 13:43:09 DEBUG 0 events ready
+27597 03-23-2015 13:43:09 DEBUG Loop 4 with 4 events
+27597 03-23-2015 13:43:19 DEBUG 0 events ready
+27597 03-23-2015 13:43:19 DEBUG Loop 5 with 4 events
+27597 03-23-2015 13:43:29 DEBUG 0 events ready
+27597 03-23-2015 13:43:29 DEBUG Loop 6 with 4 events
+27597 03-23-2015 13:43:35 DEBUG 1 events ready
+27597 03-23-2015 13:43:35 DEBUG event num:0 fd6
+27597 03-23-2015 13:43:35 DEBUG event num:0 data18
+27597 03-23-2015 13:43:35 INFO 127.0.0.1:65249 Recv 18 bytes data
+27597 03-23-2015 13:43:35 DEBUG Loop 7 with 4 events
+27597 03-23-2015 13:43:35 DEBUG 2 events ready
+27597 03-23-2015 13:43:35 DEBUG event num:0 fd7
+27597 03-23-2015 13:43:35 DEBUG event num:0 data18
+27597 03-23-2015 13:43:35 INFO 127.0.0.1:65250 Recv 18 bytes data
+27597 03-23-2015 13:43:35 DEBUG event num:1 fd8
+27597 03-23-2015 13:43:35 DEBUG event num:1 data18
+27597 03-23-2015 13:43:35 INFO 127.0.0.1:65251 Recv 18 bytes data
+27597 03-23-2015 13:43:35 DEBUG Loop 8 with 4 events
+27597 03-23-2015 13:43:45 DEBUG 0 events ready
+27597 03-23-2015 13:43:45 DEBUG Loop 9 with 4 events
+27597 03-23-2015 13:43:48 DEBUG 1 events ready
+27597 03-23-2015 13:43:48 DEBUG event num:0 fd6
+27597 03-23-2015 13:43:48 DEBUG event num:0 data0
+27597 03-23-2015 13:43:48 DEBUG fd6 Connection disconnected 0
+27597 03-23-2015 13:43:48 DEBUG fd6 Loop event removed
+27597 03-23-2015 13:43:48 DEBUG Loop 10 with 3 events
+27597 03-23-2015 13:43:48 DEBUG 2 events ready
+27597 03-23-2015 13:43:48 DEBUG event num:0 fd7
+27597 03-23-2015 13:43:48 DEBUG event num:0 data0
+27597 03-23-2015 13:43:48 DEBUG fd7 Connection disconnected 0
+27597 03-23-2015 13:43:48 DEBUG fd7 Loop event removed
+27597 03-23-2015 13:43:48 DEBUG event num:1 fd8
+27597 03-23-2015 13:43:48 DEBUG event num:1 data0
+27597 03-23-2015 13:43:48 DEBUG fd8 Connection disconnected 0
+27597 03-23-2015 13:43:48 DEBUG fd8 Loop event removed
