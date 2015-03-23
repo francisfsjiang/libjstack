@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <unistd.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -10,7 +11,7 @@
 #include "../src/tcp/TCPServer.h"
 #include "../src/tcp/TCPHandler.h"
 
-#define LISTEN_PORT 8000
+#define LISTEN_PORT 8002
 #define LISTEN_ADDR "0.0.0.0"
 
 class EchoHandler : dc::TCPHandler {
@@ -21,16 +22,21 @@ public:
     EchoHandler() : TCPHandler() {};
     std::string Recv(const std::string msg) {
         time_t te = time(NULL);
-        strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S \0", gmtime(&te));
+        strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi \0", gmtime(&te));
         std::string s(buffer_);
         s+=msg;
+        std::cout<<s<<endl;
 
         return s;
     }
-
 };
 
 int main() {
+
+    char buf[50];
+    getcwd(buf, sizeof(buf));
+    std::cout<<buf<<endl;
+
     sockaddr_in in_addr;
     in_addr.sin_family = PF_INET;
     in_addr.sin_port = htons(LISTEN_PORT);
@@ -38,7 +44,7 @@ int main() {
     sockaddr sock_addr;
     memcpy(&sock_addr, &in_addr, sizeof(in_addr));
     dc::TCPServer *tcp_server = new dc::TCPServer();
-    tcp_server->AddHandler<EchoHandler>(sock_addr);
+    tcp_server->AddHandler<EchoHandler>(*((sockaddr*)&in_addr));
     dc::IOLoop::Current()->Loop();
     return 0;
 }

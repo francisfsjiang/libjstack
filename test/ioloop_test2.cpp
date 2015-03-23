@@ -31,11 +31,11 @@ void close_cb(int fd, int data) {
 
 void accept_cb(int fd, int data) {
     std::cout << "accept_cb fd = " << fd << "data = " << data << std::endl;
-    struct sockaddr sock_addr;
+    sockaddr sock_addr;
     socklen_t sock_addr_len;
 
     for (int i = 0; i < data; ++i) {
-        int coon_fd = accept(fd, (struct sockaddr *) &sock_addr, &sock_addr_len);
+        int coon_fd = accept(fd, (sockaddr *) &sock_addr, &sock_addr_len);
         std::cout << "from " << sock_addr.sa_data << std::endl;
 
         std::cout << "add conn " << coon_fd << std::endl;
@@ -51,7 +51,7 @@ void accept_cb(int fd, int data) {
 
 int main() {
     int socket_fd, ret;
-    struct sockaddr sock_addr;
+    sockaddr sock_addr;
 
     socket_fd = socket(PF_UNIX, SOCK_STREAM, 0);
     if (socket_fd < 0) {

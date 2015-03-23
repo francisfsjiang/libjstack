@@ -17,6 +17,9 @@ private:
     int fd_ = -1;
     typedef std::function<void(int, int)> callback_func;
     EventHandler *handler_ptr_ = NULL;
+    bool has_read_callback_ = false;
+    bool has_write_callback_ = false;
+    bool has_close_callback_ = false;
     callback_func read_callback_ = NULL;
     callback_func write_callback_ = NULL;
     callback_func close_callback_ = NULL;
@@ -26,8 +29,6 @@ public:
     ~Event();
 
     int GetFD() const;
-
-
 
     void set_read_callback(callback_func callback);
 

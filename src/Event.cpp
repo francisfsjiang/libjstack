@@ -4,8 +4,6 @@
 
 #include "Event.h"
 
-
-
 namespace dc {
 
 Event::Event(int fd, EventHandler *obj_ptr) : fd_(fd), handler_ptr_(obj_ptr) {
@@ -22,6 +20,7 @@ void Event::set_read_callback(callback_func callback) {
 void Event::set_read_callback() {
     if (!handler_ptr_)
         throw IllegalFunctionError("Object not set");
+    has_read_callback_ = true;
 }
 
 void Event::set_write_callback(callback_func callback) {
@@ -31,6 +30,7 @@ void Event::set_write_callback(callback_func callback) {
 void Event::set_write_callback() {
     if (!handler_ptr_)
         throw IllegalFunctionError("Object not set");
+    has_write_callback_ = true;
 }
 
 void Event::set_close_callback(callback_func callback) {
@@ -40,6 +40,7 @@ void Event::set_close_callback(callback_func callback) {
 void Event::set_close_callback() {
     if (!handler_ptr_)
         throw IllegalFunctionError("Object not set");
+    has_close_callback_ = true;
 }
 
 Event::~Event() {
@@ -72,16 +73,16 @@ void Event::exec_close_callback(int fd, int data) const {
     }
 }
 
-bool Event::has_write_callback() const {
-    return !(write_callback_ == NULL);
+bool Event::has_close_callback() const {
+    return !(close_callback_ == NULL && !has_close_callback_);
 }
 
-bool Event::has_close_callback() const {
-    return !(close_callback_ == NULL);
+bool Event::has_write_callback() const {
+    return !(write_callback_ == NULL && !has_write_callback_);
 }
 
 bool Event::has_read_callback() const {
-    return !(read_callback_ == NULL);
+    return !(read_callback_ == NULL && !has_read_callback_);
 }
 
 

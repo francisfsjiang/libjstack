@@ -47,7 +47,6 @@ public:
         _AddHandler(sock_addr, f);
     }
 
-private:
     virtual void _WriteCallback(int fd, int data);
 
     virtual void _CloseCallback(int fd, int data);

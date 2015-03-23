@@ -4,9 +4,6 @@
 
 #include "TCPServer.h"
 
-#include <string>
-
-
 
 namespace dc {
 
@@ -96,15 +93,17 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
     Event e(sock_fd, this);
     e.set_read_callback();
 
+    IOLoop::Current()->AddEvent(e);
+
     if (sock_addr.sa_family == PF_UNIX) {
         LOG_INFO << "Listen event on " << sock_addr.sa_data << "successfully";
     }
     else if (sock_addr.sa_family == PF_INET) {
-        struct sockaddr_in *in_addr = (struct sockaddr_in *) (&sock_addr);
+        sockaddr_in *in_addr = (sockaddr_in *)(&sock_addr);
         LOG_INFO << "Listen event on "
         << inet_ntoa(in_addr->sin_addr)
         << ":"
-        << in_addr->sin_port
+        << ntohs(in_addr->sin_port)
         << "successfully";
     }
 }

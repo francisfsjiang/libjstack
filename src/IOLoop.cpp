@@ -40,10 +40,6 @@ void IOLoop::Loop() {
 
         //if (ready_num == 0) {
 
-#if defined(DC_DEBUG)
-        LOG_DEBUG << "sleeping";
-#endif
-
         poller_->HandleEvents(ready_num, events_);
 
 #if defined(DC_DEBUG)

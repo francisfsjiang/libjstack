@@ -15,7 +15,7 @@ class EpollPoller : public Poller {
 private:
 public:
 
-    typedef struct epoll_event poll_event;
+    typedef epoll_event poll_event;
 
 };
 

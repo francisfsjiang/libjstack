@@ -57,10 +57,8 @@ void KqueuePoller::DeleteEvent(const Event &e) {
 }
 
 int KqueuePoller::Poll(int time_out) {
-#if defined(DC_DEBUG)
-    LOG_DEBUG << "Poll timeout " << time_out;
-#endif
-    struct timespec time_sec = {time_out, 0};
+
+    timespec time_sec = {time_out, 0};
     int ret = kevent(kqueue_, NULL, 0, events_ready_.data(), MAX_READY_EVENTS_NUM, &time_sec);
     if (ret < 0) {
         LOG_ERROR << "kevent poll error occured. " << strerror(errno);
