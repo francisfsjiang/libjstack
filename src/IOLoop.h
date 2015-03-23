@@ -33,6 +33,8 @@ public:
 
     void AddEvent(const Event &e);
 
+    void RemoveEvent(const int &fd);
+
     void Quit();
 
     ~IOLoop();

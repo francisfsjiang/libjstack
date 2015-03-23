@@ -31,7 +31,7 @@ void TCPServer::CreateConnection(int fd, int data) {
         }
         else {
             from_address += inet_ntoa(((sockaddr_in *) &sock_addr)->sin_addr);
-            from_address += std::to_string(((sockaddr_in *) &sock_addr)->sin_port);
+            from_address += std::to_string(htonl(((sockaddr_in *) &sock_addr)->sin_port));
         }
 
         LOG_INFO << fd
@@ -54,38 +54,30 @@ void TCPServer::CreateConnection(int fd, int data) {
 
 }
 
-//void TCPServer::CloseConnection(int fd, int data) {
-//#if defined(DC_DEBUG)
-//    LOG_DEBUG << fd << "connection " << data << "connections";
-//#endif
-//
-//
-//}
-
 void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
     int sock_fd, ret;
     if (sock_addr.sa_family != PF_UNIX &&
         sock_addr.sa_family != PF_INET) {
-        LOG_ERROR << "Target protocol supported. " << sock_addr.sa_family;
-        throw SocketError("bind failed.");
+        LOG_ERROR << "Target protocol supported" << sock_addr.sa_family;
+        throw SocketError("bind failed");
     }
 
     sock_fd = socket(sock_addr.sa_family, SOCK_STREAM, 0);
     if (sock_fd < 0) {
-        LOG_ERROR << " socket create failed ." << sock_addr.sa_data << strerror(errno);
-        throw SocketError("socket create failed.");
+        LOG_ERROR << " socket create failed" << sock_addr.sa_data << strerror(errno);
+        throw SocketError("socket create failed");
     }
 
     ret = ::bind(sock_fd, &sock_addr, sizeof(sock_addr));
     if (ret < 0) {
-        LOG_ERROR << sock_fd << " bind failed ." << sock_addr.sa_data << strerror(errno);
-        throw SocketError("bind failed.");
+        LOG_ERROR << sock_fd << " bind failed" << sock_addr.sa_data << strerror(errno);
+        throw SocketError("bind failed");
     }
 
     ret = listen(sock_fd, MAX_PENDING_CONNECTIONS_NUM);
     if (ret < 0) {
-        LOG_ERROR << sock_fd << " listen failed ." << sock_addr.sa_data << strerror(errno);
-        throw SocketError("listen failed.");
+        LOG_ERROR << sock_fd << " listen failed" << sock_addr.sa_data << strerror(errno);
+        throw SocketError("listen failed");
     }
 
     route_map_.insert(std::make_pair(sock_fd, func));
@@ -95,16 +87,20 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
 
     IOLoop::Current()->AddEvent(e);
 
+#if defined(DC_DEBUG)
+    LOG_DEBUG << sock_fd << "Connection connected";
+#endif
+
     if (sock_addr.sa_family == PF_UNIX) {
-        LOG_INFO << "Listen event on " << sock_addr.sa_data << "successfully";
+        LOG_INFO << "Listen event on " << sock_addr.sa_data << " successfully";
     }
     else if (sock_addr.sa_family == PF_INET) {
         sockaddr_in *in_addr = (sockaddr_in *)(&sock_addr);
         LOG_INFO << "Listen event on "
         << inet_ntoa(in_addr->sin_addr)
         << ":"
-        << ntohs(in_addr->sin_port)
-        << "successfully";
+        << ntohl(in_addr->sin_port)
+        << " successfully";
     }
 }
 

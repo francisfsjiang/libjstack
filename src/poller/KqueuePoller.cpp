@@ -29,7 +29,7 @@ void KqueuePoller::AddEvent(const Event &e) {
         EV_SET(&event, e.GetFD(), EVFILT_READ, EV_ADD, 0, 0, NULL);
         ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
         if (ret < 0) {
-            LOG_ERROR << e.GetFD() << "event read add failed." << strerror(errno);
+            LOG_ERROR << e.GetFD() << "event read add failed" << strerror(errno);
         }
     }
 
@@ -38,12 +38,12 @@ void KqueuePoller::AddEvent(const Event &e) {
         EV_SET(&event, e.GetFD(), EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         ret = kevent(kqueue_, &event, 1, NULL, 0, NULL);
         if (ret < 0) {
-            LOG_ERROR << e.GetFD() << "event write add failed." << strerror(errno);
+            LOG_ERROR << e.GetFD() << "event write add failed" << strerror(errno);
         }
     }
 
 #if defined(DC_DEBUG)
-    LOG_DEBUG << e.GetFD() << "Kqueue add fd=";
+    LOG_DEBUG << "Kqueue add event fd = " << e.GetFD() ;
 #endif
 }
 
@@ -70,13 +70,12 @@ void KqueuePoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
     for (int i = 0; i < ready_num; ++i) {
 
 #if defined(DC_DEBUG)
-        LOG_DEBUG << "fd " << events_ready_[i].ident;
-        LOG_DEBUG << "data " << events_ready_[i].data;
+        LOG_DEBUG << "event num:" << i << " fd:" << events_ready_[i].ident;
+        LOG_DEBUG << "event num:" << i << " data:" << events_ready_[i].data;
 #endif
         auto iter = events.find(static_cast<int>(events_ready_[i].ident));
         if (iter == events.end()) {
             LOG_ERROR << events_ready_[i].ident << "event not found";
-
         }
         if (iter->second.has_close_callback() &&
             (events_ready_[i].flags & EV_EOF) == EV_EOF) {

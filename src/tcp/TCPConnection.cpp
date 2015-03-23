@@ -4,6 +4,7 @@
 
 #include "TCPConnection.h"
 
+#include <unistd.h>
 #include "../IOLoop.h"
 #include "../Log.h"
 
@@ -43,7 +44,11 @@ void TCPConnection::_WriteCallback(int fd, int data) {
 }
 
 void TCPConnection::_CloseCallback(int fd, int data) {
-    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+#if defined(DC_DEBUG)
+    LOG_DEBUG << fd << " Connection disconnected " << data;
+#endif
+    IOLoop::Current()->RemoveEvent(fd);
+    close(fd);
 }
 
 }

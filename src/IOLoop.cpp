@@ -34,18 +34,15 @@ void IOLoop::Loop() {
 #endif
     while (!quit_) {
 #if defined(DC_DEBUG)
-        LOG_DEBUG << "Looped " << count++;
+        LOG_DEBUG << "Loop " << count++ << " with " << events_.size() <<" events";
 #endif
         ready_num = poller_->Poll(10);
-
-        //if (ready_num == 0) {
-
-        poller_->HandleEvents(ready_num, events_);
 
 #if defined(DC_DEBUG)
         LOG_DEBUG << ready_num << " events ready";
 #endif
 
+        poller_->HandleEvents(ready_num, events_);
 
     }
 }
@@ -56,7 +53,7 @@ IOLoop::~IOLoop() {
 
 void IOLoop::AddEvent(const Event &e) {
 #if defined(DC_DEBUG)
-    LOG_DEBUG << "Loop add fd= " << e.GetFD();
+    LOG_DEBUG << e.GetFD() << "Loop event added";
 #endif
     events_.insert(std::make_pair(e.GetFD(), e));
     poller_->AddEvent(e);
@@ -75,5 +72,12 @@ IOLoop *IOLoop::Current() {
         kIOLoopInstanceInThread = new IOLoop;
         return kIOLoopInstanceInThread;
     }
+}
+
+void IOLoop::RemoveEvent(const int &fd) {
+#if defined(DC_DEBUG)
+    LOG_DEBUG << fd << "Loop event removed";
+#endif
+    events_.erase(fd);
 }
 }

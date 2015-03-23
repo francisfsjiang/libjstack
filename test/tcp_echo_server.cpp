@@ -25,6 +25,7 @@ public:
         strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi \0", gmtime(&te));
         std::string s(buffer_);
         s+=msg;
+        s+="\n";
         std::cout<<s<<endl;
 
         return s;
