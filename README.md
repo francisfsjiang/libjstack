@@ -38,7 +38,7 @@ int main() {
     make
     cd example
     make
-    ./echo_server
+    ./echo_server.out
 
 then
 
