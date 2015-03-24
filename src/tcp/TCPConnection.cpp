@@ -32,6 +32,9 @@ void TCPConnection::WriteMsg(const std::string &msg) {
 
 void TCPConnection::_ReadCallback(int fd, int data) {
     LOG_INFO << from_address_ << " Recv " << data << " bytes data";
+    if (data == 0) {
+        return;
+    }
     std::string msg;
     msg.resize((size_t)data);
     recv(fd, &msg.front(), (size_t)data, 0);

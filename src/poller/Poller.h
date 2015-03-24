@@ -14,6 +14,8 @@
 
 namespace dc {
 
+const int MAX_READY_EVENTS_NUM = 500;
+
 class Poller : noncopyable {
 private:
 public:

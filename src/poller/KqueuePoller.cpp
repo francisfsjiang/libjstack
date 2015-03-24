@@ -14,7 +14,7 @@ KqueuePoller::KqueuePoller() {
     events_ready_.resize(MAX_READY_EVENTS_NUM);
     kqueue_ = kqueue();
     if (kqueue_ < 0) {
-        LOG_ERROR << "kqueue init failed.";
+        LOG_ERROR << "Kqueue init failed.";
     }
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << kqueue_ << " Kqueue created";

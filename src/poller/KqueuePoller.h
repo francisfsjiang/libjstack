@@ -21,8 +21,6 @@ private:
 
     std::vector<poll_event> events_ready_;
 
-    const int MAX_READY_EVENTS_NUM = 500;
-
 public:
     KqueuePoller();
 

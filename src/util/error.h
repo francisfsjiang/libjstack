@@ -47,6 +47,12 @@ public:
     };
 };
 
+class PollerError : public BaseError {
+public:
+    PollerError(string e) : BaseError(e) {
+    };
+};
+
 class NotSupportYetError : public BaseError {
 public:
     NotSupportYetError(string e) : BaseError(e) {

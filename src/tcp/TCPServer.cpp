@@ -4,6 +4,8 @@
 
 #include "TCPServer.h"
 
+#include <string.h>
+
 
 namespace dc {
 
@@ -12,6 +14,10 @@ TCPServer::TCPServer() {
 }
 
 void TCPServer::CreateConnection(int fd, int data) {
+
+#if defined(__linux__)
+    if (data == -1) data = 1;
+#endif
 
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << fd << " has " << data << " connections";
