@@ -11,26 +11,25 @@ Demoniac is available on *nix system.
 
 # Hello, Wrold
 
-	```c++
-	#include <iostream>
-	#include "Demoniac.h"
+```c++
+#include <iostream>
+#include "Demoniac.h"
 
-	class MainHandler: dc::RequestHandler {
-	public:
-	    dc::Response get() {
-	        return "Hello, GFW";
-	    }
-	};
-
-	int main() {
-	    dc::Application app;
-	    app.listen(8888)
-	    app.add_handler<MainHandler>("/");
-	    dc::IOLoop ioloop;
-	    ioloop.start();
+class MainHandler: dc::RequestHandler {
+public:
+	dc::Response get() {
+		return "Hello, GFW";
 	}
+};
 
-	```
+int main() {
+	dc::Application app;
+	app.listen(8888)
+	app.add_handler<MainHandler>("/");
+	dc::IOLoop ioloop;
+	ioloop.start();
+}
+```
 
 
 ##First example is avaliable
@@ -42,21 +41,21 @@ Has been tested on :
 - FreeBSD 10.1 : (FreeBSD clang version 3.4.1)
 
 
-	```sh
-	git clone https://github.com/neveralso/Demoniac.git
-    cd Demoniac
-    cmake .
-    make
-    cd example
-    make
-    ./echo_server.out
-    ```
+```sh
+git clone https://github.com/neveralso/Demoniac.git
+cd Demoniac
+cmake .
+make
+cd example
+make
+./echo_server.out
+```
 
 then
 
-	```sh
-    telnet 127.0.0.1 8000
-	```
+```sh
+telnet 127.0.0.1 8000
+```
 
 have fun~~
 
