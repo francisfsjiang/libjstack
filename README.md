@@ -1,6 +1,6 @@
 # Demoniac
 
-[![Build Status](https://travis-ci.org/neveralso/Demoniac.svg?branch=master)](https://travis-ci.org/neveralso/Demoniac)  [![Join the chat at https://gitter.im/neveralso/Demoniac](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neveralso/Demoniac?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/neveralso/Demoniac.svg?branch=master)](https://travis-ci.org/neveralso/Demoniac)  [![GPLV2](https://img.shields.io/badge/License-GPLV2-brightgreen.svg)](http://www.gnu.org/licenses/gpl-2.0.html)  [![Join the chat at https://gitter.im/neveralso/Demoniac](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neveralso/Demoniac?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Demoniac is a C++ web framework and asynchronous networking library.
 By using non-blocking network I/O,
@@ -11,7 +11,7 @@ Demoniac is available on *nix system.
 
 # Hello, Wrold
 
-	```c++
+	```cpp
 	#include <iostream>
 	#include "Demoniac.h"
 
@@ -42,13 +42,15 @@ Has been tested on :
 - FreeBSD 10.1 : (FreeBSD clang version 3.4.1)
 
 
-    git clone https://github.com/neveralso/Demoniac.git
+	```sh
+	git clone https://github.com/neveralso/Demoniac.git
     cd Demoniac
     cmake .
     make
     cd example
     make
     ./echo_server.out
+    ```
 
 then
 
