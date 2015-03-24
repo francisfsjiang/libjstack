@@ -6,31 +6,40 @@ Demoniac is a C++ web framework and asynchronous networking library.
 By using non-blocking network I/O,
 Demoniac can scale to tens of thousands of open connections.
 
+Demoniac is available on *nix system.
+
+
 # Hello, Wrold
 
-```c++
-#include <iostream>
-#include "Demoniac.h"
+	```c++
+	#include <iostream>
+	#include "Demoniac.h"
 
-class MainHandler: dc::RequestHandler {
-public:
-    dc::Response get() {
-        return "Hello, GFW";
-    }
-};
+	class MainHandler: dc::RequestHandler {
+	public:
+	    dc::Response get() {
+	        return "Hello, GFW";
+	    }
+	};
 
-int main() {
-    dc::Application app;
-    app.listen(8888)
-    app.add_handler<MainHandler>("/");
-    dc::IOLoop ioloop;
-    ioloop.start();
-}
+	int main() {
+	    dc::Application app;
+	    app.listen(8888)
+	    app.add_handler<MainHandler>("/");
+	    dc::IOLoop ioloop;
+	    ioloop.start();
+	}
 
-```
+	```
 
 
-##First example is avaliable on MacOS X
+##First example is avaliable
+
+Has been tested on :
+
+- Mac OS 10.10.2 : (Apple LLVM version 6.0)
+- Ubuntu 14.10 : (g++ (Ubuntu 4.9.1-16ubuntu6) 4.9.1)
+- FreeBSD 10.1 : (FreeBSD clang version 3.4.1)
 
     git clone https://github.com/neveralso/Demoniac.git
     cd Demoniac
