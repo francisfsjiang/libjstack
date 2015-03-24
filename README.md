@@ -11,7 +11,7 @@ Demoniac is available on *nix system.
 
 # Hello, Wrold
 
-	```cpp
+	```c++
 	#include <iostream>
 	#include "Demoniac.h"
 
@@ -37,7 +37,7 @@ Demoniac is available on *nix system.
 
 Has been tested on :
 
-- Mac OS 10.10.2 : (Apple LLVM version 6.0)
+- Mac OS X 10.10.2 : (Apple LLVM version 6.0)
 - Ubuntu 14.10 : (g++ (Ubuntu 4.9.1-16ubuntu6) 4.9.1)
 - FreeBSD 10.1 : (FreeBSD clang version 3.4.1)
 
@@ -54,7 +54,9 @@ Has been tested on :
 
 then
 
+	```sh
     telnet 127.0.0.1 8000
+	```
 
 have fun~~
 
