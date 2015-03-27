@@ -32,7 +32,7 @@ int main() {
 ```
 
 
-##First example is avaliable
+##First example is available
 
 Has been tested on :
 
