@@ -4,21 +4,17 @@
 
 #include "TCPConnection.h"
 
-#include <unistd.h>
-#include "../IOLoop.h"
-#include "../Log.h"
-
 namespace dc {
 
-
-TCPConnection::TCPConnection(const int& fd,
-                             const std::string& from_address,
-                             std::function<void *()> handler_generator) {
+TCPConnection::TCPConnection(const int &fd,
+                             const std::string &from_address,
+                             const std::function<void *()> &handler_generator,
+                             TCPServer *tcp_server) {
     fd_ = fd;
     from_address_ = from_address;
-    handler_ = (TCPHandler*)(handler_generator());
-    handler_->_SetTcpConnection(this);
-    handler_->_SetFromAddress(from_address);
+    tcp_server_ = tcp_server;
+    handler_ = (TCPHandler *) (handler_generator());
+    handler_->init(this, from_address);
 
 }
 
@@ -36,8 +32,8 @@ void TCPConnection::_ReadCallback(int fd, int data) {
         return;
     }
     std::string msg;
-    msg.resize((size_t)data);
-    recv(fd, &msg.front(), (size_t)data, 0);
+    msg.resize((size_t) data);
+    recv(fd, &msg.front(), (size_t) data, 0);
     WriteMsg(handler_->Recv(msg));
 }
 
@@ -51,7 +47,9 @@ void TCPConnection::_CloseCallback(int fd, int data) {
     LOG_DEBUG << "fd" << fd << " Connection disconnected " << data;
 #endif
     IOLoop::Current()->RemoveEvent(fd);
+    tcp_server_->RemoveConnection(fd);
     close(fd);
+
 }
 
 }

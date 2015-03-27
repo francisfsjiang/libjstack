@@ -3,7 +3,6 @@
 //
 
 #include "TCPHandler.h"
-#include "TCPConnection.h"
 
 namespace dc {
 
@@ -16,12 +15,9 @@ void TCPHandler::Send(const std::string msg) {
     coon_->WriteMsg(msg);
 }
 
-void TCPHandler::_SetFromAddress(const std::string from) {
+void TCPHandler::init(TCPConnection *coon, const std::string from) {
+    coon_ = coon;
     from_ = from;
 }
 
-
-void TCPHandler::_SetTcpConnection(TCPConnection *coon) {
-    coon_ = coon;
-}
 }

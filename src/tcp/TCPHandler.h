@@ -6,6 +6,7 @@
 #define _DEMONIAC_TCPHANDLER_H_
 
 #include <string>
+#include "TCPConnection.h"
 
 namespace dc {
 
@@ -18,8 +19,7 @@ protected:
 public:
     TCPHandler();
 
-    void _SetTcpConnection(TCPConnection* coon);
-    void _SetFromAddress(const std::string from);
+    void init(TCPConnection* coon, const std::string from);
 
     virtual std::string Recv(const std::string msg) = 0;
 

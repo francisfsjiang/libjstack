@@ -13,21 +13,30 @@
 #include <netinet/in.h>
 
 #include "TCPHandler.h"
+#include "TCPServer.h"
 #include "../util/EventHandler.h"
 
 namespace dc {
+
+//class EventHandler;
+
+class TCPHandler;
+
+class TCPServer;
 
 class TCPConnection : public EventHandler {
 private:
     int fd_;
     std::string from_address_ = "";
     TCPHandler *handler_ = NULL;
-    std::queue<std::string> msg_queue;
+    TCPServer *tcp_server_;
+    std::queue<std::string> msg_queue_;
 
 public:
-    TCPConnection(const int& fd,
-                  const std::string& from_address,
-                  const std::function<void *()> handler_generator);
+    TCPConnection(const int &fd,
+                  const std::string &from_address,
+                  const std::function<void *()> &handler_generator,
+                  TCPServer *tcp_server);
 
     void WriteMsg(const std::string &msg);
 

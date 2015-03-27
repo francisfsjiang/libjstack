@@ -15,13 +15,18 @@
 #include "../IOLoop.h"
 #include "../util/noncopyable.h"
 #include "TCPConnection.h"
+#include "TCPHandler.h"
 #include "../Log.h"
 #include "../util/EventHandler.h"
 #include "../util/error.h"
 
 namespace dc {
 
-class TCPServer : public EventHandler{
+class TCPConnection;
+
+class TCPHandler;
+
+class TCPServer : noncopyable, public EventHandler {
 private:
 
     const int MAX_PENDING_CONNECTIONS_NUM = 200;
@@ -56,6 +61,8 @@ public:
     void _ReadCallback(int fd, int data);
 
     void CreateConnection(int fd, int data);
+
+    void RemoveConnection(int fd);
 
 };
 

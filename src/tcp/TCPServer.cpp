@@ -4,8 +4,6 @@
 
 #include "TCPServer.h"
 
-#include <string.h>
-
 
 namespace dc {
 
@@ -47,7 +45,8 @@ void TCPServer::CreateConnection(int fd, int data) {
 
         coon = new TCPConnection(coon_fd,
                                  from_address,
-                                 route_map_[fd]);
+                                 route_map_[fd],
+                                 this);
 
         dc::Event e(coon_fd, coon);
         e.set_read_callback();
@@ -121,5 +120,9 @@ void TCPServer::_WriteCallback(int fd, int data) {
 
 void TCPServer::_CloseCallback(int fd, int data) {
     throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+}
+
+void TCPServer::RemoveConnection(int fd) {
+    connection_poll_.erase(fd);
 }
 }
