@@ -27,8 +27,10 @@ private:
     IOLoop();
 
 public:
-    
+
     static IOLoop *Current();
+
+    void Start();
 
     void Loop();
 

@@ -74,4 +74,8 @@ void IOLoop::RemoveEvent(const int &fd) {
 #endif
     events_.erase(fd);
 }
+
+void IOLoop::Start() {
+    Loop();
+}
 }

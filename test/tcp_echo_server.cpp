@@ -47,6 +47,6 @@ int main() {
     memcpy(&sock_addr, &in_addr, sizeof(in_addr));
     dc::TCPServer *tcp_server = new dc::TCPServer();
     tcp_server->AddHandler<EchoHandler>(*((sockaddr*)&in_addr));
-    dc::IOLoop::Current()->Loop();
+    dc::IOLoop::Current()->Start();
     return 0;
 }

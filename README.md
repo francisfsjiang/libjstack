@@ -26,8 +26,7 @@ int main() {
 	dc::Application app;
 	app.listen(8888)
 	app.add_handler<MainHandler>("/");
-	dc::IOLoop ioloop;
-	ioloop.start();
+	dc::IOLoop::Current()->Start();
 }
 ```
 
