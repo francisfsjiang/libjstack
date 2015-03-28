@@ -14,16 +14,10 @@ __thread IOLoop
 kIOLoopInstanceInThread = NULL;
 
 IOLoop::IOLoop() {
-    if (kIOLoopInstanceInThread != NULL) {
-        LOG_CRITICAL << "Loop in this thread has existed";
-    }
-    else {
-        kIOLoopInstanceInThread = this;
-        //instance_ = this;
-        poller_ = GetPoller();
-        events_.clear();
-        quit_ = 0;
-    }
+    kIOLoopInstanceInThread = this;
+    poller_ = GetPoller();
+    events_.clear();
+    quit_ = 0;
 }
 
 void IOLoop::Loop() {

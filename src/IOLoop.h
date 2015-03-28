@@ -24,9 +24,10 @@ private:
     Poller *poller_;
     std::map<int, Event> events_;
 
-public:
     IOLoop();
 
+public:
+    
     static IOLoop *Current();
 
     void Loop();
