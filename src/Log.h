@@ -26,7 +26,7 @@ enum LogLevel {
     CRITICAL,
 };
 
-class Log {  //TODO a fast security logger
+class Log {  //TODO a fast logger
 public:
 
     static Log Instance;

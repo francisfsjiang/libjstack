@@ -28,17 +28,17 @@ private:
 
 public:
 
-    static IOLoop *Current();
+    void AddEvent(const Event &e);
 
-    void Start();
+    static IOLoop *Current();
 
     void Loop();
 
-    void AddEvent(const Event &e);
+    void Quit();
 
     void RemoveEvent(const int &fd);
 
-    void Quit();
+    void Start();
 
     ~IOLoop();
 };

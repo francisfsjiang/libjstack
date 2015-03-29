@@ -2,12 +2,14 @@
 // Created by Neveralso on 15/3/15.
 //
 
-#include <unistd.h>
 #include "IOLoop.h"
+
+#include <unistd.h>
 
 #include "Log.h"
 
 namespace dc {
+
 
 __thread IOLoop
 *
@@ -20,13 +22,39 @@ IOLoop::IOLoop() {
     quit_ = 0;
 }
 
+
+void IOLoop::AddEvent(const Event &e) {
+
+#if defined(DC_DEBUG)
+    LOG_DEBUG << "fd" << e.GetFD() << " Loop event added";
+#endif
+
+    events_.insert(std::make_pair(e.GetFD(), e));
+    poller_->AddEvent(e);
+}
+
+
+IOLoop *IOLoop::Current() {
+    if (kIOLoopInstanceInThread) {
+        return kIOLoopInstanceInThread;
+    }
+    else {
+        kIOLoopInstanceInThread = new IOLoop;
+        return kIOLoopInstanceInThread;
+    }
+}
+
+
 void IOLoop::Loop() {
     LOG_INFO << "Loop start.";
     int ready_num;
+
 #if defined(DC_DEBUG)
     int count = 0;
 #endif
+
     while (!quit_) {
+
 #if defined(DC_DEBUG)
         LOG_DEBUG << "Loop " << count++ << " with " << events_.size() <<" events";
 #endif
@@ -41,32 +69,12 @@ void IOLoop::Loop() {
     }
 }
 
-IOLoop::~IOLoop() {
-    kIOLoopInstanceInThread = NULL;
-}
-
-void IOLoop::AddEvent(const Event &e) {
-#if defined(DC_DEBUG)
-    LOG_DEBUG << "fd" << e.GetFD() << " Loop event added";
-#endif
-    events_.insert(std::make_pair(e.GetFD(), e));
-    poller_->AddEvent(e);
-}
 
 void IOLoop::Quit() {
     quit_ = 1;
 
 }
 
-IOLoop *IOLoop::Current() {
-    if (kIOLoopInstanceInThread) {
-        return kIOLoopInstanceInThread;
-    }
-    else {
-        kIOLoopInstanceInThread = new IOLoop;
-        return kIOLoopInstanceInThread;
-    }
-}
 
 void IOLoop::RemoveEvent(const int &fd) {
 #if defined(DC_DEBUG)
@@ -75,7 +83,15 @@ void IOLoop::RemoveEvent(const int &fd) {
     events_.erase(fd);
 }
 
+
 void IOLoop::Start() {
     Loop();
 }
+
+
+IOLoop::~IOLoop() {
+    kIOLoopInstanceInThread = NULL;
+}
+
+
 }
