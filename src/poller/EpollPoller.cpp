@@ -2,12 +2,7 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "EpollPoller.h"
-
-#include <string.h>
 #include <linux/sockios.h>
-
-#include "../Log.h"
 
 namespace dc {
 

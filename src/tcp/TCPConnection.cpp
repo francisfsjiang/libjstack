@@ -4,11 +4,7 @@
 
 #include "TCPConnection.h"
 
-#include <functional>
-
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
 
 #include "../IOLoop.h"
 #include "TCPHandler.h"
