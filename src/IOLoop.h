@@ -9,14 +9,19 @@
 #include <vector>
 #include <map>
 
-#include "Event.h"
-#include "util/noncopyable.h"
-
-#include "poller/GetPoller.h"
+#include "util/Noncopyable.h"
 
 namespace dc {
 
-class IOLoop : noncopyable {
+class Event;
+
+class Poller;
+
+class KqueuePoller;
+
+class EpollPoller;
+
+class IOLoop : Noncopyable {
 private:
 
     //IOLoop *instance_;

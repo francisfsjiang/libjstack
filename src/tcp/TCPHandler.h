@@ -6,7 +6,6 @@
 #define _DEMONIAC_TCPHANDLER_H_
 
 #include <string>
-#include "TCPConnection.h"
 
 namespace dc {
 

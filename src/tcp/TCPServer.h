@@ -6,28 +6,25 @@
 #define _DEMONIAC_TCPSERVER_H_
 
 #include <map>
-#include <iostream>
 #include <unistd.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "../IOLoop.h"
-#include "../util/noncopyable.h"
-#include "TCPConnection.h"
-#include "TCPHandler.h"
-#include "../Log.h"
+#include "../util/Noncopyable.h"
 #include "../util/EventHandler.h"
-#include "../util/error.h"
+#include "../util/Error.h"
+#include "../Log.h"
 
 namespace dc {
+
+class IOLoop;
 
 class TCPConnection;
 
 class TCPHandler;
 
-class TCPServer : noncopyable, public EventHandler {
+class TCPServer : Noncopyable, public EventHandler {
 private:
 
     const int MAX_PENDING_CONNECTIONS_NUM = 200;

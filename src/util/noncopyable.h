@@ -7,18 +7,18 @@
 
 
 namespace dc {
-class noncopyable {
+class Noncopyable {
 protected:
-    noncopyable() {
+    Noncopyable() {
     }
 
-    ~noncopyable() {
+    ~Noncopyable() {
     }
 
 private:
-    noncopyable(const noncopyable &);
+    Noncopyable(const Noncopyable &);
 
-    noncopyable &operator=(const noncopyable &);
+    Noncopyable &operator=(const Noncopyable &);
 
 public:
 };

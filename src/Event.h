@@ -8,7 +8,7 @@
 #include <functional>
 
 #include "util/EventHandler.h"
-#include "util/error.h"
+#include "util/Error.h"
 
 namespace dc {
 

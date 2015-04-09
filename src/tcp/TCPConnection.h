@@ -5,20 +5,12 @@
 #ifndef _DEMONIAC_TCPCONNECTION_H_
 #define _DEMONIAC_TCPCONNECTION_H_
 
-#include <string>
-#include <functional>
 #include <queue>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
+#include <string>
 
-#include "TCPHandler.h"
-#include "TCPServer.h"
 #include "../util/EventHandler.h"
 
 namespace dc {
-
-//class EventHandler;
 
 class TCPHandler;
 

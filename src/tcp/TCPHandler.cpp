@@ -4,6 +4,8 @@
 
 #include "TCPHandler.h"
 
+#include "TCPConnection.h"
+
 namespace dc {
 
 

@@ -6,7 +6,9 @@
 #define _DEMONIAC_GETPOLLER_H_
 
 #if defined(__linux__)
-    #include "EpollPoller.h"
+
+#include "EpollPoller.h"
+
 #elif defined(__unix__) || defined(__MACH__)
 
 #include "KqueuePoller.h"
@@ -20,6 +22,8 @@ namespace dc {
 EpollPoller* GetPoller();
 
 #elif defined(__unix__) || defined(__MACH__)
+
+class KqueuePoller;
 
 KqueuePoller *GetPoller();
 
