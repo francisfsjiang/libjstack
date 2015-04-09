@@ -4,7 +4,7 @@
 
 #ifndef _DEMONIAC_TCPCONNECTION_H_
 #define _DEMONIAC_TCPCONNECTION_H_
-
+#include <functional>
 #include <queue>
 #include <string>
 

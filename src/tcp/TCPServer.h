@@ -5,6 +5,7 @@
 #ifndef _DEMONIAC_TCPSERVER_H_
 #define _DEMONIAC_TCPSERVER_H_
 
+#include <functional>
 #include <map>
 #include <unistd.h>
 #include <sys/socket.h>

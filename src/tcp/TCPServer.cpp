@@ -4,6 +4,8 @@
 
 #include "TCPServer.h"
 
+#include <cstring>
+
 #include "../IOLoop.h"
 #include "../Event.h"
 #include "TCPConnection.h"
