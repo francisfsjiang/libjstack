@@ -39,7 +39,7 @@ void accept_cb(int fd, int data) {
         std::cout << "from " << sock_addr.sa_data << std::endl;
 
         std::cout << "add conn " << coon_fd << std::endl;
-        dc::Event e(coon_fd, NULL);
+        dc::Event e(coon_fd, nullptr);
         e.set_read_callback(read_cb);
         e.set_write_callback(write_cb);
         e.set_close_callback(close_cb);
@@ -75,7 +75,7 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    dc::Event e(socket_fd, NULL);
+    dc::Event e(socket_fd, nullptr);
     e.set_read_callback(read_cb);
     e.set_write_callback(write_cb);
 

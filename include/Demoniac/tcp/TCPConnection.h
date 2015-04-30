@@ -20,7 +20,7 @@ class TCPConnection : public EventHandler {
 private:
     int fd_;
     std::string from_address_ = "";
-    TCPHandler *handler_ = NULL;
+    TCPHandler *handler_ = nullptr;
     TCPServer *tcp_server_;
     std::queue<std::string> msg_queue_;
 

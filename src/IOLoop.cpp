@@ -10,9 +10,7 @@
 
 namespace dc {
 
-__thread IOLoop
-*
-kIOLoopInstanceInThread = NULL;
+__thread IOLoop *kIOLoopInstanceInThread = nullptr;
 
 IOLoop::IOLoop() {
     kIOLoopInstanceInThread = this;
