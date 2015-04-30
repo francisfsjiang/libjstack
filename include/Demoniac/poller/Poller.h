@@ -8,11 +8,11 @@
 #include <vector>
 #include <map>
 
-#include "../util/Noncopyable.h"
-#include "../Event.h"
-
+#include "Demoniac/util/Noncopyable.h"
 
 namespace dc {
+
+class Event;
 
 const int MAX_READY_EVENTS_NUM = 500;
 

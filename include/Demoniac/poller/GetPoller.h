@@ -7,17 +7,19 @@
 
 #if defined(__linux__)
 
-#include "EpollPoller.h"
+#include "Demoniac/poller/EpollPoller.h"
 
 #elif defined(__unix__) || defined(__MACH__)
 
-#include "KqueuePoller.h"
+#include "Demoniac/poller/KqueuePoller.h"
 
 #endif
 
 namespace dc {
 
 #if defined(__linux__)
+
+class EpollPoller;
 
 EpollPoller* GetPoller();
 

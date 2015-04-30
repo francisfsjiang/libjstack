@@ -7,8 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11 -D DC_DEBUG")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror -Wextra")
 
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH    ${PROJECT_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
 set(SRC_FILES
 src/IOLoop.cpp
@@ -18,7 +18,6 @@ src/poller/GetPoller.cpp
 src/tcp/TCPHandler.cpp
 src/tcp/TCPConnection.cpp
 src/tcp/TCPServer.cpp
-
 )
 
 
@@ -29,6 +28,8 @@ else()
     message(${CMAKE_HOST_SYSTEM_NAME})
     set(SRC_FILES ${SRC_FILES} src/poller/KqueuePoller.cpp)
 endif()
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(demoniac STATIC ${SRC_FILES})
 

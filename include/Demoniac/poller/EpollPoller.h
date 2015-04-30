@@ -5,14 +5,14 @@
 #ifndef _DEMONIAC_EPOLLPOLLER_H_
 #define _DEMONIAC_EPOLLPOLLER_H_
 
-#include "Poller.h"
-
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 
-#include "../Event.h"
+#include "Demoniac/poller/Poller.h"
 
 namespace dc {
+
+class Event;
 
 class EpollPoller : public Poller {
 private:

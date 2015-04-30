@@ -8,7 +8,7 @@
 #include <queue>
 #include <string>
 
-#include "../util/EventHandler.h"
+#include "Demoniac/util/EventHandler.h"
 
 namespace dc {
 

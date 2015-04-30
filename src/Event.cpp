@@ -2,7 +2,11 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "Event.h"
+
+#include "Demoniac/Event.h"
+
+#include "Demoniac/util/Error.h"
+#include "Demoniac/util/EventHandler.h"
 
 namespace dc {
 

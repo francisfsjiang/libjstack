@@ -7,10 +7,9 @@
 
 #include <functional>
 
-#include "util/EventHandler.h"
-#include "util/Error.h"
-
 namespace dc {
+
+class EventHandler;
 
 class Event {
 private:

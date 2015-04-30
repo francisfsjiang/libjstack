@@ -2,13 +2,13 @@
 // Created by Neveralso on 15/3/19.
 //
 
-#include "TCPConnection.h"
+#include "Demoniac/tcp/TCPConnection.h"
 
 #include <sys/socket.h>
 
-#include "../IOLoop.h"
-#include "TCPHandler.h"
-#include "TCPServer.h"
+#include "Demoniac/IOLoop.h"
+#include "Demoniac/tcp/TCPHandler.h"
+#include "Demoniac/tcp/TCPServer.h"
 
 namespace dc {
 

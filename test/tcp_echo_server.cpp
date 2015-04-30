@@ -8,9 +8,9 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#include "../src/IOLoop.h"
-#include "../src/tcp/TCPServer.h"
-#include "../src/tcp/TCPHandler.h"
+#include "Demoniac/IOLoop.h"
+#include "Demoniac/tcp/TCPServer.h"
+#include "Demoniac/tcp/TCPHandler.h"
 
 #define LISTEN_PORT 8002
 #define LISTEN_ADDR "0.0.0.0"

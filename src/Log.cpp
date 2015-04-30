@@ -2,7 +2,7 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "Log.h"
+#include "Demoniac/Log.h"
 
 #include <unistd.h>
 

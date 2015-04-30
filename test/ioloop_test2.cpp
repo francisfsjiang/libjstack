@@ -5,9 +5,9 @@
 //#include <arpa/inet.h>
 #include <unistd.h>
 
-#include "../src/IOLoop.h"
-#include "../src/Event.h"
-#include "../src/Log.h"
+#include "Demoniac/IOLoop.h"
+#include "Demoniac/Event.h"
+#include "Demoniac/Log.h"
 
 #define LISTEN_PORT 8001
 #define LISTEN_ADDR "0.0.0.0"
