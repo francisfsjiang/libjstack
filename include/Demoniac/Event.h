@@ -19,9 +19,9 @@ private:
     bool has_read_callback_ = false;
     bool has_write_callback_ = false;
     bool has_close_callback_ = false;
-    callback_func read_callback_ = NULL;
-    callback_func write_callback_ = NULL;
-    callback_func close_callback_ = NULL;
+    callback_func read_callback_ = 0;
+    callback_func write_callback_ = 0;
+    callback_func close_callback_ = 0;
 public:
     Event(int fd, EventHandler *obj_ptr);
 
