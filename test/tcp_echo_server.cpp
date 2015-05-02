@@ -1,21 +1,19 @@
 #include <iostream>
-#include <string>
-#include <ctime>
+#include <cstringv>
 #include <unistd.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <string.h>
 
-#include "Demoniac/IOLoop.h"
-#include "Demoniac/tcp/TCPServer.h"
-#include "Demoniac/tcp/TCPHandler.h"
+#include "demoniac/io_loop.h"
+#include "demoniac/tcp/tcp_server.h"
+#include "demoniac/tcp/tcp_handler.h"
 
 #define LISTEN_PORT 8002
 #define LISTEN_ADDR "0.0.0.0"
 
-class EchoHandler : dc::TCPHandler {
+class EchoHandler : demoniac::tcp::TCPHandler {
 private:
     const static int BUFFER_SIZE = 200;
     char buffer_[BUFFER_SIZE];
@@ -45,8 +43,8 @@ int main() {
     in_addr.sin_addr.s_addr = htonl(inet_addr(LISTEN_ADDR));
     sockaddr sock_addr;
     memcpy(&sock_addr, &in_addr, sizeof(in_addr));
-    dc::TCPServer *tcp_server = new dc::TCPServer();
+    demoniac::tcp::TCPServer *tcp_server = new demoniac::tcp::TCPServer();
     tcp_server->AddHandler<EchoHandler>(*((sockaddr*)&in_addr));
-    dc::IOLoop::Current()->Start();
+    demoniac::IOLoop::Current()->Start();
     return 0;
 }

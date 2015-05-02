@@ -2,27 +2,28 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#ifndef _DEMONIAC_KQUEUEPOLLER_H_
-#define _DEMONIAC_KQUEUEPOLLER_H_
+#ifndef _DEMONIAC_POLLER_EPOLLPOLLER_H_
+#define _DEMONIAC_POLLER_EPOLLPOLLER_H_
 
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
+#include <sys/epoll.h>
+#include <sys/ioctl.h>
 
-#include "Demoniac/poller/Poller.h"
+#include "demoniac/poller/poller.h"
 
-namespace dc {
+namespace demoniac {
+namespace poller {
 
-class KqueuePoller : public Poller {
+
+class EpollPoller : public Poller {
 private:
-    typedef struct kevent poll_event;
+    typedef struct epoll_event poll_event;
 
-    int kqueue_;
+    int epoll_;
 
     std::vector<poll_event> events_ready_;
 
 public:
-    KqueuePoller();
+    EpollPoller();
 
     virtual int Poll(int time_out);
 
@@ -34,7 +35,9 @@ public:
 
     virtual void DeleteEvent(const Event &e);
 };
+
+}
 }
 
 
-#endif //_DEMONIAC_KQUEUEPOLLER_H_
+#endif //_DEMONIAC_EPOLLPOLLER_H_

@@ -2,11 +2,12 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "Demoniac/Log.h"
+#include "demoniac/log.h"
 
 #include <unistd.h>
 
-namespace dc {
+namespace demoniac {
+
 
 Log Log::Instance("dc.log");
 
@@ -62,5 +63,6 @@ std::ofstream &Log::log(int i) {
 Log::~Log() {
     *out_stream_ << std::endl;
 }
+
 
 }

@@ -2,14 +2,17 @@
 // Created by Neveralso on 15/3/16.
 //
 
-#ifndef _DEMONIAC_ERROR_H_
-#define _DEMONIAC_ERROR_H_
+#ifndef _DEMONIAC_UTIL_ERROR_H_
+#define _DEMONIAC_UTIL_ERROR_H_
 
 #include <string>
 
 using namespace std;
 
-namespace dc {
+namespace demoniac {
+namespace util {
+
+
 class BaseError {
 protected:
     string event;
@@ -59,6 +62,7 @@ public:
     };
 };
 
+}
 }
 
 

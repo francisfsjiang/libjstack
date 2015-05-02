@@ -2,19 +2,21 @@
 // Created by Neveralso on 15/3/15.
 //
 
-#include "Demoniac/IOLoop.h"
+#include "demoniac/io_loop.h"
 
-#include "Demoniac/poller/GetPoller.h"
-#include "Demoniac/Event.h"
-#include "Demoniac/Log.h"
+#include "demoniac/poller/get_poller.h"
+#include "demoniac/event.h"
+#include "demoniac/log.h"
 
-namespace dc {
+namespace demoniac {
 
-__thread IOLoop *kIOLoopInstanceInThread = nullptr;
+__thread IOLoop
+*
+kIOLoopInstanceInThread = nullptr;
 
 IOLoop::IOLoop() {
     kIOLoopInstanceInThread = this;
-    poller_ = GetPoller();
+    poller_ = demoniac::poller::GetPoller();
     events_.clear();
     quit_ = 0;
 }
@@ -53,7 +55,7 @@ void IOLoop::Loop() {
     while (!quit_) {
 
 #if defined(DC_DEBUG)
-        LOG_DEBUG << "Loop " << count++ << " with " << events_.size() <<" events";
+        LOG_DEBUG << "Loop " << count++ << " with " << events_.size() << " events";
 #endif
         ready_num = poller_->Poll(10);
 

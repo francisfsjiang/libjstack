@@ -2,8 +2,8 @@
 // Created by Neveralso on 15/3/19.
 //
 
-#ifndef _DEMONIAC_TCPSERVER_H_
-#define _DEMONIAC_TCPSERVER_H_
+#ifndef _DEMONIAC_TCP_TCPSERVER_H_
+#define _DEMONIAC_TCP_TCPSERVER_H_
 
 #include <functional>
 #include <map>
@@ -12,12 +12,14 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "Demoniac/util/Noncopyable.h"
-#include "Demoniac/util/EventHandler.h"
-#include "Demoniac/util/Error.h"
-#include "Demoniac/Log.h"
+#include "demoniac/util/noncopyable.h"
+#include "demoniac/util/event_handler.h"
+#include "demoniac/util/error.h"
+#include "demoniac/log.h"
 
-namespace dc {
+namespace demoniac {
+namespace tcp {
+
 
 class IOLoop;
 
@@ -25,10 +27,10 @@ class TCPConnection;
 
 class TCPHandler;
 
-class TCPServer : Noncopyable, public EventHandler {
+class TCPServer : util::Noncopyable, public util::EventHandler {
 private:
 
-    const int MAX_PENDING_CONNECTIONS_NUM = 200;
+    const static int MAX_PENDING_CONNECTIONS_NUM = 200;
 
     std::map<int, std::function<void *()>> route_map_;
 
@@ -41,7 +43,7 @@ public:
 
         if (!std::is_base_of<TCPHandler, T>::value) {
             LOG_ERROR << "Wrong handler type" << typeid(T).name();
-            throw HandlerTypeError(typeid(T).name());
+            throw util::HandlerTypeError(typeid(T).name());
         }
 
         auto f = [=]() {
@@ -65,6 +67,8 @@ public:
 
 };
 
+
+}
 }
 
 #endif //_DEMONIAC_TCPSERVER_H_

@@ -3,14 +3,15 @@
 //
 
 
-#include "Demoniac/Event.h"
+#include "demoniac/event.h"
 
-#include "Demoniac/util/Error.h"
-#include "Demoniac/util/EventHandler.h"
+#include "demoniac/util/error.h"
+#include "demoniac/util/event_handler.h"
 
-namespace dc {
+namespace demoniac {
 
-Event::Event(int fd, EventHandler *obj_ptr) : fd_(fd), handler_ptr_(obj_ptr) {
+
+Event::Event(int fd, util::EventHandler *obj_ptr) : fd_(fd), handler_ptr_(obj_ptr) {
 }
 
 int Event::GetFD() const {
@@ -23,7 +24,7 @@ void Event::set_read_callback(callback_func callback) {
 
 void Event::set_read_callback() {
     if (!handler_ptr_)
-        throw IllegalFunctionError("Object not set");
+        throw util::IllegalFunctionError("Object not set");
     has_read_callback_ = true;
 }
 
@@ -33,7 +34,7 @@ void Event::set_write_callback(callback_func callback) {
 
 void Event::set_write_callback() {
     if (!handler_ptr_)
-        throw IllegalFunctionError("Object not set");
+        throw util::IllegalFunctionError("Object not set");
     has_write_callback_ = true;
 }
 
@@ -43,7 +44,7 @@ void Event::set_close_callback(callback_func callback) {
 
 void Event::set_close_callback() {
     if (!handler_ptr_)
-        throw IllegalFunctionError("Object not set");
+        throw util::IllegalFunctionError("Object not set");
     has_close_callback_ = true;
 }
 
@@ -52,7 +53,7 @@ Event::~Event() {
 
 void Event::exec_read_callback(int fd, int data) const {
     if (handler_ptr_) {
-        handler_ptr_->_ReadCallback(fd,data);
+        handler_ptr_->_ReadCallback(fd, data);
     }
     else {
         read_callback_(fd, data);
@@ -61,7 +62,7 @@ void Event::exec_read_callback(int fd, int data) const {
 
 void Event::exec_write_callback(int fd, int data) const {
     if (handler_ptr_) {
-        handler_ptr_->_WriteCallback(fd,data);
+        handler_ptr_->_WriteCallback(fd, data);
     }
     else {
         read_callback_(fd, data);
@@ -70,7 +71,7 @@ void Event::exec_write_callback(int fd, int data) const {
 
 void Event::exec_close_callback(int fd, int data) const {
     if (handler_ptr_) {
-        handler_ptr_->_CloseCallback(fd,data);
+        handler_ptr_->_CloseCallback(fd, data);
     }
     else {
         read_callback_(fd, data);

@@ -4,9 +4,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "Demoniac/IOLoop.h"
-#include "Demoniac/Event.h"
-#include "Demoniac/Log.h"
+#include "demoniac/io_loop.h"
+#include "demoniac/event.h"
+#include "demoniac/log.h"
 
 #define LISTEN_PORT 8000
 #define LISTEN_ADDR "0.0.0.0"
@@ -39,11 +39,11 @@ void accept_cb(int fd, int data) {
         std::cout << "from " << inet_ntoa(sock_addr.sin_addr) << std::endl;
 
         std::cout << "add conn " << coon_fd << std::endl;
-        dc::Event e(coon_fd, nullptr);
+        demoniac::Event e(coon_fd, nullptr);
         e.set_read_callback(read_cb);
         //e.set_write_callback(write_cb);
         e.set_close_callback(close_cb);
-        dc::IOLoop::Current()->AddEvent(e);
+        demoniac::IOLoop::Current()->AddEvent(e);
     }
 }
 
@@ -76,11 +76,11 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    dc::Event e(socket_fd, nullptr);
+    demoniac::Event e(socket_fd, nullptr);
     e.set_read_callback(accept_cb);
     e.set_close_callback(close_cb);
 
-    dc::IOLoop::Current()->AddEvent(e);
-    dc::IOLoop::Current()->Loop();
+    demoniac::IOLoop::Current()->AddEvent(e);
+    demoniac::IOLoop::Current()->Loop();
     return 0;
 }

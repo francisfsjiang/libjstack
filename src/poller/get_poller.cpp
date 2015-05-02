@@ -2,11 +2,12 @@
 // Created by Neveralso on 15/3/18.
 //
 
-#include "Demoniac/poller/GetPoller.h"
+#include "demoniac/poller/get_poller.h"
 
 
 
-namespace dc {
+namespace demoniac {
+namespace poller {
 
 #if defined(__linux__)
 
@@ -23,4 +24,5 @@ KqueuePoller *GetPoller() {
 #endif
 
 
+}
 }

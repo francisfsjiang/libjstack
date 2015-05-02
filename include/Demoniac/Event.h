@@ -7,15 +7,18 @@
 
 #include <functional>
 
-namespace dc {
+namespace demoniac {
 
-class EventHandler;
+
+namespace util {
+    class EventHandler;
+}
 
 class Event {
 private:
     int fd_ = -1;
     typedef std::function<void(int, int)> callback_func;
-    EventHandler *handler_ptr_ = nullptr;
+    util::EventHandler *handler_ptr_ = nullptr;
     bool has_read_callback_ = false;
     bool has_write_callback_ = false;
     bool has_close_callback_ = false;
@@ -23,7 +26,7 @@ private:
     callback_func write_callback_ = 0;
     callback_func close_callback_ = 0;
 public:
-    Event(int fd, EventHandler *obj_ptr);
+    Event(int fd, util::EventHandler *obj_ptr);
 
     ~Event();
 

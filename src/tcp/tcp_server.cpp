@@ -2,16 +2,18 @@
 // Created by Neveralso on 15/3/19.
 //
 
-#include "Demoniac/tcp/TCPServer.h"
+#include "demoniac/tcp/tcp_server.h"
 
 #include <cstring>
 
-#include "Demoniac/IOLoop.h"
-#include "Demoniac/Event.h"
-#include "Demoniac/tcp/TCPConnection.h"
-#include "Demoniac/tcp/TCPHandler.h"
+#include "demoniac/io_loop.h"
+#include "demoniac/event.h"
+#include "demoniac/tcp/tcp_connection.h"
+#include "demoniac/tcp/tcp_handler.h"
 
-namespace dc {
+namespace demoniac {
+namespace tcp {
+
 
 TCPServer::TCPServer() {
 
@@ -54,10 +56,10 @@ void TCPServer::CreateConnection(int fd, int data) {
                                  route_map_[fd],
                                  this);
 
-        dc::Event e(coon_fd, coon);
+        demoniac::Event e(coon_fd, coon);
         e.set_read_callback();
         e.set_close_callback();
-        dc::IOLoop::Current()->AddEvent(e);
+        demoniac::IOLoop::Current()->AddEvent(e);
 
         connection_poll_.insert(make_pair(coon_fd, coon));
 
@@ -66,30 +68,30 @@ void TCPServer::CreateConnection(int fd, int data) {
 
 }
 
-void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
+void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void *()> func) {
     int sock_fd, ret;
     if (sock_addr.sa_family != PF_UNIX &&
         sock_addr.sa_family != PF_INET) {
         LOG_ERROR << "Target protocol supported" << sock_addr.sa_family;
-        throw SocketError("bind failed");
+        throw util::SocketError("bind failed");
     }
 
     sock_fd = socket(sock_addr.sa_family, SOCK_STREAM, 0);
     if (sock_fd < 0) {
         LOG_ERROR << " socket create failed" << sock_addr.sa_data << strerror(errno);
-        throw SocketError("socket create failed");
+        throw util::SocketError("socket create failed");
     }
 
     ret = ::bind(sock_fd, &sock_addr, sizeof(sock_addr));
     if (ret < 0) {
         LOG_ERROR << sock_fd << " bind failed" << sock_addr.sa_data << strerror(errno);
-        throw SocketError("bind failed");
+        throw util::SocketError("bind failed");
     }
 
     ret = listen(sock_fd, MAX_PENDING_CONNECTIONS_NUM);
     if (ret < 0) {
         LOG_ERROR << sock_fd << " listen failed" << sock_addr.sa_data << strerror(errno);
-        throw SocketError("listen failed");
+        throw util::SocketError("listen failed");
     }
 
     route_map_.insert(std::make_pair(sock_fd, func));
@@ -97,7 +99,7 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
     Event e(sock_fd, this);
     e.set_read_callback();
 
-    IOLoop::Current()->AddEvent(e);
+    demoniac::IOLoop::Current()->AddEvent(e);
 
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << sock_fd << " Listen established";
@@ -107,7 +109,7 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void*()> func) {
         LOG_INFO << "Listen event on " << sock_addr.sa_data << " successfully";
     }
     else if (sock_addr.sa_family == PF_INET) {
-        sockaddr_in *in_addr = (sockaddr_in *)(&sock_addr);
+        sockaddr_in *in_addr = (sockaddr_in *) (&sock_addr);
         LOG_INFO << "Listen event on "
         << inet_ntoa(in_addr->sin_addr)
         << ":"
@@ -121,14 +123,16 @@ void TCPServer::_ReadCallback(int fd, int data) {
 }
 
 void TCPServer::_WriteCallback(int fd, int data) {
-    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+    throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
 }
 
 void TCPServer::_CloseCallback(int fd, int data) {
-    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+    throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
 }
 
 void TCPServer::RemoveConnection(int fd) {
     connection_poll_.erase(fd);
+}
+
 }
 }

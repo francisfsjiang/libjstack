@@ -2,21 +2,23 @@
 // Created by Neveralso on 15/3/19.
 //
 
-#ifndef _DEMONIAC_TCPCONNECTION_H_
-#define _DEMONIAC_TCPCONNECTION_H_
+#ifndef _DEMONIAC_TCP_TCPCONNECTION_H_
+#define _DEMONIAC_TCP_TCPCONNECTION_H_
 #include <functional>
 #include <queue>
 #include <string>
 
-#include "Demoniac/util/EventHandler.h"
+#include "demoniac/util/event_handler.h"
 
-namespace dc {
+namespace demoniac {
+namespace tcp {
+
 
 class TCPHandler;
 
 class TCPServer;
 
-class TCPConnection : public EventHandler {
+class TCPConnection : public util::EventHandler {
 private:
     int fd_;
     std::string from_address_ = "";
@@ -40,6 +42,8 @@ public:
 
 };
 
+
+}
 }
 
 #endif //_DEMONIAC_TCPCONNECTION_H_

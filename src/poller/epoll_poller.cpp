@@ -2,23 +2,24 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "Demoniac/poller/EpollPoller.h"
+#include "demoniac/poller/epoll_poller.h"
 
 #include <cstring>
 #include <linux/sockios.h>
 
-#include "Demoniac/Log.h"
-#include "Demoniac/Event.h"
-#include "Demoniac/util/Error.h"
+#include "demoniac/log.h"
+#include "demoniac/event.h"
+#include "demoniac/util/error.h"
 
-namespace dc {
+namespace demoniac {
+namespace poller {
 
 EpollPoller::EpollPoller() {
     events_ready_.resize(MAX_READY_EVENTS_NUM);
     epoll_ = epoll_create(MAX_READY_EVENTS_NUM);
     if (epoll_ < 0) {
         LOG_ERROR << "Epoll init failed " << strerror(errno);
-        throw PollerError("Epoll init failed");
+        throw util::PollerError("Epoll init failed");
     }
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << epoll_ << " Epoll created";
@@ -46,7 +47,7 @@ void EpollPoller::AddEvent(const Event &e) {
     ret = epoll_ctl(epoll_, EPOLL_CTL_ADD, e.GetFD(), &event);
     if (ret < 0) {
         LOG_ERROR << "fd" << e.GetFD() << " Epoll event add failed " << strerror(errno);
-        throw PollerError("Epoll event add failed");
+        throw util::PollerError("Epoll event add failed");
     }
 
 #if defined(DC_DEBUG)
@@ -75,7 +76,7 @@ void EpollPoller::UpdateEvent(const Event &e) {
     ret = epoll_ctl(epoll_, EPOLL_CTL_MOD, e.GetFD(), &event);
     if (ret < 0) {
         LOG_ERROR << "fd" << e.GetFD() << " Epoll event modify failed " << strerror(errno);
-        throw PollerError("Epoll event modify failed");
+        throw util::PollerError("Epoll event modify failed");
     }
 
 #if defined(DC_DEBUG)
@@ -87,7 +88,7 @@ void EpollPoller::DeleteEvent(const Event &e) {
     int ret = epoll_ctl(epoll_, EPOLL_CTL_DEL, e.GetFD(), NULL);
     if (ret < 0) {
         LOG_ERROR << "fd" << e.GetFD() << " Epoll event delete failed" << strerror(errno);
-        throw PollerError("Epoll event delete failed");
+        throw util::PollerError("Epoll event delete failed");
     }
 
     LOG_DEBUG << "fd" << e.GetFD() << " undefined delete event in epoll " << epoll_;
@@ -95,7 +96,7 @@ void EpollPoller::DeleteEvent(const Event &e) {
 
 int EpollPoller::Poll(int time_out) {
 
-    int ret = epoll_wait(epoll_, events_ready_.data(), MAX_READY_EVENTS_NUM, time_out*1000);
+    int ret = epoll_wait(epoll_, events_ready_.data(), MAX_READY_EVENTS_NUM, time_out * 1000);
     if (ret < 0) {
         LOG_ERROR << "fd" << epoll_ << "epoll poll error occured. " << strerror(errno);
     }
@@ -119,23 +120,26 @@ void EpollPoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
         data_available = -1;
         ioctl(events_ready_[i].data.fd, FIONREAD, &data_available);
         if (iter->second.has_close_callback() &&
-                (events_ready_[i].events & EPOLLRDHUP ||
-                        events_ready_[i].events & EPOLLERR)) {
+            (events_ready_[i].events & EPOLLRDHUP ||
+             events_ready_[i].events & EPOLLERR)) {
             iter->second.exec_close_callback(events_ready_[i].data.fd,
-                    data_available);
+                                             data_available);
         }
         if (iter->second.has_read_callback() &&
-                (events_ready_[i].events & EPOLLIN)) {
+            (events_ready_[i].events & EPOLLIN)) {
             iter->second.exec_read_callback(events_ready_[i].data.fd,
-                    data_available);
+                                            data_available);
         }
         if (iter->second.has_close_callback() &&
-                (events_ready_[i].events & EPOLLOUT)) {
+            (events_ready_[i].events & EPOLLOUT)) {
             iter->second.exec_write_callback(events_ready_[i].data.fd,
-                    data_available);
+                                             data_available);
         }
 
     }
+}
+
+
 }
 }
 

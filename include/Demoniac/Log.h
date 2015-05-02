@@ -6,17 +6,17 @@
 #define _DEMONIAC_LOG_H_
 
 
-#define LOG_DEBUG dc::Log::Instance.log(0)
-#define LOG_INFO dc::Log::Instance.log(1)
-#define LOG_WARNING dc::Log::Instance.log(2)
-#define LOG_ERROR dc::Log::Instance.log(3)
-#define LOG_CRITICAL dc::Log::Instance.log(4)
+#define LOG_DEBUG demoniac::Log::Instance.log(0)
+#define LOG_INFO demoniac::Log::Instance.log(1)
+#define LOG_WARNING demoniac::Log::Instance.log(2)
+#define LOG_ERROR demoniac::Log::Instance.log(3)
+#define LOG_CRITICAL demoniac::Log::Instance.log(4)
 
 #include <fstream>
 
 #include <errno.h>
 
-namespace dc {
+namespace demoniac {
 
 enum LogLevel {
     DEBUG,

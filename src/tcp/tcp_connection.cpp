@@ -2,15 +2,17 @@
 // Created by Neveralso on 15/3/19.
 //
 
-#include "Demoniac/tcp/TCPConnection.h"
+#include "demoniac/tcp/tcp_connection.h"
 
 #include <sys/socket.h>
 
-#include "Demoniac/IOLoop.h"
-#include "Demoniac/tcp/TCPHandler.h"
-#include "Demoniac/tcp/TCPServer.h"
+#include "demoniac/io_loop.h"
+#include "demoniac/tcp/tcp_handler.h"
+#include "demoniac/tcp/tcp_server.h"
 
-namespace dc {
+namespace demoniac {
+namespace tcp {
+
 
 TCPConnection::TCPConnection(const int &fd,
                              const std::string &from_address,
@@ -19,7 +21,7 @@ TCPConnection::TCPConnection(const int &fd,
     fd_ = fd;
     from_address_ = from_address;
     tcp_server_ = tcp_server;
-    handler_ = (TCPHandler *) (handler_generator());
+    handler_ = (TCPHandler * )(handler_generator());
     handler_->init(this, from_address);
 
 }
@@ -44,7 +46,7 @@ void TCPConnection::_ReadCallback(int fd, int data) {
 }
 
 void TCPConnection::_WriteCallback(int fd, int data) {
-    throw IllegalFunctionError(to_string(fd) + " " + to_string(data));
+    throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
 
 }
 
@@ -52,10 +54,11 @@ void TCPConnection::_CloseCallback(int fd, int data) {
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << fd << " Connection disconnected " << data;
 #endif
-    IOLoop::Current()->RemoveEvent(fd);
+    demoniac::IOLoop::Current()->RemoveEvent(fd);
     tcp_server_->RemoveConnection(fd);
     close(fd);
 
 }
 
+}
 }

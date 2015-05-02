@@ -2,11 +2,12 @@
 // Created by Neveralso on 15/3/20.
 //
 
-#include "Demoniac/tcp/TCPHandler.h"
+#include "demoniac/tcp/tcp_handler.h"
 
-#include "Demoniac/tcp/TCPConnection.h"
+#include "demoniac/tcp/tcp_connection.h"
 
-namespace dc {
+namespace demoniac {
+namespace tcp {
 
 
 TCPHandler::TCPHandler() {
@@ -22,4 +23,6 @@ void TCPHandler::init(TCPConnection *coon, const std::string from) {
     from_ = from;
 }
 
+
+}
 }

@@ -2,14 +2,15 @@
 // Created by Neveralso on 15/3/17.
 //
 
-#include "Demoniac/poller/KqueuePoller.h"
+#include "demoniac/poller/kqueue_poller.h"
 
 #include <unistd.h>
 
-#include "Demoniac/Event.h"
-#include "Demoniac/Log.h"
+#include "demoniac/event.h"
+#include "demoniac/log.h"
 
-namespace dc {
+namespace demoniac {
+namespace poller {
 
 KqueuePoller::KqueuePoller() {
     events_ready_.resize(MAX_READY_EVENTS_NUM);
@@ -93,5 +94,8 @@ void KqueuePoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
         }
 
     }
+}
+
+
 }
 }

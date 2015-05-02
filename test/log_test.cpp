@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Demoniac/Log.h"
+#include "demoniac/log.h"
 
 using namespace std;
 

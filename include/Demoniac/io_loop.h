@@ -9,24 +9,30 @@
 #include <vector>
 #include <map>
 
-#include "util/Noncopyable.h"
+#include "util/noncopyable.h"
 
-namespace dc {
+namespace demoniac {
+
 
 class Event;
 
-class Poller;
+namespace poller{
 
-class KqueuePoller;
+    class Poller;
 
-class EpollPoller;
+    class KqueuePoller;
 
-class IOLoop : Noncopyable {
+    class EpollPoller;
+
+}
+
+
+class IOLoop : demoniac::util::Noncopyable {
 private:
 
     //IOLoop *instance_;
     bool quit_;
-    Poller *poller_;
+    demoniac::poller::Poller *poller_;
     std::map<int, Event> events_;
 
     IOLoop();

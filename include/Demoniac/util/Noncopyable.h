@@ -2,11 +2,14 @@
 // Created by Neveralso on 15/3/16.
 //
 
-#ifndef _DEMONIAC_NONCOPYABLE_H_
-#define _DEMONIAC_NONCOPYABLE_H_
+#ifndef _DEMONIAC_UTIL_NONCOPYABLE_H_
+#define _DEMONIAC_UTIL_NONCOPYABLE_H_
 
 
-namespace dc {
+namespace demoniac {
+namespace util {
+
+
 class Noncopyable {
 protected:
     Noncopyable() {
@@ -23,6 +26,8 @@ private:
 public:
 };
 
+
+}
 }
 
 
