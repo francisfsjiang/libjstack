@@ -2,13 +2,14 @@
 .idea/
 *.log
 bin/
+bin_test/
 
 CMakeFiles/
 cmake_install.cmake
 CMakeCache.txt
 Makefile
 
-!example/Makefile
+#!example/Makefile
 
 # Compiled Object files
 *.slo

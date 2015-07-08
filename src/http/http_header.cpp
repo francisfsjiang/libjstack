@@ -45,4 +45,14 @@
 //  obs-fold       = CRLF 1*( SP / HTAB )
 //                   ; obsolete line folding
 
-#include "http_header.h"
+#include "demoniac/http/http_header.h"
+
+namespace demoniac{
+namespace http{
+
+
+
+
+
+}
+}
