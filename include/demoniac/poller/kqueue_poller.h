@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/event.h>
 #include <sys/time.h>
+#include <demoniac/event_callback.h>
 
 #include "demoniac/poller/poller.h"
 
@@ -17,24 +18,25 @@ namespace poller {
 
 class KqueuePoller : public Poller {
 private:
-    typedef struct kevent poll_event;
+    typedef struct kevent PollEvent;
 
-    int kqueue_;
+    int kqueue_fd_;
 
-    std::vector<poll_event> events_ready_;
+    std::vector<PollEvent> events_ready_;
+    int events_ready_amount_;
 
 public:
     KqueuePoller();
 
     virtual int Poll(int time_out);
 
-    virtual void HandleEvents(int ready_num, std::map<int, Event> &events);
+    virtual void HandleEvents(const std::map<int, EventCallback>& events_map);
 
-    virtual void AddEvent(const Event &e);
+    virtual void AddEventCallback(const int& fd, const EventCallback& e);
 
-    virtual void UpdateEvent(const Event &e);
+    virtual void UpdateEventCallback(const int& fd, const EventCallback& e);
 
-    virtual void DeleteEvent(const Event &e);
+    virtual void DeleteEventCallback(const int& fd);
 };
 
 

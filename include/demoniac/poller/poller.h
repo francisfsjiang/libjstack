@@ -12,25 +12,28 @@
 
 namespace demoniac {
 
-class Event;
+class EventCallback;
 
 namespace poller {
 
 const int MAX_READY_EVENTS_NUM = 500;
 
 class Poller : demoniac::util::Noncopyable {
-private:
 public:
+
+    Poller();
+
+    virtual ~Poller() = 0;
 
     virtual int Poll(int time_out) = 0;
 
-    virtual void HandleEvents(int ready_num, std::map<int, Event> &events) = 0;
+    virtual void HandleEvents(const std::map<int, EventCallback>& events_map) = 0;
 
-    virtual void AddEvent(const demoniac::Event &e) = 0;
+    virtual void AddEventCallback(const int& fd, const EventCallback& e) = 0;
 
-    virtual void UpdateEvent(const Event &e) = 0;
+    virtual void UpdateEventCallback(const int& fd, const EventCallback& e) = 0;
 
-    virtual void DeleteEvent(const Event &e) = 0;
+    virtual void DeleteEventCallback(const int& fd) = 0;
 };
 
 

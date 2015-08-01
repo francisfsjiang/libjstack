@@ -8,7 +8,6 @@
 #include <queue>
 #include <string>
 
-#include "demoniac/util/event_handler.h"
 
 namespace demoniac {
 namespace tcp {
@@ -18,7 +17,7 @@ class TCPHandler;
 
 class TCPServer;
 
-class TCPConnection : public util::EventHandler {
+class TCPConnection{
 private:
     int fd_;
     std::string from_address_ = "";
@@ -34,11 +33,11 @@ public:
 
     void WriteMsg(const std::string &msg);
 
-    void _ReadCallback(int fd, int data);
+    void ReadCallback(int fd, int data);
 
-    void _WriteCallback(int fd, int data);
+    void WriteCallback(int fd, int data);
 
-    void _CloseCallback(int fd, int data);
+    void CloseCallback(int fd, int data);
 
 };
 

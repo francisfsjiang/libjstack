@@ -13,7 +13,6 @@
 #include <netinet/in.h>
 
 #include "demoniac/util/noncopyable.h"
-#include "demoniac/util/event_handler.h"
 #include "demoniac/util/error.h"
 #include "demoniac/log.h"
 
@@ -27,7 +26,7 @@ class TCPConnection;
 
 class TCPHandler;
 
-class TCPServer : util::Noncopyable, public util::EventHandler {
+class TCPServer : util::Noncopyable{
 private:
 
     const static int MAX_PENDING_CONNECTIONS_NUM = 200;

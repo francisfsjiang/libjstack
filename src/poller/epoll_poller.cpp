@@ -26,40 +26,38 @@ EpollPoller::EpollPoller() {
 #endif
 }
 
-void EpollPoller::AddEvent(const Event &e) {
-    poll_event event;
+void EpollPoller::AddEvent(const int& fd, const EventCallback &e) {
+    PollEvent poll_event;
     int ret;
-    event.events = 0;
-    event.data.fd = e.GetFD();
+    poll_event.events = 0;
+    poll_event.data.fd = fd;
     //Add read event
     if (e.has_read_callback()) {
-        event.events |= EPOLLIN;
+        poll_event.events |= EPOLLIN;
     }
 
     if (e.has_write_callback()) {
-        event.events |= EPOLLOUT;
+        poll_event.events |= EPOLLOUT;
     }
 
     if (e.has_close_callback()) {
-        event.events |= EPOLLRDHUP;
+        poll_event.events |= EPOLLRDHUP;
     }
 
-    ret = epoll_ctl(epoll_, EPOLL_CTL_ADD, e.GetFD(), &event);
+    ret = epoll_ctl(epoll_, EPOLL_CTL_ADD, fd, &poll_event);
     if (ret < 0) {
-        LOG_ERROR << "fd" << e.GetFD() << " Epoll event add failed " << strerror(errno);
+        LOG_ERROR << "fd" << fd << " Epoll event add failed " << strerror(errno);
         throw util::PollerError("Epoll event add failed");
     }
 
-#if defined(DC_DEBUG)
-    LOG_DEBUG << "fd" << e.GetFD() << " Epoll add event";
-#endif
+    LOG_DEBUG << "fd" << fd << " Epoll add event";
 }
 
-void EpollPoller::UpdateEvent(const Event &e) {
+void EpollPoller::UpdateEvent(const int& fd, const EventCallback &e) {
     poll_event event;
     int ret;
     event.events = 0;
-    event.data.fd = e.GetFD();
+    event.data.fd = fd;
     //Add read event
     if (e.has_read_callback()) {
         event.events |= EPOLLIN;
@@ -73,25 +71,23 @@ void EpollPoller::UpdateEvent(const Event &e) {
         event.events |= EPOLLRDHUP;
     }
 
-    ret = epoll_ctl(epoll_, EPOLL_CTL_MOD, e.GetFD(), &event);
+    ret = epoll_ctl(epoll_, EPOLL_CTL_MOD, fd, &event);
     if (ret < 0) {
-        LOG_ERROR << "fd" << e.GetFD() << " Epoll event modify failed " << strerror(errno);
+        LOG_ERROR << "fd" << fd << " Epoll event modify failed " << strerror(errno);
         throw util::PollerError("Epoll event modify failed");
     }
 
-#if defined(DC_DEBUG)
-    LOG_DEBUG << "fd" << e.GetFD() << " Epoll add event";
-#endif
+    LOG_DEBUG << "fd" << fd << " Epoll add event";
 }
 
-void EpollPoller::DeleteEvent(const Event &e) {
-    int ret = epoll_ctl(epoll_, EPOLL_CTL_DEL, e.GetFD(), NULL);
+void EpollPoller::DeleteEvent(const int& fd, const EventCallback &e) {
+    int ret = epoll_ctl(epoll_, EPOLL_CTL_DEL, fd, NULL);
     if (ret < 0) {
-        LOG_ERROR << "fd" << e.GetFD() << " Epoll event delete failed" << strerror(errno);
+        LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);
         throw util::PollerError("Epoll event delete failed");
     }
 
-    LOG_DEBUG << "fd" << e.GetFD() << " undefined delete event in epoll " << epoll_;
+    LOG_DEBUG << "fd" << fd << " undefined delete event in epoll " << epoll_;
 }
 
 int EpollPoller::Poll(int time_out) {
@@ -103,7 +99,7 @@ int EpollPoller::Poll(int time_out) {
     return ret;
 }
 
-void EpollPoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
+void EpollPoller::HandleEvents(const std::map<int, EventCallback>& events_map) {
     int data_available;
     std::map<int, Event>::iterator iter;
     for (int i = 0; i < ready_num; ++i) {
@@ -113,7 +109,7 @@ void EpollPoller::HandleEvents(int ready_num, std::map<int, Event> &events) {
         LOG_DEBUG << "event num:" << i << " fd" << e.data.fd;
         LOG_DEBUG << "event num:" << i << " events" << e.events;
 #endif
-        iter = events.find(events_ready_[i].data.fd);
+        iter = events_map.find(events_ready_[i].data.fd);
         if (iter == events.end()) {
             LOG_ERROR << events_ready_[i].data.fd << "event not found";
         }

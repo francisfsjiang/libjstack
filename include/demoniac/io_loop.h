@@ -9,12 +9,12 @@
 #include <vector>
 #include <map>
 
-#include "util/noncopyable.h"
+#include "demoniac/util/noncopyable.h"
 
 namespace demoniac {
 
 
-class Event;
+class EventCallback;
 
 namespace poller{
 
@@ -33,21 +33,21 @@ private:
     //IOLoop *instance_;
     bool quit_;
     demoniac::poller::Poller *poller_;
-    std::map<int, Event> events_;
+    std::map<int, EventCallback> events_map_;
 
     IOLoop();
 
 public:
 
-    void AddEvent(const Event &e);
-
-    static IOLoop *Current();
+    static IOLoop* Current();
 
     void Loop();
 
     void Quit();
 
-    void RemoveEvent(const int &fd);
+    void AddEventCallback(const int& fd, EventCallback e);
+
+    void RemoveEventCallback(const int &fd);
 
     void Start();
 

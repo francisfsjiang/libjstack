@@ -9,19 +9,21 @@
 namespace demoniac {
 namespace util {
 
+/*
+ * Like boost::noncopyable
+ */
+
 
 class Noncopyable {
 protected:
-    Noncopyable() {
-    }
+    Noncopyable() = default;
 
-    ~Noncopyable() {
-    }
+    ~Noncopyable() = default;
 
 private:
-    Noncopyable(const Noncopyable &);
+    Noncopyable(const Noncopyable &) = delete;
 
-    Noncopyable &operator=(const Noncopyable &);
+    const Noncopyable& operator=(const Noncopyable &) = delete;
 
 public:
 };

@@ -5,7 +5,7 @@
 #include "demoniac/io_loop.h"
 
 #include "demoniac/poller/get_poller.h"
-#include "demoniac/event.h"
+#include "demoniac/event_callback.h"
 #include "demoniac/log.h"
 
 namespace demoniac {
@@ -17,19 +17,17 @@ kIOLoopInstanceInThread = nullptr;
 IOLoop::IOLoop() {
     kIOLoopInstanceInThread = this;
     poller_ = demoniac::poller::GetPoller();
-    events_.clear();
+    events_map_.clear();
     quit_ = 0;
 }
 
 
-void IOLoop::AddEvent(const Event &e) {
+void IOLoop::AddEventCallback(const int& fd, EventCallback e) {
 
-#if defined(DC_DEBUG)
-    LOG_DEBUG << "fd" << e.GetFD() << " Loop event added";
-#endif
+    LOG_DEBUG << "fd" << fd << " Loop event added";
 
-    events_.insert(std::make_pair(e.GetFD(), e));
-    poller_->AddEvent(e);
+    events_map_.insert(std::make_pair(fd, e));
+    poller_->AddEventCallback(fd, e);
 }
 
 
@@ -55,7 +53,7 @@ void IOLoop::Loop() {
     while (!quit_) {
 
 #if defined(DC_DEBUG)
-        LOG_DEBUG << "Loop " << count++ << " with " << events_.size() << " events";
+        LOG_DEBUG << "Loop " << count++ << " with " << events_map_.size() << " events";
 #endif
         ready_num = poller_->Poll(10);
 
@@ -63,7 +61,7 @@ void IOLoop::Loop() {
         LOG_DEBUG << ready_num << " events ready";
 #endif
 
-        poller_->HandleEvents(ready_num, events_);
+        poller_->HandleEvents(events_map_);
 
     }
 }
@@ -75,11 +73,11 @@ void IOLoop::Quit() {
 }
 
 
-void IOLoop::RemoveEvent(const int &fd) {
+void IOLoop::RemoveEventCallback(const int &fd) {
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << fd << " Loop event removed";
 #endif
-    events_.erase(fd);
+    events_map_.erase(fd);
 }
 
 
@@ -89,6 +87,7 @@ void IOLoop::Start() {
 
 
 IOLoop::~IOLoop() {
+    delete poller_;
     kIOLoopInstanceInThread = NULL;
 }
 

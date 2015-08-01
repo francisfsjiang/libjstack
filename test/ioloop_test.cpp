@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 #include "demoniac/io_loop.h"
-#include "demoniac/event.h"
+#include "event_callback.h"
 #include "demoniac/log.h"
 
 #define LISTEN_PORT 8000
@@ -14,21 +14,25 @@
 char buffer[1000];
 
 
-void read_cb(int fd, int data) {
-    read(fd, buffer, data);
-    buffer[data + 1] = '\0';
-    std::cout << "read_cb fd = " << fd << "data = " << buffer << std::endl;
-}
+class handler: demoniac::util::EventCallback {
 
-void write_cb(int fd, int data) {
-    std::cout << "write_cb fd = " << fd << "data = " << data << std::endl;
-}
 
-void close_cb(int fd, int data) {
-    close(fd);
-    std::cout << "close_cb fd = " << fd << "data = " << data << std::endl;
-}
+    void read_cb(int fd, int data) {
+        read(fd, buffer, data);
+        buffer[data + 1] = '\0';
+        std::cout << "read_cb fd = " << fd << "data = " << buffer << std::endl;
+    }
 
+    void write_cb(int fd, int data) {
+        std::cout << "write_cb fd = " << fd << "data = " << data << std::endl;
+    }
+
+    void close_cb(int fd, int data) {
+        close(fd);
+        std::cout << "close_cb fd = " << fd << "data = " << data << std::endl;
+    }
+
+}
 void accept_cb(int fd, int data) {
     std::cout << "accept_cb fd = " << fd << "data = " << data << std::endl;
     sockaddr_in sock_addr;
@@ -43,7 +47,7 @@ void accept_cb(int fd, int data) {
         e.set_read_callback(read_cb);
         //e.set_write_callback(write_cb);
         e.set_close_callback(close_cb);
-        demoniac::IOLoop::Current()->AddEvent(e);
+        demoniac::IOLoop::Current()->AddEventCallback(e);
     }
 }
 
@@ -76,11 +80,11 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    demoniac::Event e(socket_fd, nullptr);
+    demoniac::CallbackHandler e(socket_fd, nullptr);
     e.set_read_callback(accept_cb);
     e.set_close_callback(close_cb);
 
-    demoniac::IOLoop::Current()->AddEvent(e);
+    demoniac::IOLoop::Current()->AddEventCallback(e);
     demoniac::IOLoop::Current()->Loop();
     return 0;
 }

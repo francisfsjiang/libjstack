@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #include "demoniac/io_loop.h"
-#include "demoniac/event.h"
+#include "event_callback.h"
 #include "demoniac/log.h"
 
 #define LISTEN_PORT 8001
@@ -39,12 +39,12 @@ void accept_cb(int fd, int data) {
         std::cout << "from " << sock_addr.sa_data << std::endl;
 
         std::cout << "add conn " << coon_fd << std::endl;
-        demoniac::Event e(coon_fd, nullptr);
+        demoniac::CallbackHandler e(coon_fd, nullptr);
         e.set_read_callback(read_cb);
         e.set_write_callback(write_cb);
         e.set_close_callback(close_cb);
 
-        demoniac::IOLoop::Current()->AddEvent(e);
+        demoniac::IOLoop::Current()->AddEventCallback(e);
     }
 }
 
@@ -75,11 +75,11 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    demoniac::Event e(socket_fd, nullptr);
+    demoniac::CallbackHandler e(socket_fd, nullptr);
     e.set_read_callback(read_cb);
     e.set_write_callback(write_cb);
 
-    demoniac::IOLoop::Current()->AddEvent(e);
+    demoniac::IOLoop::Current()->AddEventCallback(e);
     demoniac::IOLoop::Current()->Loop();
     return 0;
 }

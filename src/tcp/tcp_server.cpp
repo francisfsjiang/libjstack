@@ -7,7 +7,7 @@
 #include <cstring>
 
 #include "demoniac/io_loop.h"
-#include "demoniac/event.h"
+#include "demoniac/event_callback.h"
 #include "demoniac/tcp/tcp_connection.h"
 #include "demoniac/tcp/tcp_handler.h"
 
@@ -56,10 +56,6 @@ void TCPServer::CreateConnection(int fd, int data) {
                                  route_map_[fd],
                                  this);
 
-        demoniac::Event e(coon_fd, coon);
-        e.set_read_callback();
-        e.set_close_callback();
-        demoniac::IOLoop::Current()->AddEvent(e);
 
         connection_poll_.insert(make_pair(coon_fd, coon));
 
@@ -96,10 +92,10 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void *()> func) 
 
     route_map_.insert(std::make_pair(sock_fd, func));
 
-    Event e(sock_fd, this);
+    CallbackHandler e(sock_fd, this);
     e.set_read_callback();
 
-    demoniac::IOLoop::Current()->AddEvent(e);
+    demoniac::IOLoop::Current()->AddEventCallback(e);
 
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << sock_fd << " Listen established";
@@ -118,17 +114,6 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void *()> func) 
     }
 }
 
-void TCPServer::_ReadCallback(int fd, int data) {
-    CreateConnection(fd, data);
-}
-
-void TCPServer::_WriteCallback(int fd, int data) {
-    throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
-}
-
-void TCPServer::_CloseCallback(int fd, int data) {
-    throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
-}
 
 void TCPServer::RemoveConnection(int fd) {
     connection_poll_.erase(fd);

@@ -15,7 +15,7 @@ set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
 set(SRC_FILES
 src/io_loop.cpp
-src/event.cpp
+src/event_callback.cpp
 src/log.cpp
 src/poller/get_poller.cpp
 src/tcp/tcp_handler.cpp

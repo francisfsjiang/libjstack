@@ -9,6 +9,7 @@
 #include "demoniac/io_loop.h"
 #include "demoniac/tcp/tcp_handler.h"
 #include "demoniac/tcp/tcp_server.h"
+#include "demoniac/event_callback.h"
 
 namespace demoniac {
 namespace tcp {
@@ -24,17 +25,29 @@ TCPConnection::TCPConnection(const int &fd,
     handler_ = (TCPHandler * )(handler_generator());
     handler_->init(this, from_address);
 
+    demoniac::EventCallback e;
+    e.SetReadCallback([this](const int& fd, const int& data){
+        this->ReadCallback(fd, data);
+    });
+    e.SetWriteCallback([this](const int& fd, const int& data){
+        this->WriteCallback(fd, data);
+    });
+    e.SetCloseCallback([this](const int& fd, const int& data){
+        this->CloseCallback(fd, data);
+    });
+    demoniac::IOLoop::Current()->AddEventCallback(fd, e);
+
 }
 
 void TCPConnection::WriteMsg(const std::string &msg) {
-    //Event e(fd_, this);
-    //e.set_write_callback<TCPConnection>(&TCPConnection::_WriteCallback);
-    //IOLoop::Current()->AddEvent(e);
+    //CallbackHandler e(fd_, this);
+    //e.set_write_callback<TCPConnection>(&TCPConnection::WriteCallback);
+    //IOLoop::Current()->AddEventCallback(e);
     send(fd_, &msg.front(), msg.size(), 0);
 
 }
 
-void TCPConnection::_ReadCallback(int fd, int data) {
+void TCPConnection::ReadCallback(int fd, int data) {
     LOG_INFO << from_address_ << " Recv " << data << " bytes data";
     if (data == 0) {
         return;
@@ -45,16 +58,16 @@ void TCPConnection::_ReadCallback(int fd, int data) {
     WriteMsg(handler_->Recv(msg));
 }
 
-void TCPConnection::_WriteCallback(int fd, int data) {
+void TCPConnection::WriteCallback(int fd, int data) {
     throw util::IllegalFunctionError(to_string(fd) + " " + to_string(data));
 
 }
 
-void TCPConnection::_CloseCallback(int fd, int data) {
+void TCPConnection::CloseCallback(int fd, int data) {
 #if defined(DC_DEBUG)
     LOG_DEBUG << "fd" << fd << " Connection disconnected " << data;
 #endif
-    demoniac::IOLoop::Current()->RemoveEvent(fd);
+    demoniac::IOLoop::Current()->RemoveEventCallback(fd);
     tcp_server_->RemoveConnection(fd);
     close(fd);
 
