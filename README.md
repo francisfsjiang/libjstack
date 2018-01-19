@@ -1,19 +1,19 @@
-# Demoniac
+# Abathur
 
-[![Build Status](https://travis-ci.org/neveralso/Demoniac.svg?branch=master)](https://travis-ci.org/neveralso/Demoniac)  [![GPLV2](https://img.shields.io/badge/License-GPLV2-brightgreen.svg)](http://www.gnu.org/licenses/gpl-2.0.html)  [![Join the chat at https://gitter.im/neveralso/Demoniac](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neveralso/Demoniac?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/neveralso/Abathur.svg?branch=master)](https://travis-ci.org/neveralso/Abathur)  [![GPLV2](https://img.shields.io/badge/License-GPLV2-brightgreen.svg)](http://www.gnu.org/licenses/gpl-2.0.html)  [![Join the chat at https://gitter.im/neveralso/Abathur](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/neveralso/Abathur?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Demoniac is a C++ web framework and asynchronous networking library.
+Abathur is a C++ web framework and asynchronous networking library.
 By using non-blocking network I/O,
-Demoniac can scale to tens of thousands of open connections.
+Abathur can scale to tens of thousands of open connections.
 
-Demoniac is available on *nix system.
+Abathur is available on *nix system.
 
 
 # Hello, Wrold
 
 ```c++
 #include <iostream>
-#include "Demoniac.h"
+#include "Abathur.h"
 
 class MainHandler: dc::RequestHandler {
 public:
@@ -31,7 +31,7 @@ int main() {
 ```
 
 
-##First example is available
+## First example is available
 
 Has been tested on :
 
@@ -43,8 +43,8 @@ Has been tested on :
 
 
 ```sh
-git clone https://github.com/neveralso/Demoniac.git
-cd Demoniac
+git clone https://github.com/neveralso/Abathur.git
+cd Abathur
 cmake .
 make
 cd example
@@ -60,4 +60,4 @@ telnet 127.0.0.1 8000
 
 have fun~~~
 
-#STILL IN DEVELOPING →_→
+# STILL IN DEVELOPING →_→
