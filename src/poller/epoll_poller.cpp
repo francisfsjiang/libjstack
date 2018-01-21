@@ -1,17 +1,13 @@
-//
-// Created by Neveralso on 15/3/17.
-//
-
-#include "demoniac/poller/epoll_poller.h"
+#include "abathur/poller/epoll_poller.h"
 
 #include <cstring>
 #include <linux/sockios.h>
 
-#include "demoniac/log.h"
-#include "demoniac/event.h"
-#include "demoniac/util/error.h"
+#include "abathur/log.h"
+#include "abathur/event.h"
+#include "abathur/util/error.h"
 
-namespace demoniac {
+namespace abathur {
 namespace poller {
 
 EpollPoller::EpollPoller() {
@@ -21,7 +17,7 @@ EpollPoller::EpollPoller() {
         LOG_ERROR << "Epoll init failed " << strerror(errno);
         throw util::PollerError("Epoll init failed");
     }
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     LOG_DEBUG << "fd" << epoll_ << " Epoll created";
 #endif
 }
@@ -104,7 +100,7 @@ void EpollPoller::HandleEvents(const std::map<int, EventCallback>& events_map) {
     std::map<int, Event>::iterator iter;
     for (int i = 0; i < ready_num; ++i) {
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
         poll_event e = events_ready_[i];
         LOG_DEBUG << "event num:" << i << " fd" << e.data.fd;
         LOG_DEBUG << "event num:" << i << " events" << e.events;

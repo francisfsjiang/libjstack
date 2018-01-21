@@ -1,15 +1,11 @@
-//
-// Created by Neveralso on 15/3/19.
-//
-
-#ifndef _DEMONIAC_TCP_TCPCONNECTION_H_
-#define _DEMONIAC_TCP_TCPCONNECTION_H_
+#ifndef _ABATHUR_TCP_TCPCONNECTION_H_
+#define _ABATHUR_TCP_TCPCONNECTION_H_
 #include <functional>
 #include <queue>
 #include <string>
 
 
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 
@@ -45,4 +41,4 @@ public:
 }
 }
 
-#endif //_DEMONIAC_TCPCONNECTION_H_
+#endif //_ABATHUR_TCPCONNECTION_H_

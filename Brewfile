@@ -1,0 +1,2 @@
+brew 'boost'
+brew 'cmake'

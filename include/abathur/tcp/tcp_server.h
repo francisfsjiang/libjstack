@@ -1,9 +1,5 @@
-//
-// Created by Neveralso on 15/3/19.
-//
-
-#ifndef _DEMONIAC_TCP_TCPSERVER_H_
-#define _DEMONIAC_TCP_TCPSERVER_H_
+#ifndef _ABATHUR_TCP_TCPSERVER_H_
+#define _ABATHUR_TCP_TCPSERVER_H_
 
 #include <functional>
 #include <map>
@@ -12,11 +8,10 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "demoniac/util/noncopyable.h"
-#include "demoniac/util/error.h"
-#include "demoniac/log.h"
+#include "abathur/util/error.h"
+#include "abathur/log.h"
 
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 
@@ -26,7 +21,7 @@ class TCPConnection;
 
 class TCPHandler;
 
-class TCPServer : util::Noncopyable{
+class TCPServer {
 private:
 
     const static int MAX_PENDING_CONNECTIONS_NUM = 200;
@@ -34,8 +29,12 @@ private:
     std::map<int, std::function<void *()>> route_map_;
 
     std::map<int, TCPConnection *> connection_poll_;
+
+    TCPServer(const TCPServer&) = delete;
+    const TCPServer& operator=(const TCPServer&) = delete;
+
 public:
-    TCPServer();
+    TCPServer() = default;
 
     template<typename T>
     void AddHandler(const sockaddr &sock_addr) {
@@ -52,13 +51,13 @@ public:
         _AddHandler(sock_addr, f);
     }
 
-    virtual void _WriteCallback(int fd, int data);
-
-    virtual void _CloseCallback(int fd, int data);
+//    virtual void _WriteCallback(int fd, int data);
+//
+//    virtual void _CloseCallback(int fd, int data);
+//
+//    virtual void _ReadCallback(int fd, int data);
 
     void _AddHandler(const sockaddr &sock_addr, std::function<void *()>);
-
-    void _ReadCallback(int fd, int data);
 
     void CreateConnection(int fd, int data);
 
@@ -70,4 +69,4 @@ public:
 }
 }
 
-#endif //_DEMONIAC_TCPSERVER_H_
+#endif //_ABATHUR_TCPSERVER_H_

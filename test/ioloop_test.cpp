@@ -4,35 +4,32 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "demoniac/io_loop.h"
-#include "event_callback.h"
-#include "demoniac/log.h"
+#include "abathur/abathur.h"
+#include "abathur/io_loop.h"
+#include "abathur/log.h"
 
 #define LISTEN_PORT 8000
 #define LISTEN_ADDR "0.0.0.0"
 
+using namespace abathur;
+
 char buffer[1000];
 
-
-class handler: demoniac::util::EventCallback {
-
-
-    void read_cb(int fd, int data) {
-        read(fd, buffer, data);
-        buffer[data + 1] = '\0';
-        std::cout << "read_cb fd = " << fd << "data = " << buffer << std::endl;
-    }
-
-    void write_cb(int fd, int data) {
-        std::cout << "write_cb fd = " << fd << "data = " << data << std::endl;
-    }
-
-    void close_cb(int fd, int data) {
-        close(fd);
-        std::cout << "close_cb fd = " << fd << "data = " << data << std::endl;
-    }
-
+void read_cb(int fd, int data) {
+    read(fd, buffer, data);
+    buffer[data + 1] = '\0';
+    std::cout << "read_cb fd = " << fd << "data = " << buffer << std::endl;
 }
+
+void write_cb(int fd, int data) {
+    std::cout << "write_cb fd = " << fd << "data = " << data << std::endl;
+}
+
+void close_cb(int fd, int data) {
+    close(fd);
+    std::cout << "close_cb fd = " << fd << "data = " << data << std::endl;
+}
+
 void accept_cb(int fd, int data) {
     std::cout << "accept_cb fd = " << fd << "data = " << data << std::endl;
     sockaddr_in sock_addr;
@@ -43,11 +40,12 @@ void accept_cb(int fd, int data) {
         std::cout << "from " << inet_ntoa(sock_addr.sin_addr) << std::endl;
 
         std::cout << "add conn " << coon_fd << std::endl;
-        demoniac::Event e(coon_fd, nullptr);
-        e.set_read_callback(read_cb);
-        //e.set_write_callback(write_cb);
-        e.set_close_callback(close_cb);
-        demoniac::IOLoop::Current()->AddEventCallback(e);
+        abathur::EventCallback e;
+        e.SetReadCallback(read_cb);
+        e.SetWriteCallback(write_cb);
+        e.SetCloseCallback(close_cb);
+
+        abathur::IOLoop::Current()->AddEventCallback(coon_fd, e);
     }
 }
 
@@ -80,11 +78,11 @@ int main() {
 
     LOG_DEBUG << "listen fd=" << socket_fd;
 
-    demoniac::CallbackHandler e(socket_fd, nullptr);
-    e.set_read_callback(accept_cb);
-    e.set_close_callback(close_cb);
+    abathur::EventCallback e;
+    e.SetReadCallback(accept_cb);
+    e.SetCloseCallback(close_cb);
 
-    demoniac::IOLoop::Current()->AddEventCallback(e);
-    demoniac::IOLoop::Current()->Loop();
+    abathur::IOLoop::Current()->AddEventCallback(socket_fd, e);
+    abathur::IOLoop::Current()->Loop();
     return 0;
 }

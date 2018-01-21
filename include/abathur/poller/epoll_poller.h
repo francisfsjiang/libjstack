@@ -1,16 +1,12 @@
-//
-// Created by Neveralso on 15/3/17.
-//
-
-#ifndef _DEMONIAC_POLLER_EPOLLPOLLER_H_
-#define _DEMONIAC_POLLER_EPOLLPOLLER_H_
+#ifndef _ABATHUR_POLLER_EPOLLPOLLER_H_
+#define _ABATHUR_POLLER_EPOLLPOLLER_H_
 
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 
-#include "demoniac/poller/poller.h"
+#include "abathur/poller/poller.h"
 
-namespace demoniac {
+namespace abathur {
 namespace poller {
 
 
@@ -41,4 +37,4 @@ public:
 }
 
 
-#endif //_DEMONIAC_EPOLLPOLLER_H_
+#endif //_ABATHUR_EPOLLPOLLER_H_

@@ -1,7 +1,3 @@
-//
-// Created by Neveralso on 15/5/2.
-//
-
 //  References
 //  rfc7230 http://tools.ietf.org/html/rfc7230
 //  rfc3986 http://tools.ietf.org/html/rfc3986
@@ -45,9 +41,9 @@
 //  obs-fold       = CRLF 1*( SP / HTAB )
 //                   ; obsolete line folding
 
-#include "demoniac/http/http_header.h"
+#include "abathur/http/http_header.h"
 
-namespace demoniac{
+namespace abathur{
 namespace http{
 
 

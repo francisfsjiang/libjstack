@@ -1,17 +1,13 @@
-//
-// Created by Neveralso on 15/3/19.
-//
-
-#include "demoniac/tcp/tcp_connection.h"
+#include "abathur/tcp/tcp_connection.h"
 
 #include <sys/socket.h>
 
-#include "demoniac/io_loop.h"
-#include "demoniac/tcp/tcp_handler.h"
-#include "demoniac/tcp/tcp_server.h"
-#include "demoniac/event_callback.h"
+#include "abathur/io_loop.h"
+#include "abathur/tcp/tcp_handler.h"
+#include "abathur/tcp/tcp_server.h"
+#include "abathur/event_callback.h"
 
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 
@@ -25,7 +21,7 @@ TCPConnection::TCPConnection(const int &fd,
     handler_ = (TCPHandler * )(handler_generator());
     handler_->init(this, from_address);
 
-    demoniac::EventCallback e;
+    abathur::EventCallback e;
     e.SetReadCallback([this](const int& fd, const int& data){
         this->ReadCallback(fd, data);
     });
@@ -35,7 +31,7 @@ TCPConnection::TCPConnection(const int &fd,
     e.SetCloseCallback([this](const int& fd, const int& data){
         this->CloseCallback(fd, data);
     });
-    demoniac::IOLoop::Current()->AddEventCallback(fd, e);
+    abathur::IOLoop::Current()->AddEventCallback(fd, e);
 
 }
 
@@ -64,10 +60,10 @@ void TCPConnection::WriteCallback(int fd, int data) {
 }
 
 void TCPConnection::CloseCallback(int fd, int data) {
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     LOG_DEBUG << "fd" << fd << " Connection disconnected " << data;
 #endif
-    demoniac::IOLoop::Current()->RemoveEventCallback(fd);
+    abathur::IOLoop::Current()->RemoveEventCallback(fd);
     tcp_server_->RemoveConnection(fd);
     close(fd);
 

@@ -1,21 +1,17 @@
-//
-// Created by Neveralso on 15/3/18.
-//
-
-#include "demoniac/poller/get_poller.h"
+#include "abathur/poller/get_poller.h"
 
 
 
-namespace demoniac {
+namespace abathur {
 namespace poller {
 
-#if defined(__linux__)
+#if defined(ABATHUR_LINUX)
 
 EpollPoller* GetPoller() {
     return new EpollPoller();
 }
 
-#elif defined(__unix__) || defined(__MACH__)
+#elif defined(ABATHUR_DARWIN) || defined(ABATHUR_UNIX)
 
 KqueuePoller *GetPoller() {
     return new KqueuePoller();

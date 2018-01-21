@@ -1,14 +1,9 @@
-//
-// Created by Neveralso on 15/3/15.
-//
+#include "abathur/io_loop.h"
 
-#include "demoniac/io_loop.h"
+#include "abathur/abathur.h"
+#include "abathur/poller/get_poller.h"
 
-#include "demoniac/poller/get_poller.h"
-#include "demoniac/event_callback.h"
-#include "demoniac/log.h"
-
-namespace demoniac {
+namespace abathur {
 
 __thread IOLoop
 *
@@ -16,7 +11,7 @@ kIOLoopInstanceInThread = nullptr;
 
 IOLoop::IOLoop() {
     kIOLoopInstanceInThread = this;
-    poller_ = demoniac::poller::GetPoller();
+    poller_ = abathur::poller::GetPoller();
     events_map_.clear();
     quit_ = 0;
 }
@@ -46,18 +41,18 @@ void IOLoop::Loop() {
     LOG_INFO << "Loop start.";
     int ready_num;
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     int count = 0;
 #endif
 
     while (!quit_) {
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
         LOG_DEBUG << "Loop " << count++ << " with " << events_map_.size() << " events";
 #endif
         ready_num = poller_->Poll(10);
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
         LOG_DEBUG << ready_num << " events ready";
 #endif
 
@@ -74,7 +69,7 @@ void IOLoop::Quit() {
 
 
 void IOLoop::RemoveEventCallback(const int &fd) {
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     LOG_DEBUG << "fd" << fd << " Loop event removed";
 #endif
     events_map_.erase(fd);

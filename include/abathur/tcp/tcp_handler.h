@@ -1,13 +1,9 @@
-//
-// Created by Neveralso on 15/3/20.
-//
-
-#ifndef _DEMONIAC_TCP_TCPHANDLER_H_
-#define _DEMONIAC_TCP_TCPHANDLER_H_
+#ifndef _ABATHUR_TCP_TCPHANDLER_H_
+#define _ABATHUR_TCP_TCPHANDLER_H_
 
 #include <string>
 
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 
@@ -30,4 +26,4 @@ public:
 }
 }
 
-#endif //_DEMONIAC_TCPHANDLER_H_
+#endif //_ABATHUR_TCPHANDLER_H_

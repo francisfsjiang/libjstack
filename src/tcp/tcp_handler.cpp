@@ -1,12 +1,8 @@
-//
-// Created by Neveralso on 15/3/20.
-//
+#include "abathur/tcp/tcp_handler.h"
 
-#include "demoniac/tcp/tcp_handler.h"
+#include "abathur/tcp/tcp_connection.h"
 
-#include "demoniac/tcp/tcp_connection.h"
-
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 

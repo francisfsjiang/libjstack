@@ -1,23 +1,19 @@
-//
-// Created by Neveralso on 15/3/19.
-//
-
-#include "demoniac/tcp/tcp_server.h"
+#include "abathur/tcp/tcp_server.h"
 
 #include <cstring>
 
-#include "demoniac/io_loop.h"
-#include "demoniac/event_callback.h"
-#include "demoniac/tcp/tcp_connection.h"
-#include "demoniac/tcp/tcp_handler.h"
+#include "abathur/io_loop.h"
+#include "abathur/event_callback.h"
+#include "abathur/tcp/tcp_connection.h"
+#include "abathur/tcp/tcp_handler.h"
 
-namespace demoniac {
+namespace abathur {
 namespace tcp {
 
 
-TCPServer::TCPServer() {
-
-}
+//TCPServer::TCPServer() {
+//
+//}
 
 void TCPServer::CreateConnection(int fd, int data) {
 
@@ -25,7 +21,7 @@ void TCPServer::CreateConnection(int fd, int data) {
     if (data == -1) data = 1;
 #endif
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     LOG_DEBUG << "fd" << fd << " has " << data << " connections";
 #endif
 
@@ -92,12 +88,14 @@ void TCPServer::_AddHandler(const sockaddr &sock_addr, function<void *()> func) 
 
     route_map_.insert(std::make_pair(sock_fd, func));
 
-    CallbackHandler e(sock_fd, this);
-    e.set_read_callback();
+    EventCallback e;
+    e.SetReadCallback(
+            [this](const int& fd, const int& data){this->CreateConnection(fd, data);}
+    );
 
-    demoniac::IOLoop::Current()->AddEventCallback(e);
+    abathur::IOLoop::Current()->AddEventCallback(sock_fd, e);
 
-#if defined(DC_DEBUG)
+#if defined(ABATHUR_DEBUG)
     LOG_DEBUG << "fd" << sock_fd << " Listen established";
 #endif
 

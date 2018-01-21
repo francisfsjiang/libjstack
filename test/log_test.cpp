@@ -1,7 +1,8 @@
 #include <iostream>
-#include "demoniac/log.h"
+#include "abathur/log.h"
 
 using namespace std;
+using namespace abathur;
 
 int main() {
     LOG_DEBUG << "test debug";

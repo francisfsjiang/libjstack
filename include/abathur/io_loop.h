@@ -1,17 +1,11 @@
-//
-// Created by Neveralso on 15/3/15.
-//
-
-#ifndef _DEMONIAC_IOLOOP_H_
-#define _DEMONIAC_IOLOOP_H_
+#ifndef _ABATHUR_IOLOOP_H_
+#define _ABATHUR_IOLOOP_H_
 
 #include <iostream>
 #include <vector>
 #include <map>
 
-#include "demoniac/util/noncopyable.h"
-
-namespace demoniac {
+namespace abathur {
 
 
 class EventCallback;
@@ -27,15 +21,18 @@ namespace poller{
 }
 
 
-class IOLoop : demoniac::util::Noncopyable {
+class IOLoop {
 private:
 
     //IOLoop *instance_;
     bool quit_;
-    demoniac::poller::Poller *poller_;
+    abathur::poller::Poller *poller_;
     std::map<int, EventCallback> events_map_;
 
     IOLoop();
+
+    IOLoop(const IOLoop&) = delete;
+    const IOLoop& operator=(const IOLoop&) = delete;
 
 public:
 
@@ -57,4 +54,4 @@ public:
 }
 
 
-#endif //_DEMONIAC_IOLOOP_H_
+#endif //_ABATHUR_IOLOOP_H_

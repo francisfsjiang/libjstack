@@ -1,15 +1,11 @@
-//
-// Created by Neveralso on 15/3/16.
-//
-
-#ifndef _DEMONIAC_UTIL_ERROR_H_
-#define _DEMONIAC_UTIL_ERROR_H_
+#ifndef _ABATHUR_UTIL_ERROR_H_
+#define _ABATHUR_UTIL_ERROR_H_
 
 #include <string>
 
 using namespace std;
 
-namespace demoniac {
+namespace abathur {
 namespace util {
 
 
@@ -66,4 +62,4 @@ public:
 }
 
 
-#endif //_DEMONIAC_ERROR_H_
+#endif //_ABATHUR_ERROR_H_
