@@ -24,7 +24,7 @@ namespace abathur::poller {
 
         int Poll(int time_out) override ;
 
-        virtual void HandleEvents(const int& events_ready_amount, eventconst std::map<int, EventCallback>& events_map) override ;
+        virtual void HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) override ;
 
         virtual void AddEventCallback(const int& fd, const EventCallback& e) override ;
 

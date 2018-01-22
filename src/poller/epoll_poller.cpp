@@ -11,41 +11,41 @@ namespace abathur::poller {
 
     EpollPoller::EpollPoller() {
         events_ready_.resize(MAX_READY_EVENTS_NUM);
-        epoll_ = epoll_create(MAX_READY_EVENTS_NUM);
-        if (epoll_ < 0) {
+        epoll_fd_ = epoll_create(MAX_READY_EVENTS_NUM);
+        if (epoll_fd_ < 0) {
             LOG_ERROR << "Epoll init failed " << strerror(errno);
             throw util::PollerError("Epoll init failed");
         }
 #if defined(ABATHUR_DEBUG)
-        LOG_DEBUG << "fd" << epoll_ << " Epoll created.";
+        LOG_DEBUG << "fd" << epoll_fd_ << " Epoll created.";
 #endif
     }
 
 EpollPoller::~EpollPoller() {
 #if defined(ABATHUR_DEBUG)
-        LOG_DEBUG << "fd" << epoll_ << " Epoll destoried.";
+        LOG_DEBUG << "fd" << epoll_fd_ << " Epoll destoried.";
 #endif
     }
     
     void EpollPoller::AddEventCallback(const int &fd, const EventCallback &e) {
-        PollEvent poll_event;
+        PollEvent epoll_event;
         int ret;
-        poll_event.events = 0;
-        poll_event.data.fd = fd;
+        epoll_event.events = 0;
+        epoll_event.data.fd = fd;
         //Add read event
         if (e.HasReadCallback()) {
-            poll_event.events |= EPOLLIN;
+            epoll_event.events |= EPOLLIN;
         }
 
         if (e.HasWriteCallback()) {
-            poll_event.events |= EPOLLOUT;
+            epoll_event.events |= EPOLLOUT;
         }
 
         if (e.HasCloseCallback()) {
-            poll_event.events |= EPOLLRDHUP;
+            epoll_event.events |= EPOLLRDHUP;
         }
 
-        ret = epoll_ctl(epoll_, EPOLL_CTL_ADD, fd, &poll_event);
+        ret = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &epoll_event);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event add failed " << strerror(errno);
             throw util::PollerError("Epoll event add failed");
@@ -55,7 +55,7 @@ EpollPoller::~EpollPoller() {
     }
 
     void EpollPoller::UpdateEventCallback(const int &fd, const EventCallback &e) {
-        poll_event event;
+        epoll_event event;
         int ret;
         event.events = 0;
         event.data.fd = fd;
@@ -72,7 +72,7 @@ EpollPoller::~EpollPoller() {
             event.events |= EPOLLRDHUP;
         }
 
-        ret = epoll_ctl(epoll_, EPOLL_CTL_MOD, fd, &event);
+        ret = epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &event);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event modify failed " << strerror(errno);
             throw util::PollerError("Epoll event modify failed");
@@ -81,8 +81,8 @@ EpollPoller::~EpollPoller() {
         LOG_DEBUG << "fd" << fd << " Epoll add event";
     }
 
-    void EpollPoller::DeleteEventCallback(const int &fd, const EventCallback &e) {
-        int ret = epoll_ctl(epoll_, EPOLL_CTL_DEL, fd, NULL);
+    void EpollPoller::DeleteEventCallback(const int &fd) {
+        int ret = epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);
             throw util::PollerError("Epoll event delete failed");
@@ -93,9 +93,9 @@ EpollPoller::~EpollPoller() {
 
     int EpollPoller::Poll(int time_out) {
 
-        int ret = epoll_wait(epoll_, events_ready_.data(), MAX_READY_EVENTS_NUM, time_out * 1000);
+        int ret = epoll_wait(epoll_fd_, events_ready_.data(), MAX_READY_EVENTS_NUM, time_out * 1000);
         if (ret < 0) {
-            LOG_ERROR << "fd" << epoll_ << "epoll poll error occured. " << strerror(errno);
+            LOG_ERROR << "fd" << epoll_fd_ << "epoll poll error occured. " << strerror(errno);
         }
         return ret;
     }
@@ -105,7 +105,7 @@ EpollPoller::~EpollPoller() {
         for (int i = 0; i < events_ready_amount; ++i) {
 
 #if defined(ABATHUR_DEBUG)
-            poll_event e = events_ready_[i];
+            epoll_event e = events_ready_[i];
         LOG_DEBUG << "event num:" << i << " fd" << e.data.fd;
         LOG_DEBUG << "event num:" << i << " events" << e.events;
 #endif
@@ -118,17 +118,17 @@ EpollPoller::~EpollPoller() {
             if (iter->second.HasCloseCallback() &&
                 (events_ready_[i].events & EPOLLRDHUP ||
                  events_ready_[i].events & EPOLLERR)) {
-                iter->second.exec_close_callback(events_ready_[i].data.fd,
+                iter->second.ExecCloseCallback(events_ready_[i].data.fd,
                                                  data_available);
             }
             if (iter->second.HasReadCallback() &&
                 (events_ready_[i].events & EPOLLIN)) {
-                iter->second.exec_read_callback(events_ready_[i].data.fd,
+                iter->second.ExecReadCallback(events_ready_[i].data.fd,
                                                 data_available);
             }
             if (iter->second.HasCloseCallback() &&
                 (events_ready_[i].events & EPOLLOUT)) {
-                iter->second.exec_write_callback(events_ready_[i].data.fd,
+                iter->second.ExecWriteCallback(events_ready_[i].data.fd,
                                                  data_available);
             }
 
