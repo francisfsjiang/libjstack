@@ -6,34 +6,33 @@
 
 #include "abathur/poller/poller.h"
 
-namespace abathur {
-namespace poller {
+namespace abathur::poller {
 
 
-class EpollPoller : public Poller {
-private:
-    typedef struct epoll_event PollEvent;
+    class EpollPoller : public Poller {
+    private:
+        typedef struct epoll_event PollEvent;
 
-    int epoll_fd_;
+        int epoll_fd_;
 
-    std::vector<PollEvent> events_ready_;
-    int events_ready_amount_;
+        std::vector<PollEvent> events_ready_;
 
-public:
-    EpollPoller();
+    public:
+        EpollPoller();
 
-    int Poll(int time_out);
+        ~EpollPoller() override ;
 
-    virtual void HandleEvents(const std::map<int, EventCallback>& events_map);
+        int Poll(int time_out) override ;
 
-    virtual void AddEventCallback(const int& fd, const EventCallback& e);
+        virtual void HandleEvents(const int& events_ready_amount, eventconst std::map<int, EventCallback>& events_map) override ;
 
-    virtual void UpdateEventCallback(const int& fd, const EventCallback& e);
+        virtual void AddEventCallback(const int& fd, const EventCallback& e) override ;
 
-    virtual void DeleteEventCallback(const int& fd);
-};
+        virtual void UpdateEventCallback(const int& fd, const EventCallback& e) override ;
 
-}
+        virtual void DeleteEventCallback(const int& fd) override ;
+    };
+
 }
 
 

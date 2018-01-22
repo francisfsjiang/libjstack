@@ -90,11 +90,11 @@ namespace abathur::poller {
             return ret;
         }
 
-        void KqueuePoller::HandleEvents(const std::map<int, EventCallback>& events_map) {
+        void KqueuePoller::HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) {
 
             LOG_DEBUG << "handling events";
 
-            for (int i = 0; i < events_ready_amount_; ++i) {
+            for (int i = 0; i < events_ready_amount; ++i) {
 
                 LOG_DEBUG << "event " << i << " fd: " << events_ready_[i].ident;
                 LOG_DEBUG << "event " << i << " data: " << events_ready_[i].data;

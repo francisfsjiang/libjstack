@@ -21,7 +21,6 @@ private:
     int kqueue_fd_;
 
     std::vector<PollEvent> events_ready_;
-    int events_ready_amount_;
 
 public:
     KqueuePoller();
@@ -30,7 +29,7 @@ public:
 
     virtual int Poll(int time_out) override ;
 
-    virtual void HandleEvents(const std::map<int, EventCallback>& events_map) override ;
+    virtual void HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) override ;
 
     virtual void AddEventCallback(const int& fd, const EventCallback& e) override ;
 

@@ -100,18 +100,17 @@ EpollPoller::~EpollPoller() {
         return ret;
     }
 
-    void EpollPoller::HandleEvents(const std::map<int, EventCallback>& events_map) {
+    void EpollPoller::HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) {
         int data_available;
-        std::map<int, Event>::iterator iter;
-        for (int i = 0; i < ready_num; ++i) {
+        for (int i = 0; i < events_ready_amount; ++i) {
 
 #if defined(ABATHUR_DEBUG)
             poll_event e = events_ready_[i];
         LOG_DEBUG << "event num:" << i << " fd" << e.data.fd;
         LOG_DEBUG << "event num:" << i << " events" << e.events;
 #endif
-            iter = events_map.find(events_ready_[i].data.fd);
-            if (iter == events.end()) {
+            auto iter = events_map.find(events_ready_[i].data.fd);
+            if (iter == events_map.end()) {
                 LOG_ERROR << events_ready_[i].data.fd << "event not found";
             }
             data_available = -1;
@@ -137,6 +136,5 @@ EpollPoller::~EpollPoller() {
     }
 
 
-}
 }
 

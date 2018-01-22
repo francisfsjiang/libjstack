@@ -21,7 +21,7 @@ namespace abathur {
 
             virtual int Poll(int time_out) = 0;
 
-            virtual void HandleEvents(const std::map<int, EventCallback>& events_map) = 0;
+            virtual void HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) = 0;
 
             virtual void AddEventCallback(const int& fd, const EventCallback& e) = 0;
 

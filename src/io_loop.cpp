@@ -56,7 +56,7 @@ void IOLoop::Loop() {
         LOG_DEBUG << ready_num << " events ready";
 #endif
 
-        poller_->HandleEvents(events_map_);
+        poller_->HandleEvents(ready_num, events_map_);
 
     }
 }
