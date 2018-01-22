@@ -88,7 +88,7 @@ EpollPoller::~EpollPoller() {
             throw util::PollerError("Epoll event delete failed");
         }
 
-        LOG_DEBUG << "fd" << fd << " undefined delete event in epoll " << epoll_;
+        LOG_DEBUG << "fd" << fd << " undefined delete event in epoll " << epoll_fd_;
     }
 
     int EpollPoller::Poll(int time_out) {
