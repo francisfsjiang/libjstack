@@ -200,14 +200,14 @@ install:
 
   - if [[ "${COMPILER}" == "gcc" ]]; then echo ${COMPILER}; fi
 
-  - if [[ "${COMPILER}" == "clang" ]]; then
-      echo ${COMPILER};
-      CXX_FLAGS=-stdlib=libc++;
-    fi
 
   - CMAKE_OPTIONS+=" -DCMAKE_CXX_COMPILER=${CXX_COMPILER}"
   - CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${C_COMPILER}"
-  - CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\"${CXX_FLAGS}\""
+
+  - if [[ "${CXX}" == clang* ]]; then
+      CXX_FLAGS=-stdlib=libc++;
+      CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\"${CXX_FLAGS}\"";
+    fi
   ############################################################################
   # Install Boost headers
   ############################################################################
