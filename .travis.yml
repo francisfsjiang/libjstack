@@ -240,7 +240,9 @@ before_script:
   ############################################################################
   - cd ${TRAVIS_BUILD_DIR};
   - echo ${CMAKE_OPTIONS};
-  - (mkdir build && cd build && cmake ${CMAKE_OPTIONS} ..);
+  - mkdir build;
+  - cd build;
+  - cmake `echo ${CMAKE_OPTIONS}` ..;
 
 
 script:
