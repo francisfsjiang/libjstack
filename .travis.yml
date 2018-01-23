@@ -211,8 +211,7 @@ install:
   - CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${C_COMPILER}"
 
   - if [[ "${CXX}" == clang* ]]; then
-      CXX_FLAGS=" -stdlib=libc++";
-      CMAKE_OPTIONS+=" -DUSE_LIBC++=TRUE"
+      CMAKE_OPTIONS+=" -DUSE_LIBC++=TRUE";
     fi
   ############################################################################
   # Install Boost headers
