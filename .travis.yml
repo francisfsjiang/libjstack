@@ -102,14 +102,14 @@ matrix:
     ##########################################################################
     # Check for code formatting errors
     ##########################################################################
-    - os: osx
-      compiler: clang
-      osx_image: xcode9.2
-      env:
-        - CC=clang
-        - CXX=clang++
-        - C_COMPILER=clang
-        - CXX_COMPILER=clang++
+#    - os: osx
+#      compiler: clang
+#      osx_image: xcode9.2
+#      env:
+#        - CC=clang
+#        - CXX=clang++
+#        - C_COMPILER=clang
+#        - CXX_COMPILER=clang++
 
     ##########################################################################
     # Build with the main configuration on all the supported compilers
@@ -202,12 +202,12 @@ install:
 
   - if [[ "${COMPILER}" == "clang" ]]; then
       echo ${COMPILER};
-      CXX_FLAGS=" -stdlib=libc++";
+      CXX_FLAGS=-stdlib=libc++;
     fi
 
   - CMAKE_OPTIONS+=" -DCMAKE_CXX_COMPILER=${CXX_COMPILER}"
   - CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${C_COMPILER}"
-  - CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=${CXX_FLAGS}"
+  - CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\"${CXX_FLAGS}\""
   ############################################################################
   # Install Boost headers
   ############################################################################
@@ -233,10 +233,13 @@ before_script:
   # Go back to the root of the project and setup the build directory
   ############################################################################
   - cd ${TRAVIS_BUILD_DIR};
-  - (mkdir build && cd build && cmake .. ${CMAKE_OPTIONS});
+  - echo ${CMAKE_OPTIONS};
+  - (mkdir build && cd build && cmake ${CMAKE_OPTIONS} ..);
 
 
 script:
+  - ls;
+  - pwd;
   - cd ${TRAVIS_BUILD_DIR}/build;
   - make;
 

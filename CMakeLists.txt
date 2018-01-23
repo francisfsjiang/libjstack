@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(Abathur)
 
+IF (CMAKE_BUILD_TYPE STREQUAL "")
+    set(CMAKE_BUILD_TYPE "DEBUG")
+ENDIF()
+
 
 IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
     message("Building in debug mode")
@@ -46,6 +50,8 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
 endif ()
+
+message("Building flags: ${CMAKE_CXX_FLAGS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
