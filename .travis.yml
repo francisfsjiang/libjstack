@@ -178,15 +178,15 @@ matrix:
         - CXX_COMPILER=clang++-5.0
 
 before_install:
-    - eval "${MATRIX_EVAL}"
+    - eval "${MATRIX_EVAL}";
 
 install:
 
   ############################################################################
   # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
   ############################################################################
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps";
+  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR};
 
 
 
@@ -202,7 +202,7 @@ install:
 
   - if [[ "${COMPILER}" == "clang" ]]; then
       echo ${COMPILER};
-      CXX_FLAGS=" -stdlib=libc++"
+      CXX_FLAGS=" -stdlib=libc++";
     fi
 
   - CMAKE_OPTIONS+=" -DCMAKE_CXX_COMPILER=${CXX_COMPILER}"
@@ -213,18 +213,18 @@ install:
   ############################################################################
   - |
     if [[ "${BOOST_VERSION}" != "" ]]; then
-      BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION}
-      BOOST_ROOT=${BOOST_DIR}/build
+      BOOST_DIR=${DEPS_DIR}/boost-${BOOST_VERSION};
+      BOOST_ROOT=${BOOST_DIR}/build;
       if [[ -z "$(ls -A ${BOOST_DIR})" ]]; then
-        BOOST_URL="http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz"
-        mkdir -p ${BOOST_DIR}
-        mkdir -p ${BOOST_ROOT}
-        { travis_retry wget --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1
-        cd ${BOOST_DIR}/tools/build
-        ./bootstrap.sh --prefix=${BOOST_ROOT}
-        ./b2 install
+        BOOST_URL="http://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}/boost_${BOOST_VERSION//\./_}.tar.gz";
+        mkdir -p ${BOOST_DIR};
+        mkdir -p ${BOOST_ROOT};
+        { travis_retry wget --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1;
+        cd ${BOOST_DIR}/tools/build;
+        ./bootstrap.sh --prefix=${BOOST_ROOT};
+        ./b2 install;
       fi
-      CMAKE_OPTIONS+=" -DBOOST_ROOT=${BOOST_ROOT}"
+      CMAKE_OPTIONS+=" -DBOOST_ROOT=${BOOST_ROOT}";
     fi
 
 
@@ -232,13 +232,13 @@ before_script:
   ############################################################################
   # Go back to the root of the project and setup the build directory
   ############################################################################
-  - cd ${TRAVIS_BUILD_DIR}
-  - (mkdir build && cd build && cmake .. ${CMAKE_OPTIONS})
+  - cd ${TRAVIS_BUILD_DIR};
+  - (mkdir build && cd build && cmake .. ${CMAKE_OPTIONS});
 
 
 script:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - make
+  - cd ${TRAVIS_BUILD_DIR}/build;
+  - make;
 
 notifications:
   webhooks:
