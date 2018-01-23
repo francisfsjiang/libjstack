@@ -21,7 +21,7 @@ public:
     EchoHandler() : TCPHandler() {};
     std::string Recv(const std::string msg) {
         time_t te = time(NULL);
-        strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi \0", gmtime(&te));
+        strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi.", gmtime(&te));
         std::string s(buffer_);
         s+=msg;
         s+="\n";

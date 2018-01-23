@@ -5,9 +5,12 @@ IF (CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE "DEBUG")
 ENDIF()
 
+IF (USE_LIBC++)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+ENDIF()
 
 IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
-    message("Building in debug mode")
+    message("Building in debug mode.")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DEBUG")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
@@ -15,7 +18,7 @@ IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
-    message("Building in release mode")
+    message("Building in release mode.")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 

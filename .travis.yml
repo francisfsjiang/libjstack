@@ -212,7 +212,7 @@ install:
 
   - if [[ "${CXX}" == clang* ]]; then
       CXX_FLAGS=" -stdlib=libc++";
-      CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\" ${CXX_FLAGS}\"";
+      CMAKE_OPTIONS+=" -DUSE_LIBC++=TRUE"
     fi
   ############################################################################
   # Install Boost headers
