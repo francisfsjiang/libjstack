@@ -5,7 +5,7 @@ namespace abathur {
 
     EventCallback::EventCallback(){ }
 
-    EventCallback::~EventCallback(){ };
+    EventCallback::~EventCallback(){ }
 
     void EventCallback::SetReadCallback(CallbackFunction read_callback) {
         read_callback_ =  read_callback;

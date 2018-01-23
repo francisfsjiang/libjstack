@@ -141,6 +141,8 @@ matrix:
             - llvm-toolchain-trusty-3.9
           packages:
             - clang-3.9
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC=clang-3.9
         - CXX=clang++-3.9
@@ -156,6 +158,8 @@ matrix:
             - llvm-toolchain-trusty-4.0
           packages:
             - clang-4.0
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC=clang-4.0
         - CXX=clang++-4.0
@@ -171,6 +175,8 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC=clang-5.0
         - CXX=clang++-5.0
@@ -205,8 +211,8 @@ install:
   - CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${C_COMPILER}"
 
   - if [[ "${CXX}" == clang* ]]; then
-      CXX_FLAGS=-stdlib=libc++;
-      CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\"${CXX_FLAGS}\"";
+      CXX_FLAGS=" -stdlib=libc++";
+      CMAKE_OPTIONS+=" -DCMAKE_CXX_FLAGS=\" ${CXX_FLAGS}\"";
     fi
   ############################################################################
   # Install Boost headers
