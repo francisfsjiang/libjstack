@@ -40,8 +40,8 @@ matrix:
           packages:
             - g++-7
       env:
-        - CC=gcc-7
-        - CXX=g++-7
+        - CC_COMPILER=gcc-7
+        - CXX_COMPILER=g++-7
 
     - os: linux
       dist: trusty
@@ -53,8 +53,8 @@ matrix:
           packages:
             - clang-3.9
       env:
-        - CC=clang-3.9
-        - CXX=clang++-3.9
+        - CC_COMPILER=clang-3.9
+        - CXX_COMPILER=clang++-3.9
 
     - os: linux
       dist: trusty
@@ -66,8 +66,8 @@ matrix:
           packages:
             - clang-4.0
       env:
-        - CC=clang-4.0
-        - CXX=clang++-4.0
+        - CC_COMPILER=clang-4.0
+        - CXX_COMPILER=clang++-4.0
 
     - os: linux
       dist: trusty
@@ -79,8 +79,8 @@ matrix:
           packages:
             - clang-5.0
       env:
-        - CC=clang-5.0
-        - CXX=clang++-5.0
+        - CC_COMPILER=clang-5.0
+        - CXX_COMPILER=clang++-5.0
 
 before_install:
     - eval "${MATRIX_EVAL}";
@@ -101,10 +101,10 @@ install:
   - if [[ "${LLVM_VERSION}" == "default" ]]; then LLVM_VERSION=3.9.0; fi
   - if [[ "${BOOST_VERSION}" == "default" ]]; then BOOST_VERSION=1.66.0; fi
 
-  - echo ${CXX}
-  - echo ${CC}
-  - CMAKE_OPTIONS+=" -DCMAKE_CXX_COMPILER=${CXX}"
-  - CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${CC}"
+  - export CC=${CC_COMPILER}
+  - export CXX=${CXX_COMPILER}
+  - export CMAKE_OPTIONS+=" -DCMAKE_C_COMPILER=${CC_COMPILER}"
+  - export CMAKE_OPTIONS+=" -DCMAKE_CXX_COMPILER=${CXX_COMPILER}"
 
   - if [[ "${CXX}" == clang* ]]; then
       CMAKE_OPTIONS+=" -DUSE_LIBC++=TRUE";
