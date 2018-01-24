@@ -6,12 +6,6 @@ cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.66.0
 
-addons:
-  apt:
-    packages:
-      - cmake
-      - cmake-data
-
 env:
   global:
     - MAKEFLAGS="-j 2"
