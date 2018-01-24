@@ -11,8 +11,6 @@ addons:
     packages:
       - cmake
       - cmake-data
-      - libc++-dev
-      - libc++abi-dev
 
 env:
   global:
@@ -52,6 +50,8 @@ matrix:
             - llvm-toolchain-trusty-3.9
           packages:
             - clang-3.9
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC_COMPILER=clang-3.9
         - CXX_COMPILER=clang++-3.9
@@ -65,6 +65,8 @@ matrix:
             - llvm-toolchain-trusty-4.0
           packages:
             - clang-4.0
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC_COMPILER=clang-4.0
         - CXX_COMPILER=clang++-4.0
@@ -78,6 +80,8 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
+            - libc++-dev
+            - libc++abi-dev
       env:
         - CC_COMPILER=clang-5.0
         - CXX_COMPILER=clang++-5.0
