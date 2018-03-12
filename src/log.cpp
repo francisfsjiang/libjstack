@@ -1,4 +1,4 @@
-#include "abathur/log.h"
+#include "abathur/log.hpp"
 
 #include <unistd.h>
 

@@ -1,5 +1,5 @@
-#ifndef _ABATHUR_POLLER_GETPOLLER_H_
-#define _ABATHUR_POLLER_GETPOLLER_H_
+#ifndef _ABATHUR_POLLER_GETPOLLER_HPP_
+#define _ABATHUR_POLLER_GETPOLLER_HPP_
 
 #if defined(ABATHUR_LINUX)
 
@@ -7,7 +7,7 @@
 
 #elif defined(ABATHUR_DARWIN) || defined(ABATHUR_UNIX)
 
-#include "abathur/poller/kqueue_poller.h"
+#include "abathur/poller/kqueue_poller.hpp"
 
 #endif
 
@@ -33,4 +33,4 @@ KqueuePoller *GetPoller();
 }
 }
 
-#endif //_ABATHUR_GETPOLLER_H_
+#endif //_ABATHUR_GETPOLLER_HPP_

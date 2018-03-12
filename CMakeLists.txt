@@ -17,6 +17,8 @@ IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
 ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
     message("Building in release mode.")
 
@@ -32,13 +34,15 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin_test)
 set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
 set(SRC_FILES
-src/io_loop.cpp
-src/event_callback.cpp
-src/log.cpp
-src/poller/get_poller.cpp
-src/tcp/tcp_handler.cpp
-src/tcp/tcp_connection.cpp
-src/tcp/tcp_server.cpp
+        src/io_loop.cpp
+        src/log.cpp
+        src/event.cpp
+        src/channel.cpp
+        src/poller/get_poller.cpp
+        src/net/socket_handler.cpp
+        src/net/socket_server.cpp
+        src/net/inet_address.cpp
+        src/util/buffer.cpp
 )
 
 
@@ -59,6 +63,10 @@ message("Building flags: ${CMAKE_CXX_FLAGS}")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(abathur STATIC ${SRC_FILES})
+
+set(CMAKE_MACOSX_RPATH ON)
+add_library(abathur_dynamic SHARED ${SRC_FILES})
+set_target_properties(abathur_dynamic PROPERTIES OUTPUT_NAME abathur)
 
 add_executable(ioloop_test     test/ioloop_test.cpp)
 add_executable(ioloop_test2    test/ioloop_test2.cpp)

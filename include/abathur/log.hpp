@@ -1,5 +1,5 @@
-#ifndef _ABATHUR_LOG_H_
-#define _ABATHUR_LOG_H_
+#ifndef _ABATHUR_LOG_HPP_
+#define _ABATHUR_LOG_HPP_
 
 #include <fstream>
 
@@ -56,4 +56,4 @@ namespace abathur {
 
 }
 
-#endif //_ABATHUR_LOG_H_
+#endif //_ABATHUR_LOG_HPP_

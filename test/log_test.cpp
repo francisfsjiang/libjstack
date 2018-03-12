@@ -1,5 +1,5 @@
 #include <iostream>
-#include "abathur/log.h"
+#include "abathur/log.hpp"
 
 using namespace std;
 using namespace abathur;

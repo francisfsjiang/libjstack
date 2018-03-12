@@ -6,14 +6,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "abathur/io_loop.h"
-#include "abathur/tcp/tcp_server.h"
-#include "abathur/tcp/tcp_handler.h"
+#include "abathur/io_loop.hpp"
+#include "abathur/net/socket_server.hpp"
+#include "abathur/net/tcp_handler.hpp"
 
 #define LISTEN_PORT 8002
 #define LISTEN_ADDR "0.0.0.0"
 
-class EchoHandler : abathur::tcp::TCPHandler {
+class EchoHandler : abathur::net::TCPHandler {
 private:
     const static int BUFFER_SIZE = 200;
     char buffer_[BUFFER_SIZE];
@@ -43,7 +43,7 @@ int main() {
     in_addr.sin_addr.s_addr = htonl(inet_addr(LISTEN_ADDR));
     sockaddr sock_addr;
     memcpy(&sock_addr, &in_addr, sizeof(in_addr));
-    abathur::tcp::TCPServer *tcp_server = new abathur::tcp::TCPServer();
+    abathur::net::TCPServer *tcp_server = new abathur::net::SocketServer();
     tcp_server->AddHandler<EchoHandler>(*((sockaddr*)&in_addr));
     abathur::IOLoop::Current()->Start();
     return 0;

@@ -5,8 +5,8 @@
 //#include <arpa/inet.h>
 #include <unistd.h>
 
-#include "abathur/abathur.h"
-#include "abathur/io_loop.h"
+#include "abathur/abathur.hpp"
+#include "abathur/io_loop.hpp"
 
 #define LISTEN_PORT 8001
 #define LISTEN_ADDR "0.0.0.0"

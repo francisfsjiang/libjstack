@@ -1,10 +1,11 @@
-#include "abathur/poller/kqueue_poller.h"
+#include "abathur/poller/kqueue_poller.hpp"
 
 #include <unistd.h>
 
-#include "abathur/abathur.h"
+#include "abathur/abathur.hpp"
 
-#include "abathur/event_callback.h"
+#include "abathur/channel.hpp"
+#include "abathur/event.hpp"
 
 namespace abathur::poller {
 
@@ -25,52 +26,19 @@ namespace abathur::poller {
 #endif
         }
 
-        void KqueuePoller::AddEventCallback(const int& fd, const EventCallback& e) {
+        void KqueuePoller::AddChannel(int fd) {
             PollEvent poll_event;
-            int ret;
-            //Add read event
-            if (e.HasReadCallback()) {
-                EV_SET(&poll_event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-                ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
-                if (ret < 0) {
-                    LOG_ERROR << fd << "event read add failed" << strerror(errno);
-                }
-            }
-            //Add write event
-            if (e.HasWriteCallback()) {
-                EV_SET(&poll_event, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-                ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
-                if (ret < 0) {
-                    LOG_ERROR << fd << "event write add failed" << strerror(errno);
-                }
+            EV_SET(&poll_event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+            EV_SET(&poll_event, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+            int ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
+            if (ret < 0) {
+                LOG_ERROR << fd << "Channel add failed" << strerror(errno);
             }
 
             LOG_DEBUG << "fd" << fd << " Kqueue add event";
         }
 
-        void KqueuePoller::UpdateEventCallback(const int& fd, const EventCallback &e) {
-            //readd will modify the event
-            PollEvent poll_event;
-            int ret;
-            //Add read event
-            if (e.HasReadCallback()) {
-                EV_SET(&poll_event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-                ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
-                if (ret < 0) {
-                    LOG_ERROR << fd << "event read modify failed" << strerror(errno);
-                }
-            }
-            //Add write event
-            if (e.HasWriteCallback()) {
-                EV_SET(&poll_event, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-                ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
-                if (ret < 0) {
-                    LOG_ERROR << fd << "event write modify failed" << strerror(errno);
-                }
-            }
-        }
-
-        void KqueuePoller::DeleteEventCallback(const int& fd) {
+        void KqueuePoller::DeleteChannel(const int& fd) {
             PollEvent poll_event;
             EV_SET(&poll_event, fd, 0, EV_DELETE, 0, 0, NULL);
 
@@ -90,7 +58,10 @@ namespace abathur::poller {
             return ret;
         }
 
-        void KqueuePoller::HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) {
+        void KqueuePoller::HandleEvents(
+                const int& events_ready_amount,
+                const std::map<int, std::shared_ptr<Channel>>& channel_map
+        ) {
 
             LOG_DEBUG << "handling events";
 
@@ -99,23 +70,31 @@ namespace abathur::poller {
                 LOG_DEBUG << "event " << i << " fd: " << events_ready_[i].ident;
                 LOG_DEBUG << "event " << i << " data: " << events_ready_[i].data;
 
-                auto iter = events_map.find(static_cast<int>(events_ready_[i].ident));
-                if (iter == events_map.end()) {
-                    LOG_ERROR << events_ready_[i].ident << "event not found";
+                PollEvent& event = events_ready_[i];
+
+                auto iter = channel_map.find(static_cast<int>(event.ident));
+                if (iter == channel_map.end()) {
+                    LOG_ERROR << event.ident << "event not found";
                 }
-                if (iter->second.HasCloseCallback() &&
-                    (events_ready_[i].flags & EV_EOF) == EV_EOF) {
-                    iter->second.ExecCloseCallback(events_ready_[i].ident,
-                                                   events_ready_[i].data);
-                }
-                else if (events_ready_[i].filter == EVFILT_READ) {
-                    iter->second.ExecReadCallback(events_ready_[i].ident,
-                                                  events_ready_[i].data);
-                }
-                else if (events_ready_[i].filter == EVFILT_WRITE) {
-                    iter->second.ExecWriteCallback(events_ready_[i].ident,
-                                                   events_ready_[i].data);
-                }
+                iter->second->Process(Event(
+                        event.ident,
+                        event.filter == EVFILT_READ,
+                        event.filter == EVFILT_WRITE,
+                        (event.flags & EV_EOF) == EV_EOF
+                ));
+//                if (iter->second.HasCloseCallback() &&
+//                    ) {
+//                    iter->second.ExecCloseCallback(event.ident,
+//                                                   event.data);
+//                }
+//                else if () {
+//                    iter->second.ExecReadCallback(event.ident,
+//                                                  event.data);
+//                }
+//                else if () {
+//                    iter->second.ExecWriteCallback(event.ident,
+//                                                   event.data);
+//                }
 
             }
         }

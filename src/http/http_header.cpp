@@ -41,7 +41,7 @@
 //  obs-fold       = CRLF 1*( SP / HTAB )
 //                   ; obsolete line folding
 
-#include "abathur/http/http_header.h"
+#include "abathur/http/http_header.hpp"
 
 namespace abathur{
 namespace http{

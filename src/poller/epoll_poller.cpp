@@ -1,11 +1,11 @@
-#include "abathur/poller/epoll_poller.h"
+#include "abathur/poller/epoll_poller.hpp"
 
 #include <cstring>
 #include <linux/sockios.h>
 
-#include "abathur/log.h"
-#include "abathur/event_callback.h"
-#include "abathur/util/error.h"
+#include "abathur/log.hpp"
+#include "abathur/event_callback.hpp"
+#include "abathur/error.hpp"
 
 namespace abathur::poller {
 
@@ -27,7 +27,7 @@ EpollPoller::~EpollPoller() {
 #endif
     }
     
-    void EpollPoller::AddEventCallback(const int &fd, const EventCallback &e) {
+    void EpollPoller::AddChannel(const int &fd, const Channel &e) {
         PollEvent epoll_event;
         int ret;
         epoll_event.events = 0;
@@ -54,34 +54,34 @@ EpollPoller::~EpollPoller() {
         LOG_DEBUG << "fd" << fd << " Epoll add event";
     }
 
-    void EpollPoller::UpdateEventCallback(const int &fd, const EventCallback &e) {
-        epoll_event event;
-        int ret;
-        event.events = 0;
-        event.data.fd = fd;
-        //Add read event
-        if (e.HasReadCallback()) {
-            event.events |= EPOLLIN;
-        }
+//    void EpollPoller::UpdateChannel(const int &fd, const Channel &e) {
+//        epoll_event event;
+//        int ret;
+//        event.events = 0;
+//        event.data.fd = fd;
+//        //Add read event
+//        if (e.HasReadCallback()) {
+//            event.events |= EPOLLIN;
+//        }
+//
+//        if (e.HasWriteCallback()) {
+//            event.events |= EPOLLOUT;
+//        }
+//
+//        if (e.HasCloseCallback()) {
+//            event.events |= EPOLLRDHUP;
+//        }
+//
+//        ret = epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &event);
+//        if (ret < 0) {
+//            LOG_ERROR << "fd" << fd << " Epoll event modify failed " << strerror(errno);
+//            throw util::PollerError("Epoll event modify failed");
+//        }
+//
+//        LOG_DEBUG << "fd" << fd << " Epoll add event";
+//    }
 
-        if (e.HasWriteCallback()) {
-            event.events |= EPOLLOUT;
-        }
-
-        if (e.HasCloseCallback()) {
-            event.events |= EPOLLRDHUP;
-        }
-
-        ret = epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &event);
-        if (ret < 0) {
-            LOG_ERROR << "fd" << fd << " Epoll event modify failed " << strerror(errno);
-            throw util::PollerError("Epoll event modify failed");
-        }
-
-        LOG_DEBUG << "fd" << fd << " Epoll add event";
-    }
-
-    void EpollPoller::DeleteEventCallback(const int &fd) {
+    void EpollPoller::DeleteChannel(const int &fd) {
         int ret = epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);
@@ -100,7 +100,10 @@ EpollPoller::~EpollPoller() {
         return ret;
     }
 
-    void EpollPoller::HandleEvents(const int& events_ready_amount, const std::map<int, EventCallback>& events_map) {
+    void EpollPoller::HandleEvents(
+            const int& events_ready_amount,
+            const std::map<int, std::shard_ptr<Channel>>& events_map
+    ) {
         int data_available;
         for (int i = 0; i < events_ready_amount; ++i) {
 
