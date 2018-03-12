@@ -22,7 +22,8 @@ namespace abathur::util {
 
         size_t pos() const;
 
-        int write(const char* src_data, size_t src_len, size_t dst_pos);
+        int write(const char*, size_t);
+        int write(const char*, size_t, size_t);
 
         int read(size_t src_len, size_t src_pos, char* dst_data) const;
     };

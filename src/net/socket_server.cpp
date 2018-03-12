@@ -14,7 +14,7 @@
 namespace abathur::net {
 
 
-    SocketServer::SocketServer(const InetAddress& address) {
+    SocketServer::SocketServer(std::shared_ptr<InetAddress> address) {
 
 
         std::shared_ptr<Channel> channel_ptr(new Channel(shared_from_this()));

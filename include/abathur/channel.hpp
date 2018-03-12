@@ -1,8 +1,9 @@
 #ifndef _ABATHUR_CHANNEL_HPP_
 #define _ABATHUR_CHANNEL_HPP_
 
-#include <boost/coroutine2/coroutine.hpp>
 #include <memory>
+
+#include <boost/coroutine2/all.hpp>
 
 namespace abathur {
 

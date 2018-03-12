@@ -38,7 +38,7 @@ namespace abathur::poller {
             LOG_DEBUG << "fd" << fd << " Kqueue add event";
         }
 
-        void KqueuePoller::DeleteChannel(const int& fd) {
+        void KqueuePoller::DeleteChannel(int fd) {
             PollEvent poll_event;
             EV_SET(&poll_event, fd, 0, EV_DELETE, 0, 0, NULL);
 

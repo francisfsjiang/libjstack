@@ -27,23 +27,15 @@ EpollPoller::~EpollPoller() {
 #endif
     }
     
-    void EpollPoller::AddChannel(const int &fd, const Channel &e) {
+    void EpollPoller::AddChannel(int fd) {
         PollEvent epoll_event;
         int ret;
         epoll_event.events = 0;
         epoll_event.data.fd = fd;
         //Add read event
-        if (e.HasReadCallback()) {
-            epoll_event.events |= EPOLLIN;
-        }
-
-        if (e.HasWriteCallback()) {
-            epoll_event.events |= EPOLLOUT;
-        }
-
-        if (e.HasCloseCallback()) {
-            epoll_event.events |= EPOLLRDHUP;
-        }
+        epoll_event.events |= EPOLLIN;
+        epoll_event.events |= EPOLLOUT;
+        epoll_event.events |= EPOLLRDHUP;
 
         ret = epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &epoll_event);
         if (ret < 0) {
@@ -81,7 +73,7 @@ EpollPoller::~EpollPoller() {
 //        LOG_DEBUG << "fd" << fd << " Epoll add event";
 //    }
 
-    void EpollPoller::DeleteChannel(const int &fd) {
+    void EpollPoller::DeleteChannel(int fd) {
         int ret = epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);

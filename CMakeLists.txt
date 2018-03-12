@@ -39,6 +39,7 @@ set(SRC_FILES
         src/event.cpp
         src/channel.cpp
         src/poller/get_poller.cpp
+        src/net/socket.cpp
         src/net/socket_handler.cpp
         src/net/socket_server.cpp
         src/net/inet_address.cpp
@@ -58,6 +59,18 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
 endif ()
 
+find_package(BOOST)
+
+set(DEP_LIBS ${DEP_LIBS}
+        boost_context-mt
+        boost_coroutine-mt
+        )
+
+set(LIBS ${LIBS} ${DEP_LIBS}
+        abathur
+        )
+
+message("Building libraries: ${LIBS}")
 message("Building flags: ${CMAKE_CXX_FLAGS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -67,15 +80,16 @@ add_library(abathur STATIC ${SRC_FILES})
 set(CMAKE_MACOSX_RPATH ON)
 add_library(abathur_dynamic SHARED ${SRC_FILES})
 set_target_properties(abathur_dynamic PROPERTIES OUTPUT_NAME abathur)
+target_link_libraries(abathur_dynamic ${DEP_LIBS})
 
-add_executable(ioloop_test     test/ioloop_test.cpp)
-add_executable(ioloop_test2    test/ioloop_test2.cpp)
+#add_executable(ioloop_test     test/ioloop_test.cpp)
+#add_executable(ioloop_test2    test/ioloop_test2.cpp)
 add_executable(log_test        test/log_test.cpp)
 add_executable(tcp_echo_server test/tcp_echo_server.cpp)
 
-target_link_libraries(ioloop_test     abathur)
-target_link_libraries(ioloop_test2    abathur)
-target_link_libraries(log_test        abathur)
-target_link_libraries(tcp_echo_server abathur)
+#target_link_libraries(ioloop_test     ${LIBS})
+#target_link_libraries(ioloop_test2    ${LIBS})
+target_link_libraries(log_test        ${LIBS})
+target_link_libraries(tcp_echo_server ${LIBS})
 
-add_subdirectory(example)
+#add_subdirectory(example)

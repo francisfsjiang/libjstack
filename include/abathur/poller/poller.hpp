@@ -20,18 +20,18 @@ namespace abathur {
 
             virtual ~Poller() = default;
 
-            virtual int Poll(int time_out) = 0;
+            virtual int Poll(int) = 0;
 
             virtual void HandleEvents(
                     const int& events_ready_amount,
                     const std::map<int, std::shared_ptr<Channel>>& channel_map
             ) = 0;
 
-            virtual void AddChannel(int fd) = 0;
+            virtual void AddChannel(int) = 0;
 
 //            virtual void UpdateChannel(const int& fd, const Channel& e) = 0;
 
-            virtual void DeleteChannel(const int& fd) = 0;
+            virtual void DeleteChannel(int) = 0;
 
             Poller(const Poller&) = delete;
             const Poller& operator=(const Poller&) = delete;

@@ -21,19 +21,19 @@ namespace abathur::poller {
     public:
         EpollPoller();
 
-        ~EpollPoller() override ;
+        virtual ~EpollPoller() override ;
 
-        int Poll(int time_out) override ;
+        virtual int Poll(int) override ;
 
         virtual void HandleEvents(
                 const int& events_ready_amount,
                 const std::map<int, std::shared_ptr<Channel>>& channel_map) override ;
 
-        virtual void AddChannel(int fd, std::shared_ptr<Channel>) override ;
+        virtual void AddChannel(int) override ;
 
 //        virtual void UpdateChannel(const int& fd, const Channel& e) override ;
 
-        virtual void DeleteChannel(const int& fd) override ;
+        virtual void DeleteChannel(int) override ;
     };
 
 }

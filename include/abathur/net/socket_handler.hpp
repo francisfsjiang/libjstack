@@ -4,8 +4,8 @@
 #include <queue>
 #include <string>
 
+#include "abathur/util/buffer.hpp"
 #include "abathur/event_processor.hpp"
-
 
 namespace abathur::net {
 
@@ -16,16 +16,22 @@ class SocketServer;
 
 class Socket;
 
+
 class SocketHandler: public EventProcessor {
 private:
     std::shared_ptr<Socket> socket_ptr_ = nullptr;
+
+    abathur::util::Buffer read_buffer_, write_buffer_;
+
 
 public:
     SocketHandler(std::shared_ptr<Socket>);
 
     void ProcessEvent(const Event &) override ;
 
-    void WriteMsg(const std::string&);
+    int Write(const char*, size_t);
+
+    virtual void Process(const char*, size_t) = 0;
 
 };
 

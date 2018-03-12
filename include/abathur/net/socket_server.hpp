@@ -30,7 +30,7 @@ private:
     std::function<SocketHandler*(std::shared_ptr<Socket>)>socket_handler_generator_ = nullptr;
 
 public:
-    SocketServer(const InetAddress& address);
+    SocketServer(std::shared_ptr<InetAddress> address);
 
     void ProcessEvent(const Event&) override;
 
@@ -45,6 +45,7 @@ public:
         socket_handler_generator_ = [=](std::shared_ptr<Socket> socket) {
             return (SocketHandler *) (new T(socket));
         };
+        return 0;
     }
 
     void CreateConnection(int fd, int data);

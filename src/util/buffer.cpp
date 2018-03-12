@@ -27,10 +27,10 @@ namespace abathur::util {
         return data_;
     }
 
+    int Buffer::write(const char* src_data, size_t src_len) {
+        return write(src_data, src_len, pos_);
+    }
     int Buffer::write(const char* src_data, size_t src_len, size_t dst_pos) {
-        if (dst_pos > len_) {
-            return -1;
-        }
         size_t cp_len = src_len + dst_pos > len_ ? len_ - dst_pos: src_len + dst_pos;
         memcpy(data_ + dst_pos, src_data, cp_len);
         return static_cast<int>(cp_len);

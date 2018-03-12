@@ -19,6 +19,9 @@ namespace abathur::net {
 
         InetAddress(const sockaddr*, socklen_t);
 
+        InetAddress(const InetAddress&) = default;
+        InetAddress& operator=(const InetAddress&) = default;
+
         const sockaddr* getSockAddrPtr() const;
 
         std::string toString() const;
@@ -28,14 +31,11 @@ namespace abathur::net {
         sa_family_t getProtocolFamily() const;
         socklen_t getAddressLen() const ;
         const socklen_t* getAddressLenPtr() const;
-
-
     private:
 
         sockaddr_storage address_;
         socklen_t address_len_;
 
-        InetAddress() = delete;
     };
 
     const int k_MAX_INET_ADDRESS_LEN = 46;

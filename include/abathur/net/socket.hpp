@@ -1,23 +1,27 @@
 #ifndef _ABATHUR_SOCKET_HPP_
 #define _ABATHUR_SOCKET_HPP_
 
-namespace abathur::net {
+#include <iostream>
 
-    class InetAddress;
+#include "abathur/net/inet_address.hpp"
+
+namespace abathur::net {
 
     class Socket {
     private:
         int fd_;
+        std::shared_ptr<InetAddress> address_ = nullptr;
 
         Socket(const Socket&) = delete;
         const Socket& operator=(const Socket&) = delete;
     public:
-        Socket(const InetAddress&);
-        Socket(int fd, const InetAddress&);
+        Socket(std::shared_ptr<InetAddress>);
+        Socket(int fd, std::shared_ptr<InetAddress>);
 
         int Bind();
 
         int Send(const char*, size_t);
+        int Recv(char*, size_t);
 
         int Listen();
 

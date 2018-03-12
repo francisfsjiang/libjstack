@@ -2,10 +2,12 @@
 
 #include <sys/socket.h>
 
+#include "abathur/util/buffer.hpp"
 #include "abathur/net/socket.hpp"
 #include "abathur/io_loop.hpp"
 #include "abathur/channel.hpp"
 #include "abathur/log.hpp"
+#include "abathur/event.hpp"
 
 namespace abathur::net {
 
@@ -21,12 +23,14 @@ namespace abathur::net {
 
     }
 
-    void SocketHandler::WriteMsg(const std::string &msg) {
-        //CallbackHandler e(fd_, this);
-        //e.set_write_callback<SocketHandler>(&SocketHandler::WriteCallback);
-        //IOLoop::Current()->AddEventCallback(e);
-        socket_ptr_ -> Send(msg.data(), msg.size());
+    void SocketHandler::ProcessEvent(const Event & event) {
+        if (event.Readable()) {
+            socket_ptr_->Recv(read_buffer_.data(), read_buffer_.capacity());
+        }
+    }
 
+    int SocketHandler::Write(const char * data, size_t size) {
+        return write_buffer_.write(data, size);
     }
 
 }
