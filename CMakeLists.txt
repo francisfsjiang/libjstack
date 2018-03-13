@@ -87,6 +87,6 @@ add_executable(tcp_echo_server test/tcp_echo_server.cpp)
 #target_link_libraries(ioloop_test     ${LIBS})
 #target_link_libraries(ioloop_test2    ${LIBS})
 target_link_libraries(log_test        ${LIBS})
-target_link_libraries(tcp_echo_server ${LIBS} boost_coroutine boost_context)
+target_link_libraries(tcp_echo_server ${LIBS})
 
 #add_subdirectory(example)
