@@ -69,6 +69,7 @@ message("Building libraries: ${LIBS}")
 message("Building flags: ${CMAKE_CXX_FLAGS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${BOOST_ROOT}/include)
 
 add_library(abathur STATIC ${SRC_FILES})
 
