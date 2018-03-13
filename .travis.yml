@@ -120,9 +120,9 @@ install:
         mkdir -p ${BOOST_DIR};
         mkdir -p ${BOOST_ROOT};
         { travis_retry wget --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${BOOST_DIR}; } || exit 1;
-        cd ${BOOST_DIR}/tools/build;
+        cd ${BOOST_DIR};
         ./bootstrap.sh --prefix=${BOOST_ROOT};
-        ./b2 install;
+        ./b2 --build-type=complete --layout=tagged --prefix=${BOOST_ROOT} threading=multi install
       fi
       CMAKE_OPTIONS+=" -DBOOST_ROOT=${BOOST_ROOT}";
     fi
