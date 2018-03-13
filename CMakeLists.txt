@@ -60,6 +60,7 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
 endif ()
 
 find_package(Boost)
+link_directories(${BOOST_ROOT}/lib)
 
 LIST(APPEND LIBS "boost_context-mt")
 LIST(APPEND LIBS "boost_coroutine-mt")
