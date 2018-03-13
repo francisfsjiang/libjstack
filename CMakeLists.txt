@@ -61,8 +61,8 @@ endif ()
 
 find_package(Boost)
 
-LIST(APPEND LIBS "boost_context")
-LIST(APPEND LIBS "boost_coroutine")
+LIST(APPEND LIBS "boost_context-mt")
+LIST(APPEND LIBS "boost_coroutine-mt")
 LIST(APPEND LIBS "abathur")
 
 message("Building libraries: ${LIBS}")
