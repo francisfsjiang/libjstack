@@ -63,7 +63,7 @@ find_package(Boost REQUIRED COMPONENTS context coroutine)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_directories(${BOOST_ROOT}/lib)
 
-set(DEP_LIBS boost_coroutine boost_context)
+set(DEP_LIBS boost_coroutine-mt boost_context-mt)
 set(LIBS abathur ${DEP_LIBS})
 
 message("Building libraries: ${LIBS}")
