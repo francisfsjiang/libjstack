@@ -129,6 +129,9 @@ install:
 
 
 before_script:
+  - ls ${BOOST_ROOT};
+  - ls ${BOOST_ROOT}/lib;
+  - ls ${BOOST_ROOT}/include;
   - cd ${TRAVIS_BUILD_DIR};
   - echo ${CMAKE_OPTIONS};
   - mkdir build;
