@@ -59,16 +59,11 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
 endif ()
 
-find_package(BOOST)
+find_package(Boost)
 
-set(DEP_LIBS ${DEP_LIBS}
-        boost_context-mt
-        boost_coroutine-mt
-        )
-
-set(LIBS ${LIBS} ${DEP_LIBS}
-        abathur
-        )
+LIST(APPEND LIBS "boost_context")
+LIST(APPEND LIBS "boost_coroutine")
+LIST(APPEND LIBS "abathur")
 
 message("Building libraries: ${LIBS}")
 message("Building flags: ${CMAKE_CXX_FLAGS}")
@@ -90,6 +85,6 @@ add_executable(tcp_echo_server test/tcp_echo_server.cpp)
 #target_link_libraries(ioloop_test     ${LIBS})
 #target_link_libraries(ioloop_test2    ${LIBS})
 target_link_libraries(log_test        ${LIBS})
-target_link_libraries(tcp_echo_server ${LIBS})
+target_link_libraries(tcp_echo_server ${LIBS} boost_coroutine boost_context)
 
 #add_subdirectory(example)

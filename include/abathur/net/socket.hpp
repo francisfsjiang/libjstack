@@ -2,6 +2,7 @@
 #define _ABATHUR_SOCKET_HPP_
 
 #include <iostream>
+#include <memory>
 
 #include "abathur/net/inet_address.hpp"
 

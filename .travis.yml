@@ -9,6 +9,7 @@ cache:
 env:
   global:
     - MAKEFLAGS="-j 2"
+    - BOOST_VERSION="1.66.0"
 
 matrix:
   exclude:

@@ -1,6 +1,7 @@
 #ifndef _ABATHUR_EVENT_PROCESSOR_HPP_
 #define _ABATHUR_EVENT_PROCESSOR_HPP_
 
+#include <memory>
 
 namespace abathur {
 

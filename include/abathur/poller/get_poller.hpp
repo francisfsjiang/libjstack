@@ -3,7 +3,7 @@
 
 #if defined(ABATHUR_LINUX)
 
-#include "abathur/poller/epoll_poller.h"
+#include "abathur/poller/epoll_poller.hpp"
 
 #elif defined(ABATHUR_DARWIN) || defined(ABATHUR_UNIX)
 

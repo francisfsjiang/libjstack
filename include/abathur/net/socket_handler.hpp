@@ -1,8 +1,11 @@
 #ifndef _ABATHUR_TCP_SOCKET_HANDLER_HPP_
 #define _ABATHUR_TCP_SOCKET_HANDLER_HPP_
+
 #include <functional>
 #include <queue>
 #include <string>
+#include <memory>
+
 
 #include "abathur/util/buffer.hpp"
 #include "abathur/event_processor.hpp"

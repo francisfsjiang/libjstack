@@ -1,5 +1,7 @@
 #include "abathur/net/socket.hpp"
 
+#include <cstring>
+
 #include "abathur/net/inet_address.hpp"
 #include "abathur/log.hpp"
 

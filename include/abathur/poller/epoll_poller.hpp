@@ -1,6 +1,8 @@
 #ifndef _ABATHUR_POLLER_EPOLLPOLLER_HPP_
 #define _ABATHUR_POLLER_EPOLLPOLLER_HPP_
 
+#include <memory>
+
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 

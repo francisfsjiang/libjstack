@@ -1,6 +1,7 @@
 #include "abathur/util/buffer.hpp"
 
 #include <algorithm>
+#include <cstring>
 
 namespace abathur::util {
     Buffer::Buffer() {
