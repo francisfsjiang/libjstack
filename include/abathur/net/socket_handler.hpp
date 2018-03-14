@@ -30,11 +30,13 @@ private:
 public:
     SocketHandler(std::shared_ptr<Socket>);
 
+    virtual int Init();
+
     void ProcessEvent(const Event &) override ;
 
     int Write(const char*, size_t);
 
-    virtual void Process(const char*, size_t) = 0;
+    virtual void Process(const char*, size_t);
 
 };
 

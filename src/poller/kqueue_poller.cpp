@@ -29,8 +29,13 @@ namespace abathur::poller {
         void KqueuePoller::AddChannel(int fd) {
             PollEvent poll_event;
             EV_SET(&poll_event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-            EV_SET(&poll_event, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
             int ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
+            if (ret < 0) {
+                LOG_ERROR << fd << "Channel add failed" << strerror(errno);
+            }
+
+            EV_SET(&poll_event, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+            ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
             if (ret < 0) {
                 LOG_ERROR << fd << "Channel add failed" << strerror(errno);
             }

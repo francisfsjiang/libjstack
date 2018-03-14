@@ -14,13 +14,17 @@ namespace abathur::net {
 
     SocketHandler::SocketHandler(std::shared_ptr<Socket> socket) {
         socket_ptr_ = socket;
+    }
 
-        std::shared_ptr<EventProcessor> p = shared_from_this();
-        std::shared_ptr<Channel> channel(
-                new Channel(p)
-        );
-        abathur::IOLoop::Current()->AddChannel(socket_ptr_->GetFD(), channel);
+    int SocketHandler::Init() {
 
+        auto p = shared_from_this();
+        auto self = std::dynamic_pointer_cast<SocketHandler>(p);
+        std::shared_ptr<Channel> channel_ptr(new Channel(self));
+
+        abathur::IOLoop::Current()->AddChannel(socket_ptr_->GetFD(), channel_ptr);
+
+        return 0;
     }
 
     void SocketHandler::ProcessEvent(const Event & event) {
@@ -31,6 +35,10 @@ namespace abathur::net {
 
     int SocketHandler::Write(const char * data, size_t size) {
         return write_buffer_.write(data, size);
+    }
+
+    void SocketHandler::Process(const char* , size_t ) {
+
     }
 
 }

@@ -1,5 +1,6 @@
 #include "abathur/log.hpp"
 
+#include <iostream>
 #include <unistd.h>
 
 namespace abathur {
@@ -11,10 +12,12 @@ namespace abathur {
         return std::string(buffer);
     }
 
-    Log Log::Instance("dc.log");
+//    Log Log::Instance("dc.log");
+    Log* Log::Instance = new Log();
 
     Log::Log() {
-        out_stream_ = new std::ofstream(std::string("abathur_") + get_date() + ".log");
+//        out_stream_ = new std::ofstream(std::string("abathur_") + get_date() + ".log");
+        out_stream_ = &std::cout;
         buffer_ = new char[80];
     }
 
@@ -31,6 +34,8 @@ namespace abathur {
 
     std::string get_level(LogLevel level) {
         switch (level) {
+            case TRACE:
+                return "TRACE";
             case DEBUG:
                 return "DEBUG";
             case INFO:
@@ -39,14 +44,14 @@ namespace abathur {
                 return "WARNING";
             case ERROR:
                 return "ERROR";
-            case CRITICAL:
-                return "CRITICAL";
+            case FATAL:
+                return "FATAL";
             default:
                 return NULL;
         }
     }
 
-    std::ofstream &Log::log(LogLevel level) {
+    std::ostream &Log::log(LogLevel level) {
         log_level_ = level;
         *out_stream_
                 << std::endl
@@ -63,7 +68,7 @@ namespace abathur {
         return getpid();
     }
 
-    std::ofstream &Log::log(int i) {
+    std::ostream &Log::log(int i) {
         return Log::log((LogLevel) i);
     }
 

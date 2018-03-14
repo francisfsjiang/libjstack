@@ -6,6 +6,9 @@
 namespace abathur::util {
     Buffer::Buffer() {
         data_ = new char[DEFAULT_BUFFER_SIZE];
+        len_ = DEFAULT_BUFFER_SIZE;
+        pos_ = 0;
+        size_ = 0;
     }
 
     Buffer::Buffer(int len) {
@@ -34,6 +37,8 @@ namespace abathur::util {
     int Buffer::write(const char* src_data, size_t src_len, size_t dst_pos) {
         size_t cp_len = src_len + dst_pos > len_ ? len_ - dst_pos: src_len + dst_pos;
         memcpy(data_ + dst_pos, src_data, cp_len);
+        size_ += cp_len;
+        pos_ += cp_len;
         return static_cast<int>(cp_len);
     }
 

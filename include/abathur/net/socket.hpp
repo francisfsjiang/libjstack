@@ -26,9 +26,21 @@ namespace abathur::net {
 
         int Listen();
 
+        int Connect();
+
         int GetFD();
 
         std::shared_ptr<Socket> Accept();
+
+        int Close();
+        int SetNonBlocking(bool);
+        int SetCloseOnExec(bool);
+        int SetTcpNoDelay(bool);
+        int SetReuseAddr(bool);
+        int SetReusePort(bool);
+        int SetKeepAlive(bool);
+
+        ~Socket();
 
     };
 }

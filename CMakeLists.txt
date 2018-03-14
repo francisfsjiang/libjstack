@@ -38,6 +38,7 @@ set(SRC_FILES
         src/log.cpp
         src/event.cpp
         src/channel.cpp
+        src/event_processor.cpp
         src/poller/get_poller.cpp
         src/net/socket.cpp
         src/net/socket_handler.cpp

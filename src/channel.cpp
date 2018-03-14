@@ -14,6 +14,7 @@ namespace abathur {
 
                         auto ev = in.get();
                         event_processor_->ProcessEvent(ev);
+                        in();
 
                     }
                 }

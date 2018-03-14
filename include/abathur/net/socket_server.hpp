@@ -19,7 +19,7 @@ class Socket;
 class SocketHandler;
 class InetAddress;
 
-class SocketServer: EventProcessor {
+class SocketServer: public EventProcessor {
 private:
 
     SocketServer(const SocketServer&) = delete;
@@ -27,10 +27,14 @@ private:
 
     std::shared_ptr<Socket> socket_ = nullptr;
 
-    std::function<SocketHandler*(std::shared_ptr<Socket>)>socket_handler_generator_ = nullptr;
+    std::function<SocketHandler* (std::shared_ptr<Socket>)>socket_handler_generator_ = nullptr;
+
+    bool inited_ = false;
 
 public:
     SocketServer(std::shared_ptr<InetAddress> address);
+
+    int Init();
 
     void ProcessEvent(const Event&) override;
 
@@ -43,7 +47,7 @@ public:
         }
 
         socket_handler_generator_ = [=](std::shared_ptr<Socket> socket) {
-            return (SocketHandler *) (new T(socket));
+            return dynamic_cast<SocketHandler*>(new T(socket));
         };
         return 0;
     }

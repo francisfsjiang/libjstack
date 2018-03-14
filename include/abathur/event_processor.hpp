@@ -15,6 +15,8 @@ namespace abathur {
 
         virtual ~EventProcessor() = default;
 
+        std::shared_ptr<EventProcessor> GetSelf();
+
         virtual void ProcessEvent(const Event&) = 0;
     };
 }
