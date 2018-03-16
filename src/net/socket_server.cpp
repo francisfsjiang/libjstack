@@ -23,7 +23,8 @@ namespace abathur::net {
 
     int SocketServer::Init(){
         if (!inited_){
-            auto self = std::dynamic_pointer_cast<SocketServer>(shared_from_this());
+//            auto self = std::dynamic_pointer_cast<SocketServer>(shared_from_this());
+            auto self = shared_from_this();
             //GetSelf();
             std::shared_ptr<Channel> channel_ptr(new Channel(self));
 
@@ -33,7 +34,7 @@ namespace abathur::net {
             socket_->SetReusePort(true);
             socket_->SetReuseAddr(true);
 
-            abathur::IOLoop::Current()->AddChannel(socket_->GetFD(), channel_ptr);
+            abathur::IOLoop::Current()->AddChannel(socket_->GetFD(), EF_READ, channel_ptr);
 
             inited_ = true;
         }
@@ -58,4 +59,7 @@ namespace abathur::net {
 
     }
 
+    SocketServer::~SocketServer() {
+        LOG_TRACE << "Socketserver deleted, address " << this;
+    }
 }

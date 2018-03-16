@@ -29,14 +29,15 @@ private:
 
 public:
     SocketHandler(std::shared_ptr<Socket>);
+    ~SocketHandler();
 
     virtual int Init();
 
-    void ProcessEvent(const Event &) override ;
+    void ProcessEvent(const Event&) override ;
 
     int Write(const char*, size_t);
 
-    virtual void Process(const char*, size_t);
+    virtual void Process(util::Buffer&) = 0;
 
 };
 

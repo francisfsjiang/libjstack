@@ -3,22 +3,31 @@
 
 
 namespace abathur {
+    enum EVENT_FLAG{
+        EF_READ = 1,
+        EF_WRITE = 2,
+        EF_CLOSE = 4
+    };
+
     class Event {
     private:
         int fd_;
-        bool read_, write_, close_;
+        int filter_;
+
     public:
+
         Event(int);
-        Event(int, bool, bool, bool);
+        Event(int, int);
 
         int GetFD() const;
+        int GetFilter() const;
 
         bool Readable() const;
         bool Writable() const;
         bool Closeable() const;
 
         void setReadable(bool);
-        void setWriteable(bool);
+        void setWritable(bool);
         void setCloseable(bool);
     };
 }

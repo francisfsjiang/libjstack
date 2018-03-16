@@ -34,6 +34,8 @@ private:
 public:
     SocketServer(std::shared_ptr<InetAddress> address);
 
+    ~SocketServer();
+
     int Init();
 
     void ProcessEvent(const Event&) override;

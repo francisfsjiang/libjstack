@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Abathur)
 
 IF (CMAKE_BUILD_TYPE STREQUAL "")
-    set(CMAKE_BUILD_TYPE "DEBUG")
+    set(CMAKE_BUILD_TYPE "Debug")
 ENDIF()
 
 IF (USE_LIBC++)
@@ -12,20 +12,19 @@ ENDIF()
 IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
     message("Building in debug mode.")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DEBUG")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
 ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
     message("Building in release mode.")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 ENDIF ()
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -D ABATHUR_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -g2 -ggdb")
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -pedantic")
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -Werror")
+set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -Wextra")
 
+set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++1z")
 
@@ -47,18 +46,26 @@ set(SRC_FILES
         src/util/buffer.cpp
 )
 
+# Platform detect
 
 message("Building on ${CMAKE_HOST_SYSTEM_NAME} platform.")
+
 if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/epoll_poller.cpp)
+
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DARWIN")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
+    set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
+    set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
+
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/iocp_poller.cpp)
 endif ()
+
+
 
 find_package(Boost REQUIRED COMPONENTS context coroutine)
 link_directories(${PROJECT_SOURCE_DIR}/lib)

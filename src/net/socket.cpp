@@ -9,6 +9,7 @@
 #include <fcntl.h>
 
 #include "abathur/net/inet_address.hpp"
+#include "abathur/util/buffer.hpp"
 #include "abathur/log.hpp"
 
 const static int MAX_PENDING_CONNECTIONS_NUM = 200;
@@ -36,14 +37,29 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::Send(const char* data, size_t size) {
-        return send(fd_, data, size, 0);
+    int Socket::Send(util::Buffer& buffer) {
+        ssize_t ret = send(fd_, buffer.data(), buffer.size(), 0);
+        if(ret > 0) {
+            buffer.set_reader_pos(buffer.get_reader_pos() + ret);
+            buffer.shrink();
+            return static_cast<int>(ret);
+        }
+        else {
+            return -2;
+        }
     }
 
-    int Socket::Recv(char* data, size_t size) {
-        int ret = ::recv(fd_, data, size, 0);
-        LOG_TRACE << "Recv " << ret << " bytes.";
-        return ret;
+    int Socket::Recv(util::Buffer& buffer) {
+        ssize_t ret = ::recv(fd_, buffer.data(), buffer.writeable_len(), 0);
+        if(ret > 0) {
+            buffer.set_writer_pos(buffer.get_writer_pos() + ret);
+            buffer.shrink();
+            return static_cast<int>(ret);
+        }
+        else {
+            LOG_ERROR << "Recv failed " << ret << " bytes.";
+            return -2;
+        }
     }
 
     int Socket::Listen() {
@@ -71,7 +87,7 @@ namespace abathur::net {
         int coon_fd = accept(fd_, &sock_addr, &sock_addr_len);
         if (coon_fd < 0) {
             int savedErrno = errno;
-            LOG_ERROR << "Socket::accept";
+            LOG_DEBUG << "Socket accept failed, reason " << strerror(savedErrno);
             switch (savedErrno)
             {
                 case EAGAIN:

@@ -21,7 +21,8 @@ namespace abathur {
     #define LOG_TRACE abathur::Log::Instance->log(TRACE)
     #define LOG_DEBUG abathur::Log::Instance->log(DEBUG)
 #else
-    #define LOG_DEBUG abathur::Log::Instance->log(NO_LOG)
+    #define LOG_TRACE abathur::Log::Instance->log(TRACE)
+    #define LOG_DEBUG abathur::Log::Instance->log(DEBUG)
 #endif
     #define LOG_INFO     abathur::Log::Instance->log(INFO)
     #define LOG_WARNING  abathur::Log::Instance->log(WARNING)

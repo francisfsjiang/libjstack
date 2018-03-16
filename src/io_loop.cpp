@@ -1,5 +1,7 @@
 #include "abathur/io_loop.hpp"
 
+#include "signal.h"
+
 #include "abathur/abathur.hpp"
 #include "abathur/channel.hpp"
 #include "abathur/poller/get_poller.hpp"
@@ -30,14 +32,21 @@ namespace abathur {
     }
 
 
-    void IOLoop::AddChannel(const int& fd, std::shared_ptr<Channel> channel) {
+    void IOLoop::AddChannel(int fd, uint filter, std::shared_ptr<Channel> channel) {
 
-        LOG_DEBUG << "fd" << fd << " Loop event added";
+        LOG_DEBUG << "Loop event adding, fd " << fd << " , filter " << filter;
 
-        channel_map_.insert(std::make_pair(fd, channel));
-        poller_->AddChannel(fd);
+        channel_map_.insert(std::make_pair(fd, std::make_pair(filter, channel)));
+        poller_->AddChannel(fd, filter);
     }
 
+    void IOLoop::UpdateChannel(int fd, uint filter) {
+
+        auto old = channel_map_.find(fd)->second;
+        LOG_DEBUG << "Loop event updating, fd " << fd << " , from " << old.first << " to " << filter;
+        poller_->UpdateChannel(fd, filter, old.first);
+        channel_map_[fd] = std::make_pair(filter, old.second);
+    }
 
     IOLoop *IOLoop::Current() {
         if (kIOLoopInstanceInThread) {
@@ -54,20 +63,15 @@ namespace abathur {
         LOG_INFO << "Loop start.";
         int ready_num;
 
-#if defined(ABATHUR_DEBUG)
         int count = 0;
-#endif
 
         while (!quit_) {
 
-#if defined(ABATHUR_DEBUG)
-            LOG_DEBUG << "Loop " << count++ << " with " << channel_map_.size() << " events";
-#endif
+            LOG_TRACE << "Loop " << count++ << " with " << channel_map_.size() << " events";
+
             ready_num = poller_->Poll(10);
 
-#if defined(ABATHUR_DEBUG)
-            LOG_DEBUG << ready_num << " events ready";
-#endif
+            LOG_TRACE << ready_num << " events ready";
 
             poller_->HandleEvents(ready_num, channel_map_);
 
@@ -81,7 +85,7 @@ namespace abathur {
     }
 
 
-    void IOLoop::RemoveChannel(const int &fd) {
+    void IOLoop::RemoveChannel(int fd) {
 #if defined(ABATHUR_DEBUG)
         LOG_DEBUG << "fd" << fd << " Loop event removed";
 #endif

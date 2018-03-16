@@ -24,12 +24,12 @@ namespace abathur {
 
             virtual void HandleEvents(
                     const int& events_ready_amount,
-                    const std::map<int, std::shared_ptr<Channel>>& channel_map
+                    const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
             ) = 0;
 
-            virtual void AddChannel(int) = 0;
+            virtual void AddChannel(int, uint) = 0;
 
-//            virtual void UpdateChannel(const int& fd, const Channel& e) = 0;
+            virtual void UpdateChannel(int, uint, uint) = 0;
 
             virtual void DeleteChannel(int) = 0;
 

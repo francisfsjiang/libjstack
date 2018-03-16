@@ -6,13 +6,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "abathur/io_loop.hpp"
-#include "abathur/net/socket.hpp"
-#include "abathur/net/inet_address.hpp"
-#include "abathur/net/socket_server.hpp"
-#include "abathur/net/socket_handler.hpp"
+#include "abathur/abathur.hpp"
 
-#define LISTEN_PORT 8012
+#define LISTEN_PORT 8016
 #define LISTEN_ADDR "0.0.0.0"
 
 
@@ -23,11 +19,11 @@ class EchoHandler : public abathur::net::SocketHandler{
         char buffer_[BUFFER_SIZE];
     public:
         EchoHandler(std::shared_ptr<abathur::net::Socket> socket) : abathur::net::SocketHandler(socket) {};
-        virtual void Process(const char* data, size_t size) override {
+        virtual void Process(abathur::util::Buffer& buffer) override {
             time_t te = time(NULL);
             strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi.", gmtime(&te));
             std::string s(buffer_);
-            s+=std::string(data, size);
+            s+=std::string(buffer.data(), buffer.size());
             s+="\n";
             std::cout<<s<<endl;
         }

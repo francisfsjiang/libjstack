@@ -1,50 +1,131 @@
 #include "abathur/util/buffer.hpp"
 
 #include <algorithm>
+#include <iostream>
+#include <vector>
 #include <cstring>
+#include <cstdint>
+
+#include "abathur/log.hpp"
 
 namespace abathur::util {
+
+    std::ostream & operator<<(std::ostream &out, Buffer& buffer)
+    {
+        *(buffer.data_ + buffer.writer_pos_ + 1) = '\0';
+        out << buffer.data();
+        return out;
+    }
+//    std::istream & operator>>(std::istream &in, Buffer& obj)
+//    {
+//        in >> obj.a>> obj.b;
+//        return in;
+//    }
+
     Buffer::Buffer() {
         data_ = new char[DEFAULT_BUFFER_SIZE];
-        len_ = DEFAULT_BUFFER_SIZE;
-        pos_ = 0;
-        size_ = 0;
+        capacity_ = DEFAULT_BUFFER_SIZE;
+        writer_pos_ = 0;
+        reader_pos_ = 0;
     }
 
     Buffer::Buffer(int len) {
         data_ = new char[len];
     }
 
+    size_t Buffer::resize() {
+        return resize(capacity_ << 1);
+    }
+
+    size_t Buffer::resize(size_t new_capacity) {
+        if(new_capacity < capacity_) {
+            return capacity_;
+        }
+        auto new_data = new char[new_capacity];
+        memcpy(new_data, data_ + reader_pos_, size());
+        capacity_ = new_capacity;
+        writer_pos_ = size();
+        reader_pos_ = 0;
+
+        delete[] data_;
+        data_ = new_data;
+        return new_capacity;
+    }
+
+    Buffer::~Buffer() {
+        delete data_;
+    }
+
     size_t Buffer::capacity() const {
-        return len_;
+        return capacity_;
+    }
+
+    size_t Buffer::writeable_len() const {
+        return capacity_ - writer_pos_;
     }
 
     size_t Buffer::size() const {
-        return size_;
+        return writer_pos_ - reader_pos_;
     }
 
-    size_t Buffer::pos() const {
-        return pos_;
+    size_t Buffer::get_reader_pos() const {
+        return reader_pos_;
     }
 
-    char* Buffer::data() {
+    size_t Buffer::get_writer_pos() const {
+        return writer_pos_;
+    }
+
+    size_t Buffer::set_reader_pos(size_t pos){
+        reader_pos_ = pos;
+        return reader_pos_;
+    }
+
+    size_t Buffer::set_writer_pos(size_t pos){
+        writer_pos_ = pos;
+        return writer_pos_;
+    }
+    char* Buffer::data(){
         return data_;
     }
-
-    int Buffer::write(const char* src_data, size_t src_len) {
-        return write(src_data, src_len, pos_);
-    }
-    int Buffer::write(const char* src_data, size_t src_len, size_t dst_pos) {
-        size_t cp_len = src_len + dst_pos > len_ ? len_ - dst_pos: src_len + dst_pos;
-        memcpy(data_ + dst_pos, src_data, cp_len);
-        size_ += cp_len;
-        pos_ += cp_len;
-        return static_cast<int>(cp_len);
+    char* Buffer::data_to_write() {
+        return data_ + writer_pos_;
     }
 
-    int Buffer::read(size_t src_len, size_t src_pos, char* dst_data) const {
+    int Buffer::write(const char* src_data, size_t len) {
+        if(writer_pos_ + len > capacity()) {
+            size_t new_capacity = capacity();
+            while (new_capacity < (SIZE_MAX >> 1)) {
+                new_capacity <<= 1;
+            }
+            if (new_capacity < writer_pos_ + len ){
+                LOG_FATAL << "Too large data to write in buffer.";
+                return 2;
+            }
+            resize(new_capacity);
+        }
 
-        memcpy(dst_data, data_ + src_pos, src_len);
-        return static_cast<int>(src_len);
+        memcpy(data_ + writer_pos_, src_data, len);
+        writer_pos_ += len;
+        return static_cast<int>(len);
+    }
+
+    int Buffer::read(char* dst_data, size_t len) const {
+        memcpy(data_, dst_data, len);
+        return static_cast<int>(len);
+    }
+
+    int Buffer::shrink() {
+        if (reader_pos_ == 0) {
+            return 0;
+        }
+        size_t content_len = size();
+        char* temp = new char[content_len];
+        memcpy(temp, data_+reader_pos_, content_len);
+
+        memcpy(data_, temp, content_len);
+        reader_pos_ = 0;
+        writer_pos_ = content_len;
+        return content_len;
     }
 }

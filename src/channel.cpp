@@ -6,14 +6,14 @@
 namespace abathur {
 
     Channel::Channel(std::shared_ptr<EventProcessor> processor) {
-        event_processor_ = processor;
+        processor_ = std::move(processor);
         sub_routine_ = new Corountine::push_type(
                 [&](Corountine::pull_type& in) {
                     while (true) {
                         if (!in) return;
 
                         auto ev = in.get();
-                        event_processor_->ProcessEvent(ev);
+                        processor_->ProcessEvent(ev);
                         in();
 
                     }
@@ -21,7 +21,7 @@ namespace abathur {
         );
     }
 
-    void Channel::Process(const abathur::Event &event) {
+    void Channel::Process(const abathur::Event& event) {
         (*sub_routine_)(event);
     }
 

@@ -47,7 +47,7 @@ namespace abathur {
             case FATAL:
                 return "FATAL";
             default:
-                return NULL;
+                return "NO_LOG";
         }
     }
 

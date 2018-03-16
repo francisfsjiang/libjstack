@@ -6,6 +6,10 @@
 
 #include "abathur/net/inet_address.hpp"
 
+namespace abathur::util {
+    class Buffer;
+}
+
 namespace abathur::net {
 
     class Socket {
@@ -21,8 +25,8 @@ namespace abathur::net {
 
         int Bind();
 
-        int Send(const char*, size_t);
-        int Recv(char*, size_t);
+        int Send(util::Buffer&);
+        int Recv(util::Buffer&);
 
         int Listen();
 
