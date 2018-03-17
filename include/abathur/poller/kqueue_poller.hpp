@@ -28,7 +28,7 @@ namespace abathur::poller {
 
         virtual void HandleEvents(
                 const int& events_ready_amount,
-                const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
+                const std::map<int, std::pair<uint, Channel*>>& channel_map
         ) override ;
 
         virtual void AddChannel(int, uint) override ;

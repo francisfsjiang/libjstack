@@ -4,6 +4,7 @@
 bin/
 bin_test/
 build/
+deps/
 
 CMakeFiles/
 cmake_install.cmake

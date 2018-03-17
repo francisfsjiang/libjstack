@@ -18,11 +18,11 @@ namespace abathur::poller {
         if (epoll_fd_ < 0) {
             LOG_ERROR << "Epoll init failed " << strerror(errno);
         }
-        LOG_DEBUG << "fd" << epoll_fd_ << " Epoll created.";
+        LOG_TRACE << "fd" << epoll_fd_ << " Epoll created.";
     }
 
 EpollPoller::~EpollPoller() {
-        LOG_DEBUG << "fd" << epoll_fd_ << " Epoll destoried.";
+        LOG_TRACE << "fd" << epoll_fd_ << " Epoll destoried.";
     }
     
     void EpollPoller::AddChannel(int fd, uint filter) {
@@ -47,7 +47,7 @@ EpollPoller::~EpollPoller() {
             LOG_ERROR << "fd" << fd << " Epoll event add failed " << strerror(errno);
         }
 
-        LOG_DEBUG << "fd" << fd << " Epoll add event";
+        LOG_TRACE << "fd" << fd << " Epoll add event";
     }
 
     void EpollPoller::UpdateChannel(int fd, uint filter, uint) {
@@ -71,7 +71,7 @@ EpollPoller::~EpollPoller() {
             LOG_ERROR << "fd" << fd << " Epoll event modify failed " << strerror(errno);
         }
 
-        LOG_DEBUG << "fd" << fd << " Epoll add event";
+        LOG_TRACE << "fd" << fd << " Epoll add event";
     }
 
     void EpollPoller::DeleteChannel(int fd) {
@@ -80,7 +80,7 @@ EpollPoller::~EpollPoller() {
             LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);
         }
 
-        LOG_DEBUG << "fd" << fd << " undefined delete event in epoll " << epoll_fd_;
+        LOG_TRACE << "fd" << fd << " undefined delete event in epoll " << epoll_fd_;
     }
 
     int EpollPoller::Poll(int time_out) {
@@ -94,14 +94,14 @@ EpollPoller::~EpollPoller() {
 
     void EpollPoller::HandleEvents(
             const int& events_ready_amount,
-            const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
+            const std::map<int, std::pair<uint, Channel*>>& channel_map
     ) {
         for (int i = 0; i < events_ready_amount; ++i) {
 
             epoll_event event = events_ready_[i];
 
-            LOG_DEBUG << "event num:" << i << " fd" << event.data.fd;
-            LOG_DEBUG << "event num:" << i << " events" << event.events;
+            LOG_TRACE << "event num:" << i << " fd" << event.data.fd;
+            LOG_TRACE << "event num:" << i << " events" << event.events;
 
             auto iter = channel_map.find(event.data.fd);
             if (iter == channel_map.end()) {

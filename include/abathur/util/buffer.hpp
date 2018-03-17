@@ -30,6 +30,7 @@ namespace abathur::util {
 
         char* data();
         char* data_to_write();
+        char* data_to_read();
 
         size_t get_reader_pos() const;
         size_t get_writer_pos() const;

@@ -41,6 +41,7 @@ namespace abathur::util {
         if(new_capacity < capacity_) {
             return capacity_;
         }
+        shrink();
         auto new_data = new char[new_capacity];
         memcpy(new_data, data_ + reader_pos_, size());
         capacity_ = new_capacity;
@@ -91,11 +92,13 @@ namespace abathur::util {
     char* Buffer::data_to_write() {
         return data_ + writer_pos_;
     }
-
+    char* Buffer::data_to_read() {
+        return data_ + reader_pos_;
+    }
     int Buffer::write(const char* src_data, size_t len) {
         if(writer_pos_ + len > capacity()) {
             size_t new_capacity = capacity();
-            while (new_capacity < (SIZE_MAX >> 1)) {
+            while (new_capacity < (SIZE_MAX >> 1) && writer_pos_ + len > new_capacity) {
                 new_capacity <<= 1;
             }
             if (new_capacity < writer_pos_ + len ){

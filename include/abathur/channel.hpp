@@ -12,10 +12,12 @@ namespace abathur {
 
     class EventProcessor;
 
+    typedef boost::coroutines2::coroutine<Event> Corountine;
+
     class Channel {
     private:
-        typedef boost::coroutines2::coroutine<Event> Corountine;
-        Corountine::push_type* sub_routine_ = nullptr;
+        Corountine::push_type* routine_ = nullptr;
+        Corountine::pull_type* routine_in_ = nullptr;
         std::shared_ptr<EventProcessor> processor_ = nullptr;
 
         std::map<int, int> fd_flags_;
@@ -23,9 +25,12 @@ namespace abathur {
     public:
 
         Channel(std::shared_ptr<EventProcessor>);
-
+        Corountine::pull_type* get_routine_in();
         void Process(const Event&);
     };
+
+    extern thread_local Channel* current_channel;
+
 }
 
 #endif //_ABATHUR_CHANNEL_HPP_

@@ -26,6 +26,7 @@ private:
 
     abathur::util::Buffer read_buffer_, write_buffer_;
 
+    bool wait_for_write_event_ = false;
 
 public:
     SocketHandler(std::shared_ptr<Socket>);
@@ -37,7 +38,7 @@ public:
 
     int Write(const char*, size_t);
 
-    virtual void Process(util::Buffer&) = 0;
+    virtual int Process(util::Buffer&) = 0;
 
 };
 

@@ -18,7 +18,7 @@ namespace abathur::net {
     SocketServer::SocketServer(std::shared_ptr<InetAddress> address) {
         socket_ = std::shared_ptr<Socket>(new Socket(address));
 
-        LOG_DEBUG << "fd" << socket_->GetFD() << " Listen established";
+        LOG_TRACE << " Listen established on fd " << socket_->GetFD() ;
     }
 
     int SocketServer::Init(){
@@ -26,7 +26,7 @@ namespace abathur::net {
 //            auto self = std::dynamic_pointer_cast<SocketServer>(shared_from_this());
             auto self = shared_from_this();
             //GetSelf();
-            std::shared_ptr<Channel> channel_ptr(new Channel(self));
+            Channel* channel_ptr(new Channel(self));
 
             socket_->Bind();
             socket_->Listen();
@@ -44,7 +44,7 @@ namespace abathur::net {
     void SocketServer::ProcessEvent(const Event& event) {
         Init();
 
-        LOG_DEBUG << "fd" << event.GetFD()<< " have connections";
+        LOG_TRACE << "SocketServer fd " << event.GetFD()<< " have incomming connections";
 
 
         while (true) {

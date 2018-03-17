@@ -22,11 +22,14 @@ namespace abathur::net {
 
     int SocketHandler::Init() {
 
+        socket_ptr_->SetNonBlocking(true);
+        socket_ptr_->SetTcpNoDelay(true);
+
         auto p = shared_from_this();
         auto self = std::dynamic_pointer_cast<SocketHandler>(p);
-        std::shared_ptr<Channel> channel_ptr(new Channel(self));
+        Channel* channel_ptr(new Channel(self));
 
-        abathur::IOLoop::Current()->AddChannel(socket_ptr_->GetFD(), EF_READ, channel_ptr);
+        abathur::IOLoop::Current()->AddChannel(socket_ptr_->GetFD(), EF_READ| EF_CLOSE, channel_ptr);
 
         return 0;
     }
@@ -34,20 +37,29 @@ namespace abathur::net {
     void SocketHandler::ProcessEvent(const Event & event) {
         if (event.Readable()) {
             socket_ptr_->Recv(read_buffer_);
-        }
 
-        Process(read_buffer_);
+            int ret = Process(read_buffer_);
+            if (ret > 0) {
+                read_buffer_.set_reader_pos(read_buffer_.get_reader_pos()+ret);
+                read_buffer_.shrink();
+            }
+        }
 
         if (write_buffer_.size() > 0) {
-            if(event.Writable()){
-                socket_ptr_->Send(write_buffer_);
+            socket_ptr_->Send(write_buffer_);
+            if (write_buffer_.size() != 0) {
+                if(!wait_for_write_event_){
+                    IOLoop::Current()->UpdateChannel(socket_ptr_->GetFD(), EF_ALL);
+                    wait_for_write_event_ = true;
+                }
             }
-            else {
-                IOLoop::Current()->UpdateChannel(socket_ptr_->GetFD(), EF_READ | EF_WRITE);
+            else if(wait_for_write_event_){
+                IOLoop::Current()->UpdateChannel(socket_ptr_->GetFD(), EF_READ | EF_CLOSE);
+                wait_for_write_event_ = false;
             }
         }
 
-
+        //TODO: Handle close events.
     }
 
     int SocketHandler::Write(const char * data, size_t size) {

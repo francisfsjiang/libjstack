@@ -32,9 +32,9 @@ namespace abathur {
     }
 
 
-    void IOLoop::AddChannel(int fd, uint filter, std::shared_ptr<Channel> channel) {
+    void IOLoop::AddChannel(int fd, uint filter, Channel* channel) {
 
-        LOG_DEBUG << "Loop event adding, fd " << fd << " , filter " << filter;
+        LOG_TRACE << "Loop event adding, fd " << fd << " , filter " << filter;
 
         channel_map_.insert(std::make_pair(fd, std::make_pair(filter, channel)));
         poller_->AddChannel(fd, filter);
@@ -42,10 +42,15 @@ namespace abathur {
 
     void IOLoop::UpdateChannel(int fd, uint filter) {
 
-        auto old = channel_map_.find(fd)->second;
-        LOG_DEBUG << "Loop event updating, fd " << fd << " , from " << old.first << " to " << filter;
-        poller_->UpdateChannel(fd, filter, old.first);
-        channel_map_[fd] = std::make_pair(filter, old.second);
+        auto old_channel_iter = channel_map_.find(fd);
+        uint old_filter = old_channel_iter->second.first;
+        if (old_filter == filter) {
+            LOG_DEBUG << "Updating, fd " << fd << " , from " << old_filter << " to " << filter << " , skipping.";
+            return;
+        }
+        LOG_TRACE << "Loop event updating, fd " << fd << " , from " << old_filter << " to " << filter;
+        poller_->UpdateChannel(fd, filter, old_filter);
+        old_channel_iter->second = std::make_pair(filter, old_channel_iter->second.second);
     }
 
     IOLoop *IOLoop::Current() {
@@ -73,6 +78,10 @@ namespace abathur {
 
             LOG_TRACE << ready_num << " events ready";
 
+            if (ready_num <= 0) {
+                continue;
+            }
+
             poller_->HandleEvents(ready_num, channel_map_);
 
         }
@@ -87,7 +96,7 @@ namespace abathur {
 
     void IOLoop::RemoveChannel(int fd) {
 #if defined(ABATHUR_DEBUG)
-        LOG_DEBUG << "fd" << fd << " Loop event removed";
+        LOG_TRACE << "fd" << fd << " Loop event removed";
 #endif
         channel_map_.erase(fd);
     }

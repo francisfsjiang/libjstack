@@ -38,7 +38,7 @@ namespace abathur::net {
     }
 
     int Socket::Send(util::Buffer& buffer) {
-        ssize_t ret = send(fd_, buffer.data(), buffer.size(), 0);
+        ssize_t ret = send(fd_, buffer.data_to_read(), buffer.size(), 0);
         if(ret > 0) {
             buffer.set_reader_pos(buffer.get_reader_pos() + ret);
             buffer.shrink();
@@ -50,14 +50,27 @@ namespace abathur::net {
     }
 
     int Socket::Recv(util::Buffer& buffer) {
-        ssize_t ret = ::recv(fd_, buffer.data(), buffer.writeable_len(), 0);
-        if(ret > 0) {
-            buffer.set_writer_pos(buffer.get_writer_pos() + ret);
-            buffer.shrink();
-            return static_cast<int>(ret);
+        ssize_t total_received = 0;
+        while (true) {
+            ssize_t ret = ::recv(fd_, buffer.data_to_write(), buffer.writeable_len(), 0);
+            if(ret > 0) {
+                buffer.set_writer_pos(buffer.get_writer_pos() + ret);
+                if(buffer.size() == buffer.capacity()) {
+                    buffer.resize();
+                }
+                total_received += ret;
+                continue;
+            }
+            else {
+                LOG_ERROR << "Recv failed, ret " << ret << " , " << strerror(errno);
+                break;
+            }
+        }
+        if(total_received > 0) {
+            return static_cast<int>(total_received);
         }
         else {
-            LOG_ERROR << "Recv failed " << ret << " bytes.";
+            LOG_ERROR << "Recv failed, ret " << total_received << " , " << strerror(errno);
             return -2;
         }
     }
@@ -87,7 +100,7 @@ namespace abathur::net {
         int coon_fd = accept(fd_, &sock_addr, &sock_addr_len);
         if (coon_fd < 0) {
             int savedErrno = errno;
-            LOG_DEBUG << "Socket accept failed, reason " << strerror(savedErrno);
+            LOG_TRACE << "Socket accept failed, reason " << strerror(savedErrno);
             switch (savedErrno)
             {
                 case EAGAIN:
@@ -163,9 +176,13 @@ namespace abathur::net {
     int Socket::SetTcpNoDelay(bool on)
     {
         int optval = on ? 1 : 0;
-        ::setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY,
+        int ret = ::setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY,
                      &optval, static_cast<socklen_t>(sizeof optval));
-        // FIXME CHECK
+        if (ret < 0 && on)
+        {
+            LOG_FATAL << "Set tcp no-delay failed.";
+            return 2;
+        }
         return 0;
     }
 
@@ -210,7 +227,6 @@ namespace abathur::net {
         {
             LOG_FATAL << "Set keep alive failed.";
         }
-        // FIXME CHECK
         return 0;
     }
 

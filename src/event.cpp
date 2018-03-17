@@ -1,24 +1,23 @@
 #include "abathur/event.hpp"
 
-#include <iostream>
 
 namespace abathur {
     Event::Event(int fd) {
         fd_ = fd;
         filter_ = 0;
     }
-    Event::Event(int fd, int filter):
+    Event::Event(int fd, uint filter):
             fd_(fd), filter_(filter){
 
     }
     bool Event::Readable() const {
-        return filter_ && EF_READ;
+        return static_cast<bool>(filter_ & EF_READ);
     }
     bool Event::Writable() const {
-        return filter_ && EF_WRITE;
+        return static_cast<bool>(filter_ & EF_WRITE);
     }
     bool Event::Closeable() const {
-        return filter_ && EF_CLOSE;
+        return static_cast<bool>(filter_ & EF_CLOSE);
     }
 
     int Event::GetFD() const {

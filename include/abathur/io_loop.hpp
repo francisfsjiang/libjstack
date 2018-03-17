@@ -29,7 +29,7 @@ namespace abathur {
         //IOLoop *instance_;
         bool quit_;
         abathur::poller::Poller *poller_;
-        std::map<int, std::pair<uint, std::shared_ptr<Channel>>> channel_map_;
+        std::map<int, std::pair<uint, Channel*>> channel_map_;
 
         IOLoop();
 
@@ -44,7 +44,7 @@ namespace abathur {
 
         void Quit();
 
-        void AddChannel(int, uint, std::shared_ptr<Channel>);
+        void AddChannel(int, uint, Channel*);
 
         void UpdateChannel(int, uint);
 
