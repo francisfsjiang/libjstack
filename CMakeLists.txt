@@ -80,8 +80,8 @@ if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
     set(SRC_FILES ${SRC_FILES} src/poller/epoll_poller.cpp)
     set(HEADER_FILES ${HEADER_FILES} src/poller/epoll_poller.hpp)
 
-    include_directories(/usr/include/x86_64-linux-gnu)
-    link_directories(/usr/lib/x86_64-linux-gnu)
+    set(CURL_INCLUDE_DIRS /usr/include/x86_64-linux-gnu)
+    link_directories(CURL_LIBRARIES /usr/lib/x86_64-linux-gnu)
 
 
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
@@ -95,7 +95,7 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
 endif ()
 
 find_package(Boost REQUIRED COMPONENTS context coroutine)
-find_package(Curl REQUIRED)
+#find_package(Curl REQUIRED)
 
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_directories(${BOOST_ROOT}/lib)
