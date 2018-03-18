@@ -79,10 +79,16 @@ if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/epoll_poller.cpp)
     set(HEADER_FILES ${HEADER_FILES} src/poller/epoll_poller.hpp)
+
+    include_directories(/usr/include/x86_64-linux-gnu)
+    link_directories(/usr/lib/x86_64-linux-gnu)
+
+
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DARWIN")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
     set(HEADER_FILES ${HEADER_FILES} src/poller/kqueue_poller.hpp)
+
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/iocp_poller.cpp)
