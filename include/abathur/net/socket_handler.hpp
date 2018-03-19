@@ -22,14 +22,15 @@ class Socket;
 
 class SocketHandler: public EventProcessor {
 private:
-    std::shared_ptr<Socket> socket_ptr_ = nullptr;
+    Socket* socket_ptr_ = nullptr;
 
     abathur::util::Buffer read_buffer_, write_buffer_;
 
     bool wait_for_write_event_ = false;
+    bool finished_ = false;
 
 public:
-    SocketHandler(std::shared_ptr<Socket>);
+    SocketHandler(Socket*);
     ~SocketHandler();
 
     virtual int Init();
@@ -40,6 +41,7 @@ public:
 
     virtual int Process(util::Buffer&) = 0;
 
+    void finish();
 };
 
 

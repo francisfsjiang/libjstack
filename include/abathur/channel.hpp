@@ -14,22 +14,22 @@ namespace abathur {
 
     typedef boost::coroutines2::coroutine<Event> Corountine;
 
-    class Channel {
+    class Channel: public std::enable_shared_from_this<Channel>{
     private:
         Corountine::push_type* routine_ = nullptr;
         Corountine::pull_type* routine_in_ = nullptr;
-        std::shared_ptr<EventProcessor> processor_ = nullptr;
+        EventProcessor* processor_ = nullptr;
 
         std::map<int, int> fd_flags_;
 
     public:
-
-        Channel(std::shared_ptr<EventProcessor>);
+        Channel(EventProcessor*);
+        ~Channel();
         Corountine::pull_type* get_routine_in();
         void Process(const Event&);
     };
 
-    extern thread_local Channel* current_channel;
+    extern thread_local std::shared_ptr<Channel> current_channel;
 
 }
 

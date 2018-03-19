@@ -2,13 +2,15 @@
 
 #include "abathur/event.hpp"
 #include "abathur/event_processor.hpp"
+#include "abathur/log.hpp"
 
 namespace abathur {
 
-    thread_local Channel* current_channel = nullptr;
+    thread_local std::shared_ptr<Channel> current_channel = nullptr;
 
-    Channel::Channel(std::shared_ptr<EventProcessor> processor) {
-        processor_ = std::move(processor);
+    Channel::Channel(EventProcessor* processor) {
+        LOG_TRACE << "Channel constructing, " << this;
+        processor_ = processor;
 
         // Channel initial process
         routine_ = new Corountine::push_type(
@@ -25,10 +27,17 @@ namespace abathur {
         );
     }
 
+    Channel::~Channel() {
+        LOG_TRACE << "Channel deconstructing, " << this;
+        delete processor_;
+    }
+
     void Channel::Process(const abathur::Event& event) {
-        current_channel = this;
+        LOG_TRACE << "In to channel.";
+        current_channel = shared_from_this();
         (*routine_)(event);
         current_channel = nullptr;
+        LOG_TRACE << "Out from channel.";
     }
 
     Corountine::pull_type* Channel::get_routine_in() {

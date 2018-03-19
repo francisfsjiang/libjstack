@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 2.8)
 project(Abathur)
 
 IF (CMAKE_BUILD_TYPE STREQUAL "")
-    set(CMAKE_BUILD_TYPE "DEBUG")
+    set(CMAKE_BUILD_TYPE "Debug")
 ENDIF()
 
 IF (USE_LIBC++)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 ENDIF()
 
-IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
+IF (CMAKE_BUILD_TYPE MATCHES Debug)
     message("Building in debug mode.")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DEBUG")
@@ -19,6 +19,8 @@ IF (CMAKE_BUILD_TYPE MATCHES DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
 ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
     message("Building in release mode.")
 
@@ -39,7 +41,6 @@ set(SRC_FILES
         src/log.cpp
         src/event.cpp
         src/channel.cpp
-        src/event_processor.cpp
         src/poller/get_poller.cpp
         src/net/socket.cpp
         src/net/socket_handler.cpp
@@ -49,7 +50,9 @@ set(SRC_FILES
         src/http/http_request.cpp
         src/http/http_response.cpp
         src/http/parser/http_parser.c
+        src/http/parser/http_parser.cpp
         src/util/buffer.cpp
+        src/util/timer.cpp
         )
 
 set(HEADER_FILES
@@ -69,8 +72,10 @@ set(HEADER_FILES
         include/abathur/http/async_http_client.hpp
         include/abathur/http/http_request.hpp
         include/abathur/http/http_response.hpp
-        src/http/parser/http_parser.h
+        include/abathur/http/parser/http_parser.h
+        include/abathur/http/parser/http_parser.hpp
         include/abathur/util/buffer.hpp
+        include/abathur/util/timer.hpp
         )
 
 

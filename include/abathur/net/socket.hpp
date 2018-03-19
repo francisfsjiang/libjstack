@@ -15,13 +15,13 @@ namespace abathur::net {
     class Socket {
     private:
         int fd_;
-        std::shared_ptr<InetAddress> address_ = nullptr;
+        InetAddress* address_ = nullptr;
 
         Socket(const Socket&) = delete;
         const Socket& operator=(const Socket&) = delete;
     public:
-        Socket(std::shared_ptr<InetAddress>);
-        Socket(int fd, std::shared_ptr<InetAddress>);
+        Socket(InetAddress*);
+        Socket(int fd, InetAddress*);
 
         int Bind();
 
@@ -34,7 +34,7 @@ namespace abathur::net {
 
         int GetFD();
 
-        std::shared_ptr<Socket> Accept();
+        Socket* Accept();
 
         int Close();
         int SetNonBlocking(bool);

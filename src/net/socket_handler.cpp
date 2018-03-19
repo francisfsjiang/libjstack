@@ -12,12 +12,14 @@
 namespace abathur::net {
 
 
-    SocketHandler::SocketHandler(std::shared_ptr<Socket> socket) {
+    SocketHandler::SocketHandler(Socket* socket) {
+        LOG_TRACE << "SocketHandler constructing, " << this;
         socket_ptr_ = socket;
     }
 
     SocketHandler::~SocketHandler() {
-        LOG_TRACE << "SocketHandler deleted, address " << this;
+        LOG_TRACE << "SocketHandler deconstructing, " << this;
+        delete socket_ptr_;
     }
 
     int SocketHandler::Init() {
@@ -25,11 +27,13 @@ namespace abathur::net {
         socket_ptr_->SetNonBlocking(true);
         socket_ptr_->SetTcpNoDelay(true);
 
-        auto p = shared_from_this();
-        auto self = std::dynamic_pointer_cast<SocketHandler>(p);
-        Channel* channel_ptr(new Channel(self));
+//        auto p = shared_from_this();
+//        auto self = std::dynamic_cast<SocketHandler>(p);
+        auto channel_ptr = std::shared_ptr<Channel>(new Channel(dynamic_cast<EventProcessor*>(this)));
 
+        LOG_TRACE << channel_ptr.use_count();
         abathur::IOLoop::Current()->AddChannel(socket_ptr_->GetFD(), EF_READ| EF_CLOSE, channel_ptr);
+        LOG_TRACE << channel_ptr.use_count();
 
         return 0;
     }
@@ -49,21 +53,29 @@ namespace abathur::net {
             socket_ptr_->Send(write_buffer_);
             if (write_buffer_.size() != 0) {
                 if(!wait_for_write_event_){
-                    IOLoop::Current()->UpdateChannel(socket_ptr_->GetFD(), EF_ALL);
+                    IOLoop::Current()->UpdateChannelFilter(socket_ptr_->GetFD(), EF_WRITE);
                     wait_for_write_event_ = true;
                 }
             }
             else if(wait_for_write_event_){
-                IOLoop::Current()->UpdateChannel(socket_ptr_->GetFD(), EF_READ | EF_CLOSE);
+                IOLoop::Current()->SetChannelFilter(socket_ptr_->GetFD(), EF_READ | EF_CLOSE);
                 wait_for_write_event_ = false;
             }
         }
 
         //TODO: Handle close events.
+
+        if (write_buffer_.size() == 0 && finished_) {
+            IOLoop::Current()->remove_channel(socket_ptr_->GetFD());
+        }
     }
 
     int SocketHandler::Write(const char * data, size_t size) {
         return write_buffer_.write(data, size);
+    }
+
+    void SocketHandler::finish() {
+        finished_ = true;
     }
 
 }

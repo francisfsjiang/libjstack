@@ -22,7 +22,7 @@ namespace abathur::poller {
     }
 
 EpollPoller::~EpollPoller() {
-        LOG_TRACE << "fd" << epoll_fd_ << " Epoll destoried.";
+        LOG_TRACE << "fd" << epoll_fd_ << " Epoll deconstructing.";
     }
     
     void EpollPoller::AddChannel(int fd, uint filter) {
@@ -94,7 +94,7 @@ EpollPoller::~EpollPoller() {
 
     void EpollPoller::HandleEvents(
             const int& events_ready_amount,
-            const std::map<int, std::pair<uint, Channel*>>& channel_map
+            const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
     ) {
         for (int i = 0; i < events_ready_amount; ++i) {
 

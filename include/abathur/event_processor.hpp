@@ -7,7 +7,8 @@ namespace abathur {
 
     class Event;
 
-    class EventProcessor: public std::enable_shared_from_this<EventProcessor> {
+//    class EventProcessor: public std::enable_shared_from_this<EventProcessor> {
+    class EventProcessor {
     private:
 
     public:
@@ -15,7 +16,6 @@ namespace abathur {
 
         virtual ~EventProcessor() = default;
 
-        std::shared_ptr<EventProcessor> GetSelf();
 
         virtual void ProcessEvent(const Event&) = 0;
     };

@@ -18,6 +18,7 @@ namespace abathur::util {
     public:
         Buffer();
         Buffer(int);
+        Buffer(const Buffer&);
 
         ~Buffer();
 

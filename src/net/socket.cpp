@@ -16,7 +16,8 @@ const static int MAX_PENDING_CONNECTIONS_NUM = 200;
 
 namespace abathur::net {
 
-    Socket::Socket(std::shared_ptr<InetAddress> address) {
+    Socket::Socket(InetAddress* address) {
+        LOG_TRACE << "Socket constructing , " << this;
         address_ = address;
         fd_ = socket(address_->getProtocolFamily(), SOCK_STREAM, 0);
         if (fd_ < 0) {
@@ -24,7 +25,8 @@ namespace abathur::net {
         }
     }
 
-    Socket::Socket(int fd, std::shared_ptr<InetAddress> address) {
+    Socket::Socket(int fd, InetAddress* address) {
+        LOG_TRACE << "Socket constructing , " << this;
         fd_ = fd;
         address_ = address;
     }
@@ -93,7 +95,7 @@ namespace abathur::net {
         return fd_;
     }
 
-    std::shared_ptr<Socket> Socket::Accept() {
+    Socket* Socket::Accept() {
 
         sockaddr sock_addr;
         socklen_t sock_addr_len;
@@ -129,16 +131,16 @@ namespace abathur::net {
             }
             return nullptr;
         }
-        return std::shared_ptr<Socket>(new Socket(
+        return new Socket(
                 coon_fd,
-                std::shared_ptr<InetAddress>(new InetAddress(&sock_addr, sock_addr_len))
-        ));
+                new InetAddress(&sock_addr, sock_addr_len)
+        );
     }
 
 
     int Socket::Close()
     {
-        LOG_TRACE << "socket " << fd_ << "closing";
+        LOG_TRACE << "Socket " << fd_ << " closing";
         if (::close(fd_) < 0)
         {
             LOG_FATAL<< "sockets::close";
@@ -232,6 +234,7 @@ namespace abathur::net {
 
 
     Socket::~Socket() {
+        LOG_TRACE << "Socket deconstructing , " << this;
         Close();
     }
 }

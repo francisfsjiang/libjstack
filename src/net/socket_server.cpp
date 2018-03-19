@@ -15,18 +15,19 @@
 namespace abathur::net {
 
 
-    SocketServer::SocketServer(std::shared_ptr<InetAddress> address) {
-        socket_ = std::shared_ptr<Socket>(new Socket(address));
+    SocketServer::SocketServer(InetAddress* address) {
+        LOG_TRACE << "SocketServer constructing, " << this;
+        socket_ = new Socket(address);
 
-        LOG_TRACE << " Listen established on fd " << socket_->GetFD() ;
+        LOG_TRACE << "Listen established on fd " << socket_->GetFD() ;
     }
 
     int SocketServer::Init(){
         if (!inited_){
 //            auto self = std::dynamic_pointer_cast<SocketServer>(shared_from_this());
-            auto self = shared_from_this();
+//            auto self = shared_from_this();
             //GetSelf();
-            Channel* channel_ptr(new Channel(self));
+            std::shared_ptr<Channel> channel_ptr(new Channel(dynamic_cast<EventProcessor*>(this)));
 
             socket_->Bind();
             socket_->Listen();
@@ -53,13 +54,13 @@ namespace abathur::net {
 
             new_socket->SetNonBlocking(true);
             SocketHandler* s = socket_handler_generator_(new_socket);
-            std::shared_ptr<SocketHandler> sp(s);
-            sp->Init();
+            s->Init();
         }
 
     }
 
     SocketServer::~SocketServer() {
-        LOG_TRACE << "Socketserver deleted, address " << this;
+        LOG_TRACE << "SocketServer deconstructing, " << this;
+        delete socket_;
     }
 }

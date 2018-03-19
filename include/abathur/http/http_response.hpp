@@ -1,27 +1,42 @@
-#ifndef _ABATHUR_HTTP_RESPONSE_HPP_
-#define _ABATHUR_HTTP_RESPONSE_HPP_
+#ifndef _ABATHUR_HTTP_HTTP_RESPONSE_HPP_
+#define _ABATHUR_HTTP_HTTP_RESPONSE_HPP_
 
 #include <string>
 
+#include "abathur/http/http_request.hpp"
+
+namespace abathur::util {
+    class Buffer;
+}
+
 namespace abathur::http {
+    using namespace abathur::util;
+
+    namespace parser {
+            class HTTPParser;
+    }
 
     class AsyncHTTPClient;
 
     class HTTPResponse{
         friend class AsyncHTTPClient;
     private:
+        HTTP_VERSION version_;
         int status_code_;
-        std::string content_type_;
-        std::string content_;
+        Buffer* body_;
+        std::map<std::string, std::string>* header_;
+
     public:
-        HTTPResponse(int);
+        HTTPResponse();
+        HTTPResponse(const HTTPResponse&);
         ~HTTPResponse();
 
         int status_code();
-        std::string content();
+        Buffer* get_body();
+        std::map<std::string, std::string>* get_header();
 
     };
 }
 
 
-#endif //_ABATHUR_HTTP_RESPONSE_HPP_
+#endif //_ABATHUR_HTTP_HTTP_RESPONSE_HPP_

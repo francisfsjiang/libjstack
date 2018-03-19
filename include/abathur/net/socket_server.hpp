@@ -25,14 +25,14 @@ private:
     SocketServer(const SocketServer&) = delete;
     const SocketServer& operator=(const SocketServer&) = delete;
 
-    std::shared_ptr<Socket> socket_ = nullptr;
+    Socket* socket_ = nullptr;
 
-    std::function<SocketHandler* (std::shared_ptr<Socket>)>socket_handler_generator_ = nullptr;
+    std::function<SocketHandler* (Socket*)>socket_handler_generator_ = nullptr;
 
     bool inited_ = false;
 
 public:
-    SocketServer(std::shared_ptr<InetAddress> address);
+    SocketServer(InetAddress* address);
 
     ~SocketServer();
 
@@ -48,7 +48,7 @@ public:
             return 2;
         }
 
-        socket_handler_generator_ = [=](std::shared_ptr<Socket> socket) {
+        socket_handler_generator_ = [=](Socket* socket) {
             return dynamic_cast<SocketHandler*>(new T(socket));
         };
         return 0;

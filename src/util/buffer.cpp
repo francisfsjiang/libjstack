@@ -33,6 +33,14 @@ namespace abathur::util {
         data_ = new char[len];
     }
 
+    Buffer::Buffer(const Buffer& buffer) {
+        capacity_ = buffer.capacity_;
+        writer_pos_ = buffer.writer_pos_;
+        reader_pos_ = buffer.reader_pos_;
+        data_ = new char[capacity_];
+        memcpy(data_, buffer.data_, capacity_);
+    }
+
     size_t Buffer::resize() {
         return resize(capacity_ << 1);
     }

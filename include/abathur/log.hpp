@@ -29,6 +29,7 @@ namespace abathur {
     #define LOG_ERROR    abathur::Log::Instance->log(ERROR)
     #define LOG_FATAL    abathur::Log::Instance->log(FATAL)
 
+    class Logger;
 
     class Log {  //TODO a fast logger
     public:
@@ -50,11 +51,25 @@ namespace abathur {
 
         ~Log();
 
-        std::ostream &log(int i);
+//        std::ostream &log(int i);
+//        std::ostream &log(LogLevel level);
 
-        std::ostream &log(LogLevel level);
-
+        Logger log(int i);
+        Logger log(LogLevel level);
     };
+
+    class Logger{
+    private:
+        std::ostream* ostream_;
+    public:
+        Logger(std::ostream*);
+        ~Logger();
+        Logger& operator<< (int);
+        Logger& operator<< (const char*);
+        Logger& operator<< (const std::string&);
+        Logger& operator<< (void*);
+    };
+
 
 
 }

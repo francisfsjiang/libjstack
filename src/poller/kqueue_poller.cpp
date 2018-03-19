@@ -10,20 +10,17 @@
 namespace abathur::poller {
 
     KqueuePoller::KqueuePoller() {
+        LOG_TRACE << "KqueuePoller constructing, " << this;
         events_ready_.resize(MAX_READY_EVENTS_NUM);
         kqueue_fd_ = kqueue();
         if (kqueue_fd_ < 0) {
             LOG_ERROR << "Kqueue init failed.";
         }
-#if defined(ABATHUR_DEBUG)
-        LOG_TRACE << "fd" << kqueue_fd_ << " Kqueue created.";
-#endif
     }
 
     KqueuePoller::~KqueuePoller() {
-#if defined(ABATHUR_DEBUG)
-        LOG_TRACE << "fd" << kqueue_fd_ << " Kqueue destoried.";
-#endif
+        LOG_TRACE << "KqueuePoller deconstructing, " << this;
+        close(kqueue_fd_);
     }
 
     void KqueuePoller::AddChannel(int fd, uint filter) {
@@ -85,10 +82,16 @@ namespace abathur::poller {
     }
 
     void KqueuePoller::DeleteChannel(int fd) {
+        LOG_TRACE << "Kqueue deleting fd " << fd;
         PollEvent poll_event;
-        EV_SET(&poll_event, fd, 0, EV_DELETE, 0, 0, NULL);
-
+        EV_SET(&poll_event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
         int ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
+        if (ret < 0) {
+            LOG_ERROR << fd << "event delete failed" << strerror(errno);
+        }
+
+        EV_SET(&poll_event, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+        ret = kevent(kqueue_fd_, &poll_event, 1, NULL, 0, NULL);
         if (ret < 0) {
             LOG_ERROR << fd << "event delete failed" << strerror(errno);
         }
@@ -107,10 +110,10 @@ namespace abathur::poller {
 
     void KqueuePoller::HandleEvents(
             const int& events_ready_amount,
-            const std::map<int, std::pair<uint, Channel*>>& channel_map
+            const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
     ) {
 
-        LOG_TRACE << "handling events";
+        LOG_TRACE << "Handling events";
 
         // Merge events on same fd
         std::map<int, uint> events_merged;
@@ -119,10 +122,13 @@ namespace abathur::poller {
             PollEvent& event = events_ready_[i];
             int fd = static_cast<int>(event.ident);
             int filter = 0;
+//            LOG_TRACE << event.ident;
+//            LOG_TRACE << event.filter;
+//            LOG_TRACE << event.flags ;
+//            LOG_TRACE << event.fflags ;
             filter |= event.filter == EVFILT_READ ? EF_READ : 0;
             filter |= event.filter == EVFILT_WRITE ? EF_WRITE : 0;
             filter |= (event.flags & EV_EOF) == EV_EOF ? EF_CLOSE : 0;
-
             auto iter = events_merged.find(fd);
             if(iter == events_merged.end()) {
                 events_merged[fd] = filter;
@@ -144,10 +150,12 @@ namespace abathur::poller {
                 LOG_ERROR << event_iter.first << "event not found";
             }
             auto pair = iter->second;
+            LOG_TRACE << pair.second.use_count();
             pair.second->Process(Event(
                     event_iter.first,
                     event_iter.second
             ));
+            LOG_TRACE << pair.second.use_count();
         }
     }
 

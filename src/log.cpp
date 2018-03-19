@@ -3,16 +3,11 @@
 #include <iostream>
 #include <unistd.h>
 
+#include "abathur/util/timer.hpp"
+
 namespace abathur {
 
-    std::string get_date() {
-        char buffer[80];
-        time_t te = time(NULL);
-        strftime(buffer, 80, "%m-%d-%Y %H:%M:%S", gmtime(&te));
-        return std::string(buffer);
-    }
-
-//    Log Log::Instance("dc.log");
+//    Log* Log::Instance = new Log("dc.log");
     Log* Log::Instance = new Log();
 
     Log::Log() {
@@ -27,9 +22,7 @@ namespace abathur {
     }
 
     std::string Log::get_date() {
-        time_t te = time(NULL);
-        strftime(buffer_, 80, "%m-%d-%Y %H:%M:%S", gmtime(&te));
-        return std::string(buffer_);
+        return util::get_datetime();
     }
 
     std::string get_level(LogLevel level) {
@@ -51,30 +44,54 @@ namespace abathur {
         }
     }
 
-    std::ostream &Log::log(LogLevel level) {
+    Logger Log::log(LogLevel level) {
         log_level_ = level;
         *out_stream_
-                << std::endl
                 << get_pid()
                 << " "
                 << get_date()
                 << " "
                 << get_level(level)
                 << " ";
-        return *out_stream_;
+        return Logger(out_stream_);
+    }
+    Logger Log::log(int i) {
+        return Log::log((LogLevel) i);
     }
 
     int Log::get_pid() {
         return getpid();
     }
 
-    std::ostream &Log::log(int i) {
-        return Log::log((LogLevel) i);
-    }
 
     Log::~Log() {
-        *out_stream_ << std::endl;
+//        *out_stream_ << std::endl;
     }
 
+    Logger::Logger(std::ostream* ostream) {
+        ostream_ = ostream;
+    }
 
+    Logger::~Logger() {
+        *ostream_ << std::endl;
+    }
+
+    Logger& Logger::operator<<(const char* data) {
+        *ostream_ << data;
+        return *this;
+    }
+
+    Logger& Logger::operator<<(int data) {
+        *ostream_ << data;
+        return *this;
+    }
+    Logger& Logger::operator<<(const std::string& data) {
+        *ostream_ << data;
+        return *this;
+    }
+
+    Logger& Logger::operator<<(void* data) {
+        *ostream_ << data;
+        return *this;
+    }
 }
