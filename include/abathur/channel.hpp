@@ -26,7 +26,7 @@ namespace abathur {
         Channel(EventProcessor*);
         ~Channel();
         Corountine::pull_type* get_routine_in();
-        void Process(const Event&);
+        void process(const Event &);
     };
 
     extern thread_local std::shared_ptr<Channel> current_channel;

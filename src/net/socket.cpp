@@ -19,9 +19,9 @@ namespace abathur::net {
     Socket::Socket(InetAddress* address) {
         LOG_TRACE << "Socket constructing , " << this;
         address_ = address;
-        fd_ = socket(address_->getProtocolFamily(), SOCK_STREAM, 0);
+        fd_ = socket(address_->get_protocol_family(), SOCK_STREAM, 0);
         if (fd_ < 0) {
-            LOG_ERROR << " socket create failed" << address_->getAddrString() << strerror(errno);
+            LOG_ERROR << " socket create failed" << address_->get_address_string() << strerror(errno);
         }
     }
 
@@ -30,17 +30,17 @@ namespace abathur::net {
         fd_ = fd;
         address_ = address;
     }
-    int Socket::Bind() {
-        int ret = ::bind(fd_, address_->getSockAddrPtr(), address_->getAddressLen());
+    int Socket::bind() {
+        int ret = ::bind(fd_, address_->get_sock_addr(), address_->get_address_len());
         if (ret < 0) {
-            LOG_ERROR << fd_ << " bind failed" << address_->getAddrString() << strerror(errno);
+            LOG_ERROR<< "Bind failed on socket " << fd_  << " address " << address_->to_string() << " , error " << strerror(errno);
             return 2;
         }
         return 0;
     }
 
-    int Socket::Send(util::Buffer& buffer) {
-        ssize_t ret = send(fd_, buffer.data_to_read(), buffer.size(), 0);
+    int Socket::send(util::Buffer &buffer) {
+        ssize_t ret = ::send(fd_, buffer.data_to_read(), buffer.size(), 0);
         if(ret > 0) {
             buffer.set_reader_pos(buffer.get_reader_pos() + ret);
             buffer.shrink();
@@ -51,7 +51,7 @@ namespace abathur::net {
         }
     }
 
-    int Socket::Recv(util::Buffer& buffer) {
+    int Socket::recv(util::Buffer &buffer) {
         ssize_t total_received = 0;
         while (true) {
             ssize_t ret = ::recv(fd_, buffer.data_to_write(), buffer.writeable_len(), 0);
@@ -77,29 +77,29 @@ namespace abathur::net {
         }
     }
 
-    int Socket::Listen() {
-        int ret = listen(fd_, MAX_PENDING_CONNECTIONS_NUM);
+    int Socket::listen() {
+        int ret = ::listen(fd_, MAX_PENDING_CONNECTIONS_NUM);
         if (ret < 0) {
-            LOG_ERROR << fd_ << " listen failed" << address_->getAddrString() << strerror(errno);
+            LOG_ERROR << fd_ << " listen failed" << address_->get_address_string() << strerror(errno);
             return 2;
         }
         return 0;
 
     }
 
-    int Socket::Connect() {
-        return ::connect(fd_, address_->getSockAddrPtr(), address_->getAddressLen());
+    int Socket::connect() {
+        return ::connect(fd_, address_->get_sock_addr(), address_->get_address_len());
     }
 
-    int Socket::GetFD() {
+    int Socket::get_fd() {
         return fd_;
     }
 
-    Socket* Socket::Accept() {
+    Socket* Socket::accept() {
 
         sockaddr sock_addr;
         socklen_t sock_addr_len;
-        int coon_fd = accept(fd_, &sock_addr, &sock_addr_len);
+        int coon_fd = ::accept(fd_, &sock_addr, &sock_addr_len);
         if (coon_fd < 0) {
             int savedErrno = errno;
             LOG_TRACE << "Socket accept failed, reason " << strerror(savedErrno);
@@ -138,7 +138,7 @@ namespace abathur::net {
     }
 
 
-    int Socket::Close()
+    int Socket::close()
     {
         LOG_TRACE << "Socket " << fd_ << " closing";
         if (::close(fd_) < 0)
@@ -149,7 +149,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetNonBlocking(bool) {
+    int Socket::set_non_blocking(bool) {
         // non-block
         int flags = ::fcntl(fd_, F_GETFL, 0);
         flags |= O_NONBLOCK;
@@ -162,7 +162,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetCloseOnExec(bool) {
+    int Socket::set_close_on_exec(bool) {
         // close-on-exec
         int flags = ::fcntl(fd_, F_GETFD, 0);
         flags |= FD_CLOEXEC;
@@ -175,7 +175,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetTcpNoDelay(bool on)
+    int Socket::set_tcp_no_delay(bool on)
     {
         int optval = on ? 1 : 0;
         int ret = ::setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY,
@@ -188,7 +188,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetReuseAddr(bool on)
+    int Socket::set_reuse_addr(bool on)
     {
         int optval = on ? 1 : 0;
         int ret = ::setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR,
@@ -201,7 +201,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetReusePort(bool on)
+    int Socket::set_reuse_port(bool on)
     {
 #ifdef SO_REUSEPORT
         int optval = on ? 1 : 0;
@@ -220,7 +220,7 @@ namespace abathur::net {
         return 0;
     }
 
-    int Socket::SetKeepAlive(bool on)
+    int Socket::set_keep_alive(bool on)
     {
         int optval = on ? 1 : 0;
         int ret = ::setsockopt(fd_, SOL_SOCKET, SO_KEEPALIVE,
@@ -235,6 +235,6 @@ namespace abathur::net {
 
     Socket::~Socket() {
         LOG_TRACE << "Socket deconstructing , " << this;
-        Close();
+        close();
     }
 }

@@ -17,8 +17,6 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
 ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
@@ -41,6 +39,7 @@ set(SRC_FILES
         src/log.cpp
         src/event.cpp
         src/channel.cpp
+        src/event_processor.cpp
         src/poller/get_poller.cpp
         src/net/socket.cpp
         src/net/socket_handler.cpp
@@ -49,8 +48,10 @@ set(SRC_FILES
         src/http/async_http_client.cpp
         src/http/http_request.cpp
         src/http/http_response.cpp
+        src/http/http_server.cpp
+        src/http/http_handler.cpp
         src/http/parser/http_parser.c
-        src/http/parser/http_parser.cpp
+        src/http/http_parser.cpp
         src/util/buffer.cpp
         src/util/timer.cpp
         )
@@ -72,8 +73,10 @@ set(HEADER_FILES
         include/abathur/http/async_http_client.hpp
         include/abathur/http/http_request.hpp
         include/abathur/http/http_response.hpp
+        include/abathur/http/http_server.hpp
+        include/abathur/http/http_handler.hpp
         include/abathur/http/parser/http_parser.h
-        include/abathur/http/parser/http_parser.hpp
+        include/abathur/http/http_parser.hpp
         include/abathur/util/buffer.hpp
         include/abathur/util/timer.hpp
         )
@@ -93,6 +96,9 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DARWIN")
     set(SRC_FILES ${SRC_FILES} src/poller/kqueue_poller.cpp)
     set(HEADER_FILES ${HEADER_FILES} src/poller/kqueue_poller.hpp)
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++1z-extensions")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-escape-sequence")
 
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
@@ -126,11 +132,13 @@ target_link_libraries(abathur_dynamic ${DEP_LIBS})
 add_executable(log_test        test/log_test.cpp)
 add_executable(tcp_echo_server test/tcp_echo_server.cpp)
 add_executable(http_echo_server test/http_echo_server.cpp)
+add_executable(http_proxy_server test/http_proxy_server.cpp)
 
 #target_link_libraries(ioloop_test     ${LIBS})
 #target_link_libraries(ioloop_test2    ${LIBS})
 target_link_libraries(log_test         ${LIBS})
 target_link_libraries(tcp_echo_server  ${LIBS})
 target_link_libraries(http_echo_server ${LIBS})
+target_link_libraries(http_proxy_server ${LIBS})
 
 #add_subdirectory(example)

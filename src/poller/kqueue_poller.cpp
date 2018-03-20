@@ -23,7 +23,7 @@ namespace abathur::poller {
         close(kqueue_fd_);
     }
 
-    void KqueuePoller::AddChannel(int fd, uint filter) {
+    void KqueuePoller::add_channel(int fd, uint filter) {
         PollEvent poll_event;
         if (filter & EF_READ){
             EV_SET(&poll_event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
@@ -44,7 +44,7 @@ namespace abathur::poller {
         LOG_TRACE << "Kqueue add event fd " << fd ;
     }
 
-    void KqueuePoller::UpdateChannel(int fd, uint filter, uint old_filter) {
+    void KqueuePoller::update_channel(int fd, uint filter, uint old_filter) {
         PollEvent poll_event;
         if ((filter ^ old_filter) & EF_READ){
             if (filter & EF_READ){
@@ -81,7 +81,7 @@ namespace abathur::poller {
         }
     }
 
-    void KqueuePoller::DeleteChannel(int fd) {
+    void KqueuePoller::delete_channel(int fd) {
         LOG_TRACE << "Kqueue deleting fd " << fd;
         PollEvent poll_event;
         EV_SET(&poll_event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
@@ -97,7 +97,7 @@ namespace abathur::poller {
         }
     }
 
-    int KqueuePoller::Poll(int time_out) {
+    int KqueuePoller::poll(int time_out) {
 
         timespec time_sec = {time_out, 0};
         int ret = kevent(kqueue_fd_, NULL, 0, events_ready_.data(), MAX_READY_EVENTS_NUM, &time_sec);
@@ -108,9 +108,9 @@ namespace abathur::poller {
         return ret;
     }
 
-    void KqueuePoller::HandleEvents(
-            const int& events_ready_amount,
-            const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
+    void KqueuePoller::handle_events(
+            const int &events_ready_amount,
+            const std::map<int, std::pair<uint, std::shared_ptr<Channel>>> &channel_map
     ) {
 
         LOG_TRACE << "Handling events";
@@ -151,7 +151,7 @@ namespace abathur::poller {
             }
             auto pair = iter->second;
             LOG_TRACE << pair.second.use_count();
-            pair.second->Process(Event(
+            pair.second->process(Event(
                     event_iter.first,
                     event_iter.second
             ));

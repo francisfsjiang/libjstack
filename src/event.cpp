@@ -10,33 +10,33 @@ namespace abathur {
             fd_(fd), filter_(filter){
 
     }
-    bool Event::Readable() const {
+    bool Event::readable() const {
         return static_cast<bool>(filter_ & EF_READ);
     }
-    bool Event::Writable() const {
+    bool Event::writable() const {
         return static_cast<bool>(filter_ & EF_WRITE);
     }
-    bool Event::Closeable() const {
+    bool Event::closeable() const {
         return static_cast<bool>(filter_ & EF_CLOSE);
     }
 
-    int Event::GetFD() const {
+    int Event::get_fd() const {
         return fd_;
     }
 
-    void Event::setReadable(bool on) {
+    void Event::set_readable(bool on) {
         if (on)
             filter_ |= EF_READ;
         else
             filter_ &= ~EF_READ;
     }
-    void Event::setWritable(bool on) {
+    void Event::set_writable(bool on) {
         if (on)
             filter_ |= EF_WRITE;
         else
             filter_ &= ~EF_WRITE;
     }
-    void Event::setCloseable(bool on) {
+    void Event::set_closeable(bool on) {
         if (on)
             filter_ |= EF_CLOSE;
         else

@@ -10,11 +10,8 @@ namespace abathur::util {
 }
 
 namespace abathur::http {
-    using namespace abathur::util;
 
-    namespace parser {
-            class HTTPParser;
-    }
+    class HTTPParser;
 
     class AsyncHTTPClient;
 
@@ -23,7 +20,7 @@ namespace abathur::http {
     private:
         HTTP_VERSION version_;
         int status_code_;
-        Buffer* body_;
+        util::Buffer* body_;
         std::map<std::string, std::string>* header_;
 
     public:
@@ -32,9 +29,13 @@ namespace abathur::http {
         ~HTTPResponse();
 
         int status_code();
-        Buffer* get_body();
+        util::Buffer* get_body();
         std::map<std::string, std::string>* get_header();
+        void set_header(const std::string&, const std::string&);
 
+        size_t write(const std::string&);
+        size_t write(const char*, size_t);
+        size_t write_to_buffer(util::Buffer& buffer);
     };
 }
 

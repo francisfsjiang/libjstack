@@ -23,26 +23,26 @@ namespace abathur::net {
         Socket(InetAddress*);
         Socket(int fd, InetAddress*);
 
-        int Bind();
+        int bind();
 
-        int Send(util::Buffer&);
-        int Recv(util::Buffer&);
+        int send(util::Buffer &);
+        int recv(util::Buffer &);
 
-        int Listen();
+        int listen();
 
-        int Connect();
+        int connect();
 
-        int GetFD();
+        int get_fd();
 
-        Socket* Accept();
+        Socket* accept();
 
-        int Close();
-        int SetNonBlocking(bool);
-        int SetCloseOnExec(bool);
-        int SetTcpNoDelay(bool);
-        int SetReuseAddr(bool);
-        int SetReusePort(bool);
-        int SetKeepAlive(bool);
+        int close();
+        int set_non_blocking(bool);
+        int set_close_on_exec(bool);
+        int set_tcp_no_delay(bool);
+        int set_reuse_addr(bool);
+        int set_reuse_port(bool);
+        int set_keep_alive(bool);
 
         ~Socket();
 

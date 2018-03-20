@@ -22,20 +22,21 @@ namespace abathur::net {
         InetAddress(const InetAddress&) = default;
         InetAddress& operator=(const InetAddress&) = default;
 
-        const sockaddr* getSockAddrPtr() const;
+        const sockaddr* get_sock_addr() const;
 
-        std::string toString() const;
-        std::string getAddrString() const;
-        in_port_t getPort() const;
+        std::string to_string() const;
+        std::string get_address_string() const;
+        in_port_t get_port() const;
 
-        sa_family_t getProtocolFamily() const;
-        socklen_t getAddressLen() const ;
-        const socklen_t* getAddressLenPtr() const;
+        sa_family_t get_protocol_family() const;
+        socklen_t get_address_len() const ;
+        const socklen_t* get_address_len_ptr() const;
     private:
 
         sockaddr_storage address_;
         socklen_t address_len_;
 
+        int socket_type_;
     };
 
     const int k_MAX_INET_ADDRESS_LEN = 46;

@@ -100,10 +100,10 @@ namespace abathur::util {
     char* Buffer::data_to_write() {
         return data_ + writer_pos_;
     }
-    char* Buffer::data_to_read() {
+    char* Buffer::data_to_read() const {
         return data_ + reader_pos_;
     }
-    int Buffer::write(const char* src_data, size_t len) {
+    size_t Buffer::write(const char* src_data, size_t len) {
         if(writer_pos_ + len > capacity()) {
             size_t new_capacity = capacity();
             while (new_capacity < (SIZE_MAX >> 1) && writer_pos_ + len > new_capacity) {
@@ -111,7 +111,7 @@ namespace abathur::util {
             }
             if (new_capacity < writer_pos_ + len ){
                 LOG_FATAL << "Too large data to write in buffer.";
-                return 2;
+                return 0;
             }
             resize(new_capacity);
         }
@@ -121,7 +121,7 @@ namespace abathur::util {
         return static_cast<int>(len);
     }
 
-    int Buffer::read(char* dst_data, size_t len) const {
+    size_t Buffer::read(char* dst_data, size_t len) const {
         memcpy(data_, dst_data, len);
         return static_cast<int>(len);
     }

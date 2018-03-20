@@ -12,7 +12,7 @@
 #include "abathur/http/http_response.hpp"
 #include "abathur/http/async_http_client.hpp"
 
-#define LISTEN_PORT 8101
+#define LISTEN_PORT 8107
 #define LISTEN_ADDR "::"
 
 
@@ -22,37 +22,37 @@ class EchoHandler : public abathur::http::HTTPHandler{
         explicit EchoHandler(abathur::net::Socket* socket) : abathur::http::HTTPHandler(socket) {};
         abathur::http::HTTPResponse* handle_http_request(abathur::http::HTTPRequest& request) override {
 
+            auto new_resp = new abathur::http::HTTPResponse();
+
 //            auto s = std::string(buffer.data(), buffer.size());
 
-//            auto client = new abathur::http::AsyncHTTPClient();
-////            auto req = abathur::http::HTTPRequest("www.baidu.com");
+            auto client = new abathur::http::AsyncHTTPClient();
+            auto req = abathur::http::HTTPRequest("www.baidu.com");
 ////            auto req = abathur::http::HTTPRequest("www.qq.com");
 ////            auto req = abathur::http::HTTPRequest("www.stroustrup.com");
 //            auto req = abathur::http::HTTPRequest("127.0.0.1");
-//
-//            auto resp = client->perform_request(req);
-//            std::cout << resp->get_body()->data_to_read() << std::endl;
-//
-//            auto status_code = resp->status_code();
-//            std::cout << status_code << std::endl;
-//
-//            auto header = resp->get_header();
-//            for(auto h: *header) {
-//                std::cout << h.first << " ---- " << h.second <<std::endl;
-//            }
-//            delete header;
-//
-//            delete resp;
-//
-//            delete client;
 
+            auto resp = client->perform_request(req);
+            std::cout << resp->get_body()->data_to_read() << std::endl;
+            std::cout << resp->get_body()->size() << std::endl;
+            new_resp->write(resp->get_body()->data_to_read(), resp->get_body()->size());
 
-            auto resp = new abathur::http::HTTPResponse();
-            resp->set_header("Cookies", "1234");
-            resp->write("123");
+            auto status_code = resp->status_code();
+            std::cout << status_code << std::endl;
+
+            auto header = resp->get_header();
+            for(auto h: *header) {
+                std::cout << h.first << " ---- " << h.second <<std::endl;
+            }
+            delete header;
+
+            delete resp;
+
+            delete client;
+
             finish();
 
-            return resp;
+            return new_resp;
         }
 };
 

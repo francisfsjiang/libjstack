@@ -21,11 +21,11 @@ namespace abathur::poller {
         LOG_TRACE << "fd" << epoll_fd_ << " Epoll created.";
     }
 
-EpollPoller::~EpollPoller() {
+    EpollPoller::~EpollPoller() {
         LOG_TRACE << "fd" << epoll_fd_ << " Epoll deconstructing.";
     }
-    
-    void EpollPoller::AddChannel(int fd, uint filter) {
+
+    void EpollPoller::add_channel(int fd, uint filter) {
         PollEvent poll_event;
         poll_event.events = 0;
         poll_event.data.fd = fd;
@@ -50,7 +50,7 @@ EpollPoller::~EpollPoller() {
         LOG_TRACE << "fd" << fd << " Epoll add event";
     }
 
-    void EpollPoller::UpdateChannel(int fd, uint filter, uint) {
+    void EpollPoller::update_channel(int fd, uint filter, uint) {
         PollEvent poll_event;
         poll_event.events = 0;
         poll_event.data.fd = fd;
@@ -74,7 +74,7 @@ EpollPoller::~EpollPoller() {
         LOG_TRACE << "fd" << fd << " Epoll add event";
     }
 
-    void EpollPoller::DeleteChannel(int fd) {
+    void EpollPoller::delete_channel(int fd) {
         int ret = epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL);
         if (ret < 0) {
             LOG_ERROR << "fd" << fd << " Epoll event delete failed" << strerror(errno);
@@ -83,7 +83,7 @@ EpollPoller::~EpollPoller() {
         LOG_TRACE << "fd" << fd << " undefined delete event in epoll " << epoll_fd_;
     }
 
-    int EpollPoller::Poll(int time_out) {
+    int EpollPoller::poll(int time_out) {
 
         int ret = epoll_wait(epoll_fd_, events_ready_.data(), MAX_READY_EVENTS_NUM, time_out * 1000);
         if (ret < 0) {
@@ -92,7 +92,7 @@ EpollPoller::~EpollPoller() {
         return ret;
     }
 
-    void EpollPoller::HandleEvents(
+    void EpollPoller::handle_events(
             const int& events_ready_amount,
             const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
     ) {
@@ -114,10 +114,10 @@ EpollPoller::~EpollPoller() {
             filter |= events_ready_[i].events & EPOLLRDHUP || events_ready_[i].events & EPOLLERR ? EF_CLOSE: 0;
 
             auto info_pair = iter->second;
-            info_pair.second->Process(Event(
-                        event.data.fd,
-                        filter
-                        ));
+            info_pair.second->process(Event(
+                    event.data.fd,
+                    filter
+            ));
 
         }
     }

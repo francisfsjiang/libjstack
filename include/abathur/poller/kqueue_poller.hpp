@@ -24,18 +24,18 @@ namespace abathur::poller {
 
         virtual ~KqueuePoller() override ;
 
-        virtual int Poll(int) override ;
+        virtual int poll(int) override ;
 
-        virtual void HandleEvents(
-                const int& events_ready_amount,
-                const std::map<int, std::pair<uint, std::shared_ptr<Channel>>>& channel_map
+        virtual void handle_events(
+                const int &events_ready_amount,
+                const std::map<int, std::pair<uint, std::shared_ptr<Channel>>> &channel_map
         ) override ;
 
-        virtual void AddChannel(int, uint) override ;
+        virtual void add_channel(int, uint) override ;
 
-        virtual void UpdateChannel(int, uint, uint) override ;
+        virtual void update_channel(int, uint, uint) override ;
 
-        virtual void DeleteChannel(int) override ;
+        virtual void delete_channel(int) override ;
     };
 
 

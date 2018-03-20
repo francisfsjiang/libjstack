@@ -23,23 +23,23 @@ class Socket;
 class SocketHandler: public EventProcessor {
 private:
     Socket* socket_ptr_ = nullptr;
-
-    abathur::util::Buffer read_buffer_, write_buffer_;
-
     bool wait_for_write_event_ = false;
     bool finished_ = false;
 
+protected:
+    abathur::util::Buffer read_buffer_, write_buffer_;
+
 public:
     SocketHandler(Socket*);
-    ~SocketHandler();
+    virtual ~SocketHandler();
 
     virtual int Init();
 
-    void ProcessEvent(const Event&) override ;
+    int process_event(const Event &) override ;
 
-    int Write(const char*, size_t);
+    int write(const char *, size_t);
 
-    virtual int Process(util::Buffer&) = 0;
+    virtual int handle_socket_data(util::Buffer&) = 0;
 
     void finish();
 };

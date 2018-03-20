@@ -10,7 +10,7 @@
 namespace abathur::util {
 
     Timer::Timer(int time, TimerType type, int interval, std::function<int(int)> func) {
-        LOG_TRACE << "Timer constructing.";
+        LOG_TRACE << "Timer constructing, " << this << " , " << time;
         time_ = time;
         interval_ = interval;
         func_ = func;
@@ -19,7 +19,7 @@ namespace abathur::util {
     }
 
     Timer::~Timer() {
-        LOG_TRACE << "Timer deconstructing.";
+        LOG_TRACE << "Timer deconstructing, " << this << " , " << time_;
     }
 
     int Timer::get_time() {
@@ -63,7 +63,7 @@ namespace abathur::util {
         int time_sec = get_time();
         if (time_sec > CURRENT_TIME_T || CURRENT_TIME_T == 0) {
             time_t te = time(NULL);
-            strftime(buffer, 80, "%m-%d-%Y %H:%M:%S\0", gmtime(&te));
+            strftime(buffer, 80, "%m-%d-%Y %H:%M:%S", gmtime(&te));
             CURRENT_DATETIME = std::string(buffer);
         }
         return CURRENT_DATETIME;

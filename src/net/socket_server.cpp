@@ -19,44 +19,45 @@ namespace abathur::net {
         LOG_TRACE << "SocketServer constructing, " << this;
         socket_ = new Socket(address);
 
-        LOG_TRACE << "Listen established on fd " << socket_->GetFD() ;
+        LOG_TRACE << "Listen established on fd " << socket_->get_fd() ;
     }
 
-    int SocketServer::Init(){
-        if (!inited_){
+    int SocketServer::init(){
+        if (inited_){
+            return 0;
+        }
 //            auto self = std::dynamic_pointer_cast<SocketServer>(shared_from_this());
 //            auto self = shared_from_this();
-            //GetSelf();
-            std::shared_ptr<Channel> channel_ptr(new Channel(dynamic_cast<EventProcessor*>(this)));
+        //GetSelf();
+        std::shared_ptr<Channel> channel_ptr(new Channel(dynamic_cast<EventProcessor*>(this)));
 
-            socket_->Bind();
-            socket_->Listen();
-            socket_->SetNonBlocking(true);
-            socket_->SetReusePort(true);
-            socket_->SetReuseAddr(true);
+        socket_->bind();
+        socket_->listen();
+        socket_->set_non_blocking(true);
+        socket_->set_reuse_port(true);
+        socket_->set_reuse_addr(true);
 
-            abathur::IOLoop::Current()->AddChannel(socket_->GetFD(), EF_READ, channel_ptr);
+        abathur::IOLoop::current()->add_channel(socket_->get_fd(), EF_READ, channel_ptr);
 
-            inited_ = true;
-        }
+        inited_ = true;
         return 0;
     }
 
-    void SocketServer::ProcessEvent(const Event& event) {
-        Init();
+    int SocketServer::process_event(const Event &event) {
+        init();
 
-        LOG_TRACE << "SocketServer fd " << event.GetFD()<< " have incomming connections";
+        LOG_TRACE << "SocketServer fd " << event.get_fd()<< " have incomming connections";
 
 
         while (true) {
-            auto new_socket = socket_->Accept();
+            auto new_socket = socket_->accept();
             if (!new_socket) break;
 
-            new_socket->SetNonBlocking(true);
+            new_socket->set_non_blocking(true);
             SocketHandler* s = socket_handler_generator_(new_socket);
             s->Init();
         }
-
+        return 1;
     }
 
     SocketServer::~SocketServer() {

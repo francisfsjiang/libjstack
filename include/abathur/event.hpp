@@ -21,16 +21,16 @@ namespace abathur {
         Event(int);
         Event(int, uint);
 
-        int GetFD() const;
-        int GetFilter() const;
+        int get_fd() const;
+        int get_filter() const;
 
-        bool Readable() const;
-        bool Writable() const;
-        bool Closeable() const;
+        bool readable() const;
+        bool writable() const;
+        bool closeable() const;
 
-        void setReadable(bool);
-        void setWritable(bool);
-        void setCloseable(bool);
+        void set_readable(bool);
+        void set_writable(bool);
+        void set_closeable(bool);
     };
 }
 

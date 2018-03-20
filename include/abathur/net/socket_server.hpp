@@ -21,27 +21,23 @@ class InetAddress;
 
 class SocketServer: public EventProcessor {
 private:
-
     SocketServer(const SocketServer&) = delete;
     const SocketServer& operator=(const SocketServer&) = delete;
 
     Socket* socket_ = nullptr;
 
-    std::function<SocketHandler* (Socket*)>socket_handler_generator_ = nullptr;
-
     bool inited_ = false;
+
+protected:
+    std::function<SocketHandler* (Socket*)>socket_handler_generator_ = nullptr;
 
 public:
     SocketServer(InetAddress* address);
 
     ~SocketServer();
 
-    int Init();
-
-    void ProcessEvent(const Event&) override;
-
     template<typename T>
-    int SetHandler() {
+    int set_handler() {
 
         if (!std::is_base_of<SocketHandler, T>::value) {
             LOG_ERROR << "Wrong handler type" << typeid(T).name();
@@ -54,8 +50,11 @@ public:
         return 0;
     }
 
-    void CreateConnection(int fd, int data);
+    void create_connection(int fd, int data);
 
+    int init();
+
+    int process_event(const Event &) override;
 };
 
 

@@ -31,7 +31,7 @@ namespace abathur::util {
 
         char* data();
         char* data_to_write();
-        char* data_to_read();
+        char* data_to_read() const;
 
         size_t get_reader_pos() const;
         size_t get_writer_pos() const;
@@ -39,8 +39,8 @@ namespace abathur::util {
         size_t set_reader_pos(size_t);
         size_t set_writer_pos(size_t);
 
-        int write(const char*, size_t);
-        int read(char*, size_t) const;
+        size_t write(const char*, size_t);
+        size_t read(char*, size_t) const;
 
         int read(size_t, size_t, char*) const;
         int shrink();

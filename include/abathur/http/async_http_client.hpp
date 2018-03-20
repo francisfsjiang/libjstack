@@ -1,8 +1,10 @@
 #ifndef _ABATHUR_ASYNC_HTTP_CLIENT_HPP_
 #define _ABATHUR_ASYNC_HTTP_CLIENT_HPP_
 
-#include "abathur/http/http_request.hpp"
-#include "abathur/http/http_response.hpp"
+#include <memory>
+#include <vector>
+
+#include "abathur/event_processor.hpp"
 
 #include "curl/curl.h"
 
@@ -20,18 +22,20 @@ namespace abathur::http {
     class HTTPRequest;
     class HTTPResponse;
 
-    class AsyncHTTPClient {
+    class AsyncHTTPClient: EventProcessor {
     private:
         CURLM* curl_m_handle_;
         CURL* curl_handle_;
         int curl_socket_;
+        bool done_;
 
         HTTPResponse* response_ = nullptr;
-        util::Timer* curl_timeout_timer_ = nullptr;
+//        std::shared_ptr<util::Timer> curl_timeout_timer_ = nullptr;
         std::shared_ptr<Channel> in_channel_ = nullptr;
+        std::vector<std::shared_ptr<util::Timer>>* timers_ = nullptr;
 
         void prepare_request(const HTTPRequest&);
-        HTTPResponse* prepare_response();
+        void prepare_response();
 
         int check_multi_info();
 
@@ -46,6 +50,7 @@ namespace abathur::http {
         ~AsyncHTTPClient();
 
         HTTPResponse* perform_request(const HTTPRequest&);
+        int process_event(const Event &event) override;
 
     };
 }

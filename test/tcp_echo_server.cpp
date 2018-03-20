@@ -18,14 +18,14 @@ class EchoHandler : public abathur::net::SocketHandler{
         char buffer_[BUFFER_SIZE];
     public:
         explicit EchoHandler(abathur::net::Socket* socket) : abathur::net::SocketHandler(socket) {};
-        virtual int Process(abathur::util::Buffer& buffer) override {
+        virtual int handle_socket_data(abathur::util::Buffer &buffer) override {
             time_t te = time(NULL);
             strftime(buffer_, BUFFER_SIZE, "%m-%d-%Y %H:%M:%S  hi.", gmtime(&te));
             std::string s(buffer_);
             s+=std::string(buffer.data(), buffer.size());
             std::cout<<std::endl<<s<<std::endl;
 
-            Write(s.data(), s.size());
+            write(s.data(), s.size());
 
             return static_cast<int>(buffer.size());
         }
@@ -38,12 +38,12 @@ int main(int, const char* []) {
     std::cout<<buf<< std::endl;
 
     auto addr = new abathur::net::InetAddress(LISTEN_ADDR, LISTEN_PORT);
-    std::cout << addr->getAddrString() << ":" << addr->getPort() << std::endl;
+    std::cout << addr->get_address_string() << ":" << addr->get_port() << std::endl;
 
     abathur::net::SocketServer* tcp_server = new abathur::net::SocketServer(addr);
-    tcp_server->Init();
-    tcp_server->SetHandler<EchoHandler>();
+    tcp_server->init();
+    tcp_server->set_handler<EchoHandler>();
 
-    abathur::IOLoop::Current()->Start();
+    abathur::IOLoop::current()->start();
     return 0;
 }

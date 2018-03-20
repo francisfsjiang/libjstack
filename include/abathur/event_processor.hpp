@@ -1,8 +1,6 @@
 #ifndef _ABATHUR_EVENT_PROCESSOR_HPP_
 #define _ABATHUR_EVENT_PROCESSOR_HPP_
 
-#include <memory>
-
 namespace abathur {
 
     class Event;
@@ -16,8 +14,8 @@ namespace abathur {
 
         virtual ~EventProcessor() = default;
 
-
-        virtual void ProcessEvent(const Event&) = 0;
+        void process_loop();
+        virtual int process_event(const Event &) = 0;
     };
 }
 

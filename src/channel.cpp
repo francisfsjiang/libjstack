@@ -15,14 +15,8 @@ namespace abathur {
         // Channel initial process
         routine_ = new Corountine::push_type(
                 [&](Corountine::pull_type& routine_in) {
-                    if (!routine_in) return;
-
-                    routine_in_ = &routine_in;
-                    while (true) {
-                        auto ev = routine_in.get();
-                        processor_->ProcessEvent(ev);
-                        routine_in();
-                    }
+                    current_channel->routine_in_ = &routine_in;
+                    processor_->process_loop();
                 }
         );
     }
@@ -32,7 +26,7 @@ namespace abathur {
         delete processor_;
     }
 
-    void Channel::Process(const abathur::Event& event) {
+    void Channel::process(const abathur::Event &event) {
         LOG_TRACE << "In to channel.";
         current_channel = shared_from_this();
         (*routine_)(event);

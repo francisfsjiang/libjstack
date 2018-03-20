@@ -1,5 +1,6 @@
 #include "abathur/http/async_http_client.hpp"
 
+
 #include <boost/algorithm/string.hpp>
 
 #include "abathur/log.hpp"
@@ -8,13 +9,17 @@
 #include "abathur/io_loop.hpp"
 #include "abathur/util/timer.hpp"
 #include "abathur/util/buffer.hpp"
+#include "abathur/http/http_response.hpp"
 
 
 namespace abathur::http{
+    using namespace abathur::util;
+
     int AsyncHTTPClient::handle_body_write(void *ptr, size_t size, size_t nmemb, HTTPResponse* resp) {
         LOG_TRACE << "Curl body write function." ;
         return resp->body_->write(static_cast<char*>(ptr), size * nmemb);
     }
+
     int AsyncHTTPClient::handle_header_write(char* data, size_t size, size_t nmemb, HTTPResponse* resp) {
         LOG_TRACE << "Curl header write function. "  << std::string(data, size*nmemb);
         auto header = std::string(data, size*nmemb);
@@ -35,16 +40,16 @@ namespace abathur::http{
             uint filter = (action == CURL_POLL_IN) ? EF_READ: EF_WRITE;
 
             if (socketp) {
-                IOLoop::Current()->UpdateChannelFilter(curl_socket, filter);
+                IOLoop::current()->update_channel_filter(curl_socket, filter);
             }
             else {
                 userp->curl_socket_ = curl_socket;
-                IOLoop::Current()->AddChannel(curl_socket, filter, userp->in_channel_);
+                IOLoop::current()->add_channel(curl_socket, filter, userp->in_channel_);
                 curl_multi_assign(userp->curl_m_handle_, curl_socket, userp);
             }
         }
         else if (action == CURL_POLL_REMOVE) {
-            IOLoop::Current()->remove_channel(curl_socket);
+            IOLoop::current()->remove_channel(curl_socket);
             curl_multi_assign(userp->curl_m_handle_, curl_socket, NULL);
         }
         else {
@@ -60,16 +65,22 @@ namespace abathur::http{
         }
         if (timeout_ms < 0) {
             LOG_TRACE << "delete timer";
-            IOLoop::Current()->delete_timer(userp->curl_timeout_timer_);
-            userp->curl_timeout_timer_ = nullptr;
+
+            //pass this
+//            IOLoop::Current()->delete_timer(userp->curl_timeout_timer_);
+//            userp->curl_timeout_timer_ = nullptr;
         }
 //        else if (timeout_ms == 0){
+//            int running_handles;
 //            curl_multi_socket_action(userp->curl_handle_, CURL_SOCKET_TIMEOUT, 0, &running_handles);
 //            userp->check_multi_info();
 //        }
         else {
-            userp->curl_timeout_timer_ = new util::Timer(
-                    static_cast<int>(util::get_time() + timeout_ms),
+            long timeout_s = static_cast<long>(std::ceil(timeout_ms * 1.0 / 1000));
+
+//            userp->curl_timeout_timer_ = std::make_shared<Timer>(
+            auto timer = std::make_shared<Timer>(
+                    static_cast<int>(util::get_time() + timeout_s),
                     util::ONCE,
                     0,
                     [=](int)->int{
@@ -79,7 +90,8 @@ namespace abathur::http{
                         return 0;
                     }
             );
-            IOLoop::Current()->add_timer(userp->curl_timeout_timer_);
+            userp->timers_->push_back(timer);
+            IOLoop::current()->add_timer(timer);
         }
         return 0;
     }
@@ -96,6 +108,9 @@ namespace abathur::http{
         in_channel_ = current_channel;
         LOG_TRACE << current_channel.use_count();
 
+        done_ = false;
+
+        curl_handle_ = curl_easy_init();
         curl_m_handle_ = curl_multi_init();
 
         CURLMcode ret;
@@ -103,31 +118,44 @@ namespace abathur::http{
         ret = curl_multi_setopt(curl_m_handle_, CURLMOPT_SOCKETDATA, this);
         ret = curl_multi_setopt(curl_m_handle_, CURLMOPT_TIMERFUNCTION, start_timeout);
         ret = curl_multi_setopt(curl_m_handle_, CURLMOPT_TIMERDATA, this);
+
+        LOG_TRACE << "Curl multi setopt ret : " << ret;
+
+        timers_ = new std::vector<std::shared_ptr<Timer>>();
     }
 
     AsyncHTTPClient::~AsyncHTTPClient() {
         LOG_TRACE << "AsyncHTTPClient deconstructing, " << this;
+        for (auto t: *timers_) {
+            t->cancel();
+        }
+        timers_->clear();
+
+        if (curl_handle_) {
+            curl_easy_cleanup(curl_handle_);
+        }
         curl_multi_cleanup(curl_m_handle_);
         in_channel_ = nullptr;
     }
 
     void AsyncHTTPClient::prepare_request(const HTTPRequest& request) {
         CURLcode ret;
-        curl_handle_ = curl_easy_init();
         ret = curl_easy_setopt(curl_handle_, CURLOPT_URL, request.host_.data());
 
-        if (request.method_ == POST){
+        if (request.method_ == HTTP_METHOD::POST){
             ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, request.post_buffer_->data_to_read());
             ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDSIZE, request.post_buffer_->size());
         }
 
-        ret = curl_easy_setopt(curl_handle_, CURLOPT_VERBOSE, 1L);
+        #if defined(ABATHUR_TRACE)
+        curl_easy_setopt(curl_handle_, CURLOPT_VERBOSE, 1L);
+        #endif
 
 //        ret = curl_easy_setopt(curl_handle_, CURLOPT_PROXY, "http://my.proxy.net");   // replace with your actual proxy
 //        ret = curl_easy_setopt(curl_handle_, CURLOPT_PROXYPORT, 8080L);
 
         struct curl_slist *header_list = NULL;
-        for(const auto& header: request.header_) {
+        for(const auto& header: *(request.header_)) {
             header_list = curl_slist_append(header_list, (header.first + ": " + header.second).data());
         }
         ret = curl_easy_setopt(curl_handle_, CURLOPT_HTTPHEADER, header_list);
@@ -138,6 +166,7 @@ namespace abathur::http{
         ret = curl_easy_setopt(curl_handle_, CURLOPT_HEADERFUNCTION, handle_header_write);
         ret = curl_easy_setopt(curl_handle_, CURLOPT_HEADERDATA, response_);
 
+        LOG_TRACE << "Curl easy setopt ret : " << ret;
         curl_multi_add_handle(curl_m_handle_, curl_handle_);
 
     }
@@ -146,50 +175,49 @@ namespace abathur::http{
         response_ = new HTTPResponse();
         prepare_request(request);
         // wait for IOLoop
-        auto routine_in = in_channel_->get_routine_in();
-        (*routine_in)();
-        while (true) {
-            LOG_TRACE << "AsyncHTTPClient loop.";
-            auto event = routine_in->get();
-            int flags = 0;
-            int running_handles;
-            if (event.Closeable())
-                flags = CURL_CSELECT_ERR;
-            if (!event.Closeable() && event.Readable()) flags |= CURL_CSELECT_IN;
-            if (!event.Closeable() && event.Writable()) flags |= CURL_CSELECT_OUT;
-            curl_multi_socket_action(curl_m_handle_, event.GetFD(), flags, &running_handles);
-            int ret = check_multi_info();
-            if (ret == 0) {
-                IOLoop::Current()->remove_channel(curl_socket_);
-                break;
-            }
-            (*routine_in)();
-        }
-        return prepare_response();
+        LOG_TRACE << "AsyncHTTPClient loop.";
 
+        this->process_loop();
+
+        return new HTTPResponse(*response_);
     }
 
-    HTTPResponse* AsyncHTTPClient::prepare_response() {
+    int AsyncHTTPClient::process_event(const Event &event) {
+        int flags = 0;
+        int running_handles;
+        if (event.closeable())
+            flags = CURL_CSELECT_ERR;
+        if (!event.closeable() && event.readable()) flags |= CURL_CSELECT_IN;
+        if (!event.closeable() && event.writable()) flags |= CURL_CSELECT_OUT;
+        curl_multi_socket_action(curl_m_handle_, event.get_fd(), flags, &running_handles);
+        int ret = check_multi_info();
+        if (ret == 0) {
+            IOLoop::current()->remove_channel(curl_socket_);
+            return 0;
+        }
+        return 1;
+    }
 
+
+
+    void AsyncHTTPClient::prepare_response() {
         long version, status_code;
         curl_easy_getinfo(curl_handle_, CURLINFO_HTTP_VERSION, &version);
         curl_easy_getinfo(curl_handle_, CURLINFO_RESPONSE_CODE, &status_code);
         response_->status_code_ = static_cast<int>(status_code);
         switch (version){
             case CURL_HTTP_VERSION_1_0:
-                response_->version_ = HTTP1_0;
+                response_->version_ = HTTP_VERSION::HTTP1_0;
                 break;
             case CURL_HTTP_VERSION_1_1:
-                response_->version_ = HTTP1_1;
+                response_->version_ = HTTP_VERSION::HTTP1_1;
                 break;
             case CURL_HTTP_VERSION_2_0:
-                response_->version_ = HTTP2_0;
+                response_->version_ = HTTP_VERSION::HTTP2_0;
                 break;
             default:
-                response_->version_ = HTTPNone;
+                response_->version_ = HTTP_VERSION::HTTPNone;
         }
-
-        return new HTTPResponse(*response_);
     }
 
     int AsyncHTTPClient::check_multi_info() {
@@ -198,24 +226,26 @@ namespace abathur::http{
         CURLMsg *message;
         int pending;
 
-        bool done = false;
-
         while ((message = curl_multi_info_read(curl_m_handle_, &pending))) {
             switch (message->msg) {
                 case CURLMSG_DONE:
                     curl_easy_getinfo(message->easy_handle, CURLINFO_EFFECTIVE_URL,
                                       &done_url);
                     LOG_DEBUG << done_url << "DONE";
-                    done = true;
+                    done_ = true;
+
+                    prepare_response();
+
                     curl_multi_remove_handle(curl_m_handle_, message->easy_handle);
                     curl_easy_cleanup(message->easy_handle);
+                    curl_handle_ = nullptr;
                     break;
 
                 default:
                     LOG_DEBUG << "CURLMSG default";
             }
         }
-        if (done)
+        if (done_)
             return 0;
         else
             return 2;

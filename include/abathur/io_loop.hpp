@@ -33,12 +33,12 @@ namespace abathur {
         std::map<int, std::pair<uint, std::shared_ptr<Channel>>> channel_map_;
 
         typedef std::priority_queue<
-                util::Timer*,
-                std::vector<util::Timer*>,
-                std::function<bool(util::Timer*, util::Timer*)>
+                std::shared_ptr<util::Timer>,
+                std::vector<std::shared_ptr<util::Timer>>,
+                std::function<bool(std::shared_ptr<util::Timer>, std::shared_ptr<util::Timer>)>
         > timer_heap_type;
         timer_heap_type timer_heap_;
-        std::set<util::Timer*> timer_map_;
+        std::set<std::shared_ptr<util::Timer>> timer_map_;
 
         IOLoop();
 
@@ -51,20 +51,20 @@ namespace abathur {
         std::queue<int> channel_to_remove_pending_;
     public:
 
-        static IOLoop* Current();
+        static IOLoop* current();
 
-        void Quit();
+        void quit();
 
-        void AddChannel(int, uint, std::shared_ptr<Channel>);
-        void UpdateChannelFilter(int, uint);
-        void SetChannelFilter(int, uint);
+        void add_channel(int, uint, std::shared_ptr<Channel>);
+        void update_channel_filter(int, uint);
+        void set_channel_filter(int, uint);
         void remove_channel(int);
 
         int process_timers();
-        void add_timer(util::Timer*);
-        void delete_timer(util::Timer*);
+        void add_timer(std::shared_ptr<util::Timer>);
+        void delete_timer(std::shared_ptr<util::Timer>);
 
-        void Start();
+        void start();
 
         ~IOLoop();
     };
