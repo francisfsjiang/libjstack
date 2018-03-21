@@ -33,7 +33,6 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - libcurl4-openssl-dev
             - g++-7
       env:
         - CC_COMPILER=gcc-7
@@ -47,7 +46,6 @@ matrix:
           sources:
             - llvm-toolchain-trusty-3.9
           packages:
-            - libcurl4-openssl-dev
             - clang-3.9
             - libc++-dev
             - libc++abi-dev
@@ -63,7 +61,6 @@ matrix:
           sources:
             - llvm-toolchain-trusty-4.0
           packages:
-            - libcurl4-openssl-dev
             - clang-4.0
             - libc++-dev
             - libc++abi-dev
@@ -79,7 +76,6 @@ matrix:
           sources:
             - llvm-toolchain-trusty-5.0
           packages:
-            - libcurl4-openssl-dev
             - clang-5.0
             - libc++-dev
             - libc++abi-dev
