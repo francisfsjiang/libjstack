@@ -136,6 +136,9 @@ before_script:
   - ls ${BOOST_ROOT};
   - ls ${BOOST_ROOT}/lib;
   - ls ${BOOST_ROOT}/include;
+  - ls /usr/include/x86_64-linux-gnu;
+  - ls /usr/include/x86_64-linux-gnu/curl;
+  - cat /usr/include/x86_64-linux-gnu/curl/curl.h;
   - cd ${TRAVIS_BUILD_DIR};
   - echo ${CMAKE_OPTIONS};
   - mkdir build;
