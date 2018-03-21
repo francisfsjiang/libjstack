@@ -22,7 +22,7 @@ namespace abathur::net {
         delete socket_ptr_;
     }
 
-    int SocketHandler::Init() {
+    int SocketHandler::init(void*) {
 
         socket_ptr_->set_non_blocking(true);
         socket_ptr_->set_tcp_no_delay(true);

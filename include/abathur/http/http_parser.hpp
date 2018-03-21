@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <queue>
 
 struct http_parser;
 struct http_parser_settings;
@@ -16,25 +17,19 @@ namespace abathur::http {
     class HTTPRequest;
 
     enum class HTTP_TYPE: unsigned int {
-        REQUEST,
+        REQUEST = 1,
         RESPONSE,
     };
 
-    enum class HTTP_METHOD: unsigned int {
-        GET,
-        POST,
-        DELETE,
-        PUT
+
+    enum class HTTPVersion: unsigned int {
+        HTTPNone = 0,
+        HTTP1_0  = 1,
+        HTTP1_1  = 2,
+        HTTP2_0  = 3,
     };
 
-    enum class HTTP_VERSION: unsigned int {
-        HTTPNone,
-        HTTP1_0 ,
-        HTTP1_1 ,
-        HTTP2_0 ,
-    };
-
-    extern const std::map<int, std::string> HTTP_STATUS_TO_DESCRIPTION;
+    extern const std::map<unsigned int, std::string> HTTP_STATUS_TO_DESCRIPTION;
 
     typedef int (*http_data_cb) (http_parser*, const char *at, size_t length);
     typedef int (*http_cb) (http_parser*);
@@ -58,16 +53,14 @@ namespace abathur::http {
 
         http_parser* parser_;
 
-        std::map<std::string, std::string>* header_;
-
         std::string last_field_;
 
-        HTTPRequest* request_;
-        util::Buffer* body_;
-        std::string* url_;
-
+        HTTPRequest* current_request_;
         bool header_complete_;
         bool message_complete_;
+
+
+        std::queue<HTTPRequest*> completed_request_;
 
     public:
         HTTPParser(HTTP_TYPE);
@@ -136,21 +129,76 @@ namespace abathur::http {
   XX(502, BAD_GATEWAY,                     Bad Gateway)                     \
   XX(503, SERVICE_UNAVAILABLE,             Service Unavailable)             \
   XX(504, GATEWAY_TIMEOUT,                 Gateway Timeout)                 \
-  XX(505, HTTP_VERSION_NOT_SUPPORTED,      HTTP Version Not Supported)      \
+  XX(505, HTTPVersion_NOT_SUPPORTED,      HTTP Version Not Supported)      \
   XX(506, VARIANT_ALSO_NEGOTIATES,         Variant Also Negotiates)         \
   XX(507, INSUFFICIENT_STORAGE,            Insufficient Storage)            \
   XX(508, LOOP_DETECTED,                   Loop Detected)                   \
   XX(510, NOT_EXTENDED,                    Not Extended)                    \
   XX(511, NETWORK_AUTHENTICATION_REQUIRED, Network Authentication Required) \
 
-    enum HTTP_STATUS
-    {
-#define XX(num, name, string) HTTP_STATUS_##name = num,
+    enum class HTTPStatus: unsigned int{
+#define XX(num, name, string) name = num,
         HTTP_STATUS_MAP(XX)
 #undef XX
     };
 
-}
+#undef HTTP_STATUS_MAP                                                 \
 
+/* Request Methods */
+#define HTTP_METHOD_MAP(XX)         \
+  XX(0,  DELETE,      DELETE)       \
+  XX(1,  GET,         GET)          \
+  XX(2,  HEAD,        HEAD)         \
+  XX(3,  POST,        POST)         \
+  XX(4,  PUT,         PUT)          \
+  /* pathological */                \
+  XX(5,  CONNECT,     CONNECT)      \
+  XX(6,  OPTIONS,     OPTIONS)      \
+  XX(7,  TRACE,       TRACE)        \
+  /* WebDAV */                      \
+  XX(8,  COPY,        COPY)         \
+  XX(9,  LOCK,        LOCK)         \
+  XX(10, MKCOL,       MKCOL)        \
+  XX(11, MOVE,        MOVE)         \
+  XX(12, PROPFIND,    PROPFIND)     \
+  XX(13, PROPPATCH,   PROPPATCH)    \
+  XX(14, SEARCH,      SEARCH)       \
+  XX(15, UNLOCK,      UNLOCK)       \
+  XX(16, BIND,        BIND)         \
+  XX(17, REBIND,      REBIND)       \
+  XX(18, UNBIND,      UNBIND)       \
+  XX(19, ACL,         ACL)          \
+  /* subversion */                  \
+  XX(20, REPORT,      REPORT)       \
+  XX(21, MKACTIVITY,  MKACTIVITY)   \
+  XX(22, CHECKOUT,    CHECKOUT)     \
+  XX(23, MERGE,       MERGE)        \
+  /* upnp */                        \
+  XX(24, MSEARCH,     M-SEARCH)     \
+  XX(25, NOTIFY,      NOTIFY)       \
+  XX(26, SUBSCRIBE,   SUBSCRIBE)    \
+  XX(27, UNSUBSCRIBE, UNSUBSCRIBE)  \
+  /* RFC-5789 */                    \
+  XX(28, PATCH,       PATCH)        \
+  XX(29, PURGE,       PURGE)        \
+  /* CalDAV */                      \
+  XX(30, MKCALENDAR,  MKCALENDAR)   \
+  /* RFC-2068, section 19.6.1.2 */  \
+  XX(31, LINK,        LINK)         \
+  XX(32, UNLINK,      UNLINK)       \
+  /* icecast */                     \
+  XX(33, SOURCE,      SOURCE)       \
+
+
+    enum class HTTP_METHOD: unsigned int {
+#define XX(num, name, string) name = num,
+        HTTP_METHOD_MAP(XX)
+#undef XX
+    };
+
+#undef HTTP_METHOD_MAP
+
+
+}
 
 #endif //_ABATHUR_HTTP_PARSER_HTTP_PARSER_HPP_

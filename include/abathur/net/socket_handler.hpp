@@ -33,13 +33,13 @@ public:
     SocketHandler(Socket*);
     virtual ~SocketHandler();
 
-    virtual int Init();
+    virtual int init(void*);
 
     int process_event(const Event &) override ;
 
     int write(const char *, size_t);
 
-    virtual int handle_socket_data(util::Buffer&) = 0;
+    virtual size_t handle_socket_data(util::Buffer&) = 0;
 
     void finish();
 };

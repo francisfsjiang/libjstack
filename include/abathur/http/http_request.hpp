@@ -21,22 +21,27 @@ namespace abathur::http {
         HTTP_METHOD method_;
         std::string host_;
         std::string url_;
-        HTTP_VERSION version_;
+        HTTPVersion version_;
 
         std::map<std::string, std::string>* header_;
-        util::Buffer* post_buffer_;
+        util::Buffer* body_;
 
     public:
         HTTPRequest();
         HTTPRequest(const std::string&);
         HTTPRequest(const std::string&, HTTP_METHOD);
         HTTPRequest(const HTTPRequest&);
-        void prepare(const std::string&, HTTP_METHOD);
         ~HTTPRequest();
 
+        void prepare(const std::string&, HTTP_METHOD);
+
         int write_post_data(const char*, size_t);
+        const util::Buffer* get_body() const;
         void set_header(const std::string&, const std::string&);
-        void set_version(HTTP_VERSION);
+        void set_version(HTTPVersion);
+
+        HTTP_METHOD get_method() const;
+        std::string get_url() const;
 
     };
 }

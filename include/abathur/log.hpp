@@ -17,13 +17,18 @@ namespace abathur {
         FATAL,
     };
 
-#if defined(ABATHUR_DEBUG)
+#if defined(ABATHUR_TRACE)
     #define LOG_TRACE abathur::Log::Instance->log(TRACE)
+#else
+    #define LOG_TRACE abathur::NullLogger()
+#endif
+
+#if defined(ABATHUR_DEBUG)
     #define LOG_DEBUG abathur::Log::Instance->log(DEBUG)
 #else
-    #define LOG_TRACE abathur::Log::Instance->log(TRACE)
-    #define LOG_DEBUG abathur::Log::Instance->log(DEBUG)
+    #define LOG_DEBUG abathur::NullLogger()
 #endif
+
     #define LOG_INFO     abathur::Log::Instance->log(INFO)
     #define LOG_WARNING  abathur::Log::Instance->log(WARNING)
     #define LOG_ERROR    abathur::Log::Instance->log(ERROR)
@@ -70,6 +75,13 @@ namespace abathur {
         Logger& operator<< (void*);
     };
 
+    class NullLogger{
+    public:
+        inline NullLogger& operator<< (int) {return *this;};
+        inline NullLogger& operator<< (const char*) {return *this;};
+        inline NullLogger& operator<< (const std::string&) {return *this;};
+        inline NullLogger& operator<< (void*) {return *this;};
+    };
 
 
 }

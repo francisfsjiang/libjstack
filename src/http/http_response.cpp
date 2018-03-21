@@ -12,20 +12,20 @@ namespace abathur::http {
     using namespace abathur::util;
     using namespace std;
 
-    const map<HTTP_VERSION, string> HTTP_VERSION_TO_STRING{
-            {HTTP_VERSION::HTTP1_0, "HTTP/1.0"},
-            {HTTP_VERSION::HTTP1_1, "HTTP/1.1"},
+    const map<HTTPVersion, string> HTTP_VERSION_TO_STRING{
+            {HTTPVersion::HTTP1_0, "HTTP/1.0"},
+            {HTTPVersion::HTTP1_1, "HTTP/1.1"},
     };
 
     HTTPResponse::HTTPResponse() {
         LOG_TRACE << "HTTPResponse constructing, " << this;
-        status_code_ = 200;
+        status_code_ = HTTPStatus::OK;
         body_ = new Buffer();
         header_ = new map<string, string>{
                 {"Content-Type", "text/html; charset=utf-8"},
                 {"Server", "Abathur/0.1"},
         };
-        version_ = HTTP_VERSION::HTTP1_1;
+        version_ = HTTPVersion::HTTP1_1;
     }
 
     HTTPResponse::HTTPResponse(const HTTPResponse& resp) {
@@ -42,7 +42,7 @@ namespace abathur::http {
         delete header_;
     }
 
-    int HTTPResponse::status_code() {
+    HTTPStatus HTTPResponse::status_code() {
         return status_code_;
     }
 
@@ -66,14 +66,19 @@ namespace abathur::http {
         return body_->write(data, size);
     }
 
+    void HTTPResponse::set_status_code(HTTPStatus code) {
+        status_code_ = code;
+    }
+
     size_t HTTPResponse::write_to_buffer(util::Buffer &buffer) {
         size_t old_size = buffer.size();
         ostringstream sstream;
+        auto status_code = static_cast<unsigned int>(status_code_);
         sstream << HTTP_VERSION_TO_STRING.find(version_)->second;
         sstream << " ";
-        sstream << status_code_;
+        sstream << status_code;
         sstream << " ";
-        sstream << HTTP_STATUS_TO_DESCRIPTION.find(status_code_)->second;
+        sstream << HTTP_STATUS_TO_DESCRIPTION.find(status_code)->second;
         sstream << "\r\n";
 
         ostringstream c;

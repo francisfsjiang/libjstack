@@ -1,32 +1,24 @@
 #ifndef _ABATHUR_HTTP_HTTP_HANDLER_HPP_
 #define _ABATHUR_HTTP_HTTP_HANDLER_HPP_
 
-#include "abathur/net/socket_handler.hpp"
-
-namespace abathur::net {
-    class Socket;
-}
-
 namespace abathur::http {
-
     class HTTPResponse;
     class HTTPRequest;
-    class HTTPParser;
 
-    class HTTPHandler: public net::SocketHandler{
+    class HTTPHandler{
     private:
-        HTTPParser* parser_;
-        HTTPRequest* request_;
-        HTTPResponse* response_;
+        bool finished_;
     public:
-        HTTPHandler(net::Socket*);
+        HTTPHandler();
         virtual ~HTTPHandler();
 
-        virtual int handle_socket_data(util::Buffer&);
+        void finish();
 
-        virtual HTTPResponse* handle_http_request(HTTPRequest&) = 0;
+        virtual HTTPResponse* handle_get(const HTTPRequest&);
+        virtual HTTPResponse* handle_post(const HTTPRequest&);
+        virtual HTTPResponse* handle_put(const HTTPRequest&);
+        virtual HTTPResponse* handle_delete(const HTTPRequest&);
     };
 }
-
 
 #endif //_ABATHUR_HTTP_HANDLER_HPP_

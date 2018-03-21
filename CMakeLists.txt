@@ -50,6 +50,7 @@ set(SRC_FILES
         src/http/http_response.cpp
         src/http/http_server.cpp
         src/http/http_handler.cpp
+        src/http/http_handler_wrapper.cpp
         src/http/parser/http_parser.c
         src/http/http_parser.cpp
         src/util/buffer.cpp
@@ -75,6 +76,7 @@ set(HEADER_FILES
         include/abathur/http/http_response.hpp
         include/abathur/http/http_server.hpp
         include/abathur/http/http_handler.hpp
+        include/abathur/http/http_handler_wrapper.hpp
         include/abathur/http/parser/http_parser.h
         include/abathur/http/http_parser.hpp
         include/abathur/util/buffer.hpp
@@ -87,10 +89,6 @@ if (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_LINUX")
     set(SRC_FILES ${SRC_FILES} src/poller/epoll_poller.cpp)
     set(HEADER_FILES ${HEADER_FILES} src/poller/epoll_poller.hpp)
-
-    set(CURL_INCLUDE_DIRS /usr/include/x86_64-linux-gnu)
-    link_directories(CURL_LIBRARIES /usr/lib/x86_64-linux-gnu)
-
 
 ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_DARWIN")
@@ -105,8 +103,14 @@ ELSEIF (${CMAKE_HOST_SYSTEM_NAME} MATCHES "Windows")
     set(SRC_FILES ${SRC_FILES} src/poller/iocp_poller.cpp)
 endif ()
 
+
+if (ABATHUR_TRACE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D ABATHUR_TRACE")
+endif()
+
+
 find_package(Boost REQUIRED COMPONENTS context coroutine)
-#find_package(Curl REQUIRED)
+find_package(CURL REQUIRED)
 
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_directories(${BOOST_ROOT}/lib)
@@ -127,18 +131,12 @@ add_library(abathur_dynamic SHARED ${SRC_FILES})
 set_target_properties(abathur_dynamic PROPERTIES OUTPUT_NAME abathur)
 target_link_libraries(abathur_dynamic ${DEP_LIBS})
 
-#add_executable(ioloop_test     test/ioloop_test.cpp)
-#add_executable(ioloop_test2    test/ioloop_test2.cpp)
-add_executable(log_test        test/log_test.cpp)
-add_executable(tcp_echo_server test/tcp_echo_server.cpp)
-add_executable(http_echo_server test/http_echo_server.cpp)
-add_executable(http_proxy_server test/http_proxy_server.cpp)
+if (BUILD_TEST)
+    add_executable(log_test        test/log_test.cpp)
+    target_link_libraries(log_test         ${LIBS})
+endif()
 
-#target_link_libraries(ioloop_test     ${LIBS})
-#target_link_libraries(ioloop_test2    ${LIBS})
-target_link_libraries(log_test         ${LIBS})
-target_link_libraries(tcp_echo_server  ${LIBS})
-target_link_libraries(http_echo_server ${LIBS})
-target_link_libraries(http_proxy_server ${LIBS})
+if (BUILD_EXAMPLE)
+    add_subdirectory(example)
+endif()
 
-#add_subdirectory(example)

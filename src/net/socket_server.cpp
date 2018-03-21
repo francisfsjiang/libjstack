@@ -55,7 +55,7 @@ namespace abathur::net {
 
             new_socket->set_non_blocking(true);
             SocketHandler* s = socket_handler_generator_(new_socket);
-            s->Init();
+            s->init(nullptr);
         }
         return 1;
     }

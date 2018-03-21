@@ -18,8 +18,8 @@ namespace abathur::http {
     class HTTPResponse{
         friend class AsyncHTTPClient;
     private:
-        HTTP_VERSION version_;
-        int status_code_;
+        HTTPVersion version_;
+        HTTPStatus status_code_;
         util::Buffer* body_;
         std::map<std::string, std::string>* header_;
 
@@ -28,10 +28,11 @@ namespace abathur::http {
         HTTPResponse(const HTTPResponse&);
         ~HTTPResponse();
 
-        int status_code();
+        HTTPStatus status_code();
         util::Buffer* get_body();
         std::map<std::string, std::string>* get_header();
         void set_header(const std::string&, const std::string&);
+        void set_status_code(HTTPStatus);
 
         size_t write(const std::string&);
         size_t write(const char*, size_t);

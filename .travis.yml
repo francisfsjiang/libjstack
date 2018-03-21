@@ -5,11 +5,13 @@ sudo: true
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/deps/boost-1.66.0
+    - ${TRAVIS_BUILD_DIR}/deps/curl-7.59.0
 
 env:
   global:
     - MAKEFLAGS="-j 2"
     - BOOST_VERSION="1.66.0"
+    - CURL_VERSION="7.59.0"
 
 matrix:
   exclude:
@@ -131,8 +133,28 @@ install:
       CMAKE_OPTIONS+=" -DBOOST_ROOT=${BOOST_ROOT}";
     fi
 
+  ############################################################################
+  # Install cURL
+  ############################################################################
+  - |
+    if [[ "${CURL_VERSION}" != "" ]]; then
+      CURL_DIR=${DEPS_DIR}/curl-${CURL_VERSION};
+      CURL_ROOT=${CURL_DIR}/build;
+      if [[ -z "$(ls -A ${CURL_DIR})" ]]; then
+        CURL_URL="https://curl.haxx.se/download/curl-${CURL_VERSION}.tar.gz";
+        mkdir -p ${CURL_DIR};
+        mkdir -p ${CURL_ROOT};
+        { travis_retry wget --quiet -O - ${CURL_URL} | tar --strip-components=1 -xz -C ${CURL_DIR}; } || exit 1;
+        cd ${CURL_DIR};
+        ./configure --prefix=${CURL_ROOT};
+        make && make install;
+      fi
+      CMAKE_OPTIONS+=" -DCURL_INCLUDE_DIR=${CURL_ROOT}/include";
+      CMAKE_OPTIONS+=" -DCURL_LIBRARY=${CURL_ROOT}/lib";
+    fi
 
 before_script:
+  - ls ${DEPS_DIR};
   - ls ${BOOST_ROOT};
   - ls ${BOOST_ROOT}/lib;
   - ls ${BOOST_ROOT}/include;

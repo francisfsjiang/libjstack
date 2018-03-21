@@ -12,7 +12,7 @@ namespace abathur::http {
     using namespace abathur::util;
 
 #define HTTP_STATUS_GEN(num, name, string) { num , #string },
-    const std::map<int, std::string> HTTP_STATUS_TO_DESCRIPTION = {
+    const std::map<unsigned int, std::string> HTTP_STATUS_TO_DESCRIPTION = {
             HTTP_STATUS_MAP(HTTP_STATUS_GEN)
     };
 #undef HTTP_STATUS_GEN
@@ -49,11 +49,7 @@ namespace abathur::http {
         parser_->data = this;
         header_complete_ = false;
         message_complete_ = false;
-        request_ = new HTTPRequest();
 
-        header_ = request_->header_;
-        body_ = request_->post_buffer_;
-        url_ = &(request_->url_);
 
         last_field_ = "";
     }
@@ -67,7 +63,12 @@ namespace abathur::http {
     }
 
     HTTPRequest* HTTPParser::get_request() {
-        return new HTTPRequest(*request_);
+        if (!completed_request_.empty()) {
+            auto p = completed_request_.front();
+            completed_request_.pop();
+            return p;
+        }
+        return nullptr;
     }
 
     size_t HTTPParser::perform_parsing(const Buffer& buffer) {
@@ -80,13 +81,15 @@ namespace abathur::http {
 
     int HTTPParser::on_message_begin(http_parser* parser) {
         LOG_TRACE << "on_message_begin";
+        auto p = static_cast<HTTPParser*>(parser->data);
+        p->current_request_ = new HTTPRequest();
         return 0;
     }
 
     int HTTPParser::on_url(http_parser* parser, const char* data, size_t size) {
         LOG_TRACE << "on_url";
         auto p = static_cast<HTTPParser*>(parser->data);
-        *(p->url_) += std::string(data, size);
+        p->current_request_->url_ += std::string(data, size);
         return 0;
 
     }
@@ -108,12 +111,12 @@ namespace abathur::http {
     int HTTPParser::on_header_value(http_parser* parser, const char* data, size_t size) {
         LOG_TRACE << "on_header_value";
         auto p = static_cast<HTTPParser*>(parser->data);
-        auto iter = p->header_->find(p->last_field_);
-        if (iter != p->header_->end()) {
+        auto iter = p->current_request_->header_->find(p->last_field_);
+        if (iter != p->current_request_->header_->end()) {
             iter->second += std::string(data, size);
         }
         else {
-            p->header_->insert(std::make_pair(p->last_field_, std::string(data, size)));
+            p->current_request_->header_->insert(std::make_pair(p->last_field_, std::string(data, size)));
         }
         p->last_field_ = "";
         return 0;
@@ -131,7 +134,7 @@ namespace abathur::http {
     int HTTPParser::on_body(http_parser* parser, const char* data, size_t size) {
         LOG_TRACE << "on_body";
         auto p = static_cast<HTTPParser*>(parser->data);
-        p->body_->write(data, size);
+        p->current_request_->body_->write(data, size);
         return 0;
 
     }
@@ -139,7 +142,30 @@ namespace abathur::http {
     int HTTPParser::on_message_complete(http_parser* parser) {
         LOG_TRACE << "on_message_complete";
         auto p = static_cast<HTTPParser*>(parser->data);
-        p->message_complete_ = true;
+
+        p->current_request_->method_ = (HTTP_METHOD)(parser->method);
+
+        auto host_header = p->current_request_->header_->find("Host");
+        if (host_header != p->current_request_->header_->end()) {
+            p->current_request_->host_ = host_header->second;
+        }
+
+        HTTPVersion version;
+        if(parser->http_major == 2) {
+            version = HTTPVersion::HTTP2_0;
+        }
+        else if (parser->http_minor == 1){
+            version = HTTPVersion::HTTP1_1;
+        }
+        else {
+            version = HTTPVersion::HTTP1_0;
+        }
+        p->current_request_->version_ = version;
+
+
+        p->completed_request_.push(p->current_request_);
+        p->current_request_ = nullptr;
+
         return 0;
 
     }

@@ -7,11 +7,10 @@
 
 namespace abathur {
 
-//    Log* Log::Instance = new Log("dc.log");
-    Log* Log::Instance = new Log();
+    Log* Log::Instance = new Log(std::string("Abathur_") + util::get_datetime() + ".log");
+//    Log* Log::Instance = new Log();
 
     Log::Log() {
-//        out_stream_ = new std::ofstream(std::string("abathur_") + get_date() + ".log");
         out_stream_ = &std::cout;
         buffer_ = new char[80];
     }

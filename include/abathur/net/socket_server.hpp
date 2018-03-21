@@ -8,7 +8,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "abathur/error.hpp"
 #include "abathur/log.hpp"
 #include "abathur/event_processor.hpp"
 
@@ -24,12 +23,12 @@ private:
     SocketServer(const SocketServer&) = delete;
     const SocketServer& operator=(const SocketServer&) = delete;
 
-    Socket* socket_ = nullptr;
-
     bool inited_ = false;
 
 protected:
     std::function<SocketHandler* (Socket*)>socket_handler_generator_ = nullptr;
+
+    Socket* socket_ = nullptr;
 
 public:
     SocketServer(InetAddress* address);
@@ -54,7 +53,7 @@ public:
 
     int init();
 
-    int process_event(const Event &) override;
+    virtual int process_event(const Event &) override;
 };
 
 

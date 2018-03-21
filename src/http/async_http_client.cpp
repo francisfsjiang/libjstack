@@ -146,8 +146,8 @@ namespace abathur::http{
         ret = curl_easy_setopt(curl_handle_, CURLOPT_URL, request.host_.data());
 
         if (request.method_ == HTTP_METHOD::POST){
-            ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, request.post_buffer_->data_to_read());
-            ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDSIZE, request.post_buffer_->size());
+            ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDS, request.body_->data_to_read());
+            ret = curl_easy_setopt(curl_handle_, CURLOPT_POSTFIELDSIZE, request.body_->size());
         }
 
         #if defined(ABATHUR_TRACE)
@@ -207,19 +207,19 @@ namespace abathur::http{
         long version, status_code;
         curl_easy_getinfo(curl_handle_, CURLINFO_HTTP_VERSION, &version);
         curl_easy_getinfo(curl_handle_, CURLINFO_RESPONSE_CODE, &status_code);
-        response_->status_code_ = static_cast<int>(status_code);
+        response_->status_code_ = static_cast<HTTPStatus>(status_code);
         switch (version){
             case CURL_HTTP_VERSION_1_0:
-                response_->version_ = HTTP_VERSION::HTTP1_0;
+                response_->version_ = HTTPVersion::HTTP1_0;
                 break;
             case CURL_HTTP_VERSION_1_1:
-                response_->version_ = HTTP_VERSION::HTTP1_1;
+                response_->version_ = HTTPVersion::HTTP1_1;
                 break;
             case CURL_HTTP_VERSION_2_0:
-                response_->version_ = HTTP_VERSION::HTTP2_0;
+                response_->version_ = HTTPVersion::HTTP2_0;
                 break;
             default:
-                response_->version_ = HTTP_VERSION::HTTPNone;
+                response_->version_ = HTTPVersion::HTTPNone;
         }
     }
 
