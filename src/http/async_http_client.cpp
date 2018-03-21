@@ -9,6 +9,7 @@
 #include "abathur/io_loop.hpp"
 #include "abathur/util/timer.hpp"
 #include "abathur/util/buffer.hpp"
+#include "abathur/http/async_http_client.hpp"
 #include "abathur/http/http_response.hpp"
 
 
