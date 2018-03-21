@@ -155,13 +155,6 @@ install:
 
 before_script:
   - ls ${DEPS_DIR};
-  - ls ${BOOST_ROOT};
-  - ls ${BOOST_ROOT}/lib;
-  - ls ${BOOST_ROOT}/include;
-  - ls /usr/include/x86_64-linux-gnu;
-  - ls /usr/include/;
-  - ls /usr/include/curl;
-  - cat /usr/include/curl/curl.h;
   - cd ${TRAVIS_BUILD_DIR};
   - echo ${CMAKE_OPTIONS};
   - mkdir build;
