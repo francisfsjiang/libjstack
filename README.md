@@ -79,7 +79,7 @@ cmake -DBOOST_ROOT=${BOOST_ROOT} -DCURL_INCLUDE_DIR=${CURL_ROOT}/include -DCURL_
 Build example.
 ```sh
 cmake -DBUILD_EXAMPLE=on ..
-../bin/http_echo_server.out
+../bin/tcp_echo_server
 
 ```
 
