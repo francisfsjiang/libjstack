@@ -3,6 +3,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <curl/curl.h>
+
 #include "abathur/log.hpp"
 #include "abathur/event.hpp"
 #include "abathur/channel.hpp"
