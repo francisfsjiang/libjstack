@@ -114,6 +114,7 @@ find_package(CURL REQUIRED)
 
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 link_directories(${BOOST_ROOT}/lib)
+link_directories(${CURL_LIBRARY}/lib)
 
 set(DEP_LIBS boost_coroutine-mt boost_context-mt curl)
 set(LIBS abathur ${DEP_LIBS})
@@ -123,6 +124,7 @@ message("Building flags: ${CMAKE_CXX_FLAGS}")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${BOOST_ROOT}/include)
+include_directories(${CURL_INCLUDE_DIR}/include)
 
 add_library(abathur STATIC ${SRC_FILES} )
 
