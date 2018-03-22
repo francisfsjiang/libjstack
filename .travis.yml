@@ -149,8 +149,8 @@ install:
       CMAKE_OPTIONS+=" -DCURL_LIBRARY=${CURL_ROOT}/lib";
     fi
 
-  - CMAKE_OPTIONS+=" -DBUILD_TEST";
-  - CMAKE_OPTIONS+=" -DBUILD_EXAMPLE";
+  - CMAKE_OPTIONS+=" -DBUILD_TEST=on";
+  - CMAKE_OPTIONS+=" -DBUILD_EXAMPLE=on";
 
 before_script:
   - ls ${DEPS_DIR};
