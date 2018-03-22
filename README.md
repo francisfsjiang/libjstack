@@ -7,7 +7,7 @@ By using non-blocking network I/O,
 Abathur can scale to tens of thousands of open connections. And
 coroutine makes it easier to program.
 
-Abathur is available on *nix system. Requires Boost{context, coroutine} and libcurl.
+Abathur is available on *nix system. Requires C++ 17 support{g++-7, clang-5}, Boost{context, coroutine} and libcurl.
 
 
 # Hello, Wrold
