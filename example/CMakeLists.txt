@@ -8,10 +8,12 @@
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
+add_executable(hello_world hello_world.cpp)
 add_executable(tcp_echo_server tcp_echo_server.cpp)
 add_executable(http_echo_server http_echo_server.cpp)
 add_executable(http_proxy_server http_proxy_server.cpp)
 
+target_link_libraries(hello_world      ${LIBS})
 target_link_libraries(tcp_echo_server  ${LIBS})
 target_link_libraries(http_echo_server ${LIBS})
 target_link_libraries(http_proxy_server ${LIBS})

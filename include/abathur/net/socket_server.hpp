@@ -11,9 +11,12 @@
 #include "abathur/log.hpp"
 #include "abathur/event_processor.hpp"
 
+namespace abathur {
+    class IOLoop;
+}
+
 namespace abathur::net {
 
-class IOLoop;
 class Socket;
 class SocketHandler;
 class InetAddress;

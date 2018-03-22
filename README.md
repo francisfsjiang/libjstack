@@ -1,6 +1,6 @@
 # Abathur
 
-[![Build Status](https://travis-ci.org/neveralso/Abathur.svg?branch=master)](https://travis-ci.org/neveralso/Abathur)  [![GPLV2](https://img.shields.io/badge/License-GPLV2-brightgreen.svg)](http://www.gnu.org/licenses/gpl-2.0.html)  [![Join the chat at https://gitter.im/AbathurFreamwork](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Abathur?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/neveralso/Abathur.svg?branch=master)](https://travis-ci.org/neveralso/Abathur)  [![GPLV2](https://img.shields.io/badge/License-GPLV2-brightgreen.svg)](http://www.gnu.org/licenses/gpl-2.0.html)  [![Join the chat at https://gitter.im/AbathurFreamwork](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/AbathurFreamwork/Lobby)
 
 Abathur is a C++ web framework and asynchronous networking library.
 By using non-blocking network I/O,
@@ -20,6 +20,9 @@ Abathur is available on *nix system. Requires Boost{context, coroutine} and libc
 #define LISTEN_PORT 8000
 #define LISTEN_ADDR "::"
 
+using namespace abathur;
+using namespace abathur::net;
+using namespace abathur::http;
 
 class HTTPEchoHandler : public HTTPHandler{
     public:
