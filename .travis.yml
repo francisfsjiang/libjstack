@@ -149,6 +149,9 @@ install:
       CMAKE_OPTIONS+=" -DCURL_LIBRARY=${CURL_ROOT}/lib";
     fi
 
+  - CMAKE_OPTIONS+=" -DBUILD_TEST";
+  - CMAKE_OPTIONS+=" -DBUILD_EXAMPLE";
+
 before_script:
   - ls ${DEPS_DIR};
   - cd ${TRAVIS_BUILD_DIR};
