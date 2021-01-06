@@ -40,7 +40,7 @@ jobs:
         env:
           cache-name: cache-vcpkg
         with:
-          path: $env:VCPKG_INSTALLATION_ROOT
+          path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.deps_version }}
 
       - name: Install dependencies
