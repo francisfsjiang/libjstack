@@ -42,6 +42,16 @@ jobs:
         shell: pwsh
         run: Set-Service ${{ matrix.pg_service_name }} -StartupType Manual;Start-Service ${{ matrix.pg_service_name }}
 
+      - name: Start Pg (Ubuntu)
+        if: contains( matrix.os, 'ubuntu') == true
+        shell: pwsh
+        run: sudo systemctl start postgresql.service
+
+      - name: Start Pg (MacOS)
+        if: contains( matrix.os, 'macos') == true
+        shell: pwsh
+        run: brew services list
+
       - name: Test Pg (Windows)
         if: contains( matrix.os, 'windows') == true
         shell: pwsh
