@@ -47,10 +47,10 @@ jobs:
         shell: pwsh
         run: sudo systemctl start postgresql.service
 
-      - name: Start Pg (MacOS)
-        if: contains( matrix.os, 'macos') == true
-        shell: pwsh
-        run: brew services start postgresql
+      # - name: Start Pg (MacOS)
+      #   if: contains( matrix.os, 'macos') == true
+      #   shell: pwsh
+      #   run: brew services start postgresql
 
       - name: Test Pg (Windows)
         if: contains( matrix.os, 'windows') == true
@@ -65,7 +65,8 @@ jobs:
       - name: Test Pg (MacOS)
         if: contains( matrix.os, 'macos') == true
         shell: bash
-        run: psql postgres -c "SELECT 1"
+        run: psql postgres
+        #  -c "SELECT 1"
 
       - name: Create Build Environment
         run: cmake -E make_directory ${{ github.workspace }}/build
