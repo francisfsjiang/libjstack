@@ -42,10 +42,6 @@ jobs:
         with:
           path: $env:VCPKG_INSTALLATION_ROOT
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.deps_version }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
 
       - name: Install dependencies
         shell: pwsh
