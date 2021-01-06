@@ -50,7 +50,7 @@ jobs:
       - name: Start Pg (MacOS)
         if: contains( matrix.os, 'macos') == true
         shell: pwsh
-        run: brew services list
+        run: brew services start postgresql
 
       - name: Test Pg (Windows)
         if: contains( matrix.os, 'windows') == true
@@ -60,11 +60,10 @@ jobs:
       - name: Test Pg (Unix)
         if: contains( matrix.os, 'windows') == false
         shell: bash
-        run: PGPASSWORD="root"; psql -U postgres -d postgres -c "SELECT 1"
+        run: sudo -u postgres psql -d postgres -c "SELECT 1"
+        # run: PGPASSWORD="root"; psql -U postgres -d postgres -c "SELECT 1"
 
       - name: Create Build Environment
-        # Some projects don't allow in-source building, so create a separate build directory
-        # We'll use this as our working directory for all subsequent commands
         run: cmake -E make_directory ${{ github.workspace }}/build
 
       - name: Ls
