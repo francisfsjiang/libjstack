@@ -35,17 +35,17 @@ jobs:
       - name: Create Build Environment
         run: cmake -E make_directory ${{ github.workspace }}/build
 
-    - name: Cache vcpkg
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-vcpkg
-      with:
-        path: $env:VCPKG_INSTALLATION_ROOT
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.deps_version }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-vcpkg
+        with:
+          path: $env:VCPKG_INSTALLATION_ROOT
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.deps_version }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Install dependencies
         shell: pwsh
