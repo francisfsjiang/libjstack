@@ -1,0 +1,57 @@
+name: macos
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: ${{ matrix.os }}-libjstack-build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        include:
+          - os: macos-latest
+            triplet: x64-osx
+            generator: Unix Makefiles
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Start Pg
+        shell: pwsh
+        run: brew services start postgresql
+
+      - name: Test Pg
+        shell: bash
+        run: psql -c "SELECT 1" postgres
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{ github.workspace }}/build
+
+      - name: Install dependencies
+        shell: bash
+        env:
+          PKG_CONFIG_PATH: /usr/local/opt/openssl@1.1/lib/pkgconfig
+        run: brew install boost openssl libpq curl-openssl; brew link --force openssl; pkg-config --modversion openssl
+
+      - name: Configure CMake
+        shell: bash
+        env:
+          PKG_CONFIG_PATH: /usr/local/opt/openssl@1.1/lib/pkgconfig
+        working-directory: ${{ github.workspace }}/build
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE ${{ github.workspace }}
+
+      - name: Build
+        working-directory: ${{ github.workspace }}/build
+        shell: pwsh
+        run: cmake --build . --config $BUILD_TYPE
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/build
+        shell: pwsh
+        run: ctest -C $BUILD_TYPE

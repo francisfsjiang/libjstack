@@ -1,0 +1,63 @@
+name: windows
+on: [push]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: ${{ matrix.os }}-libjstack-build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            generator: Visual Studio 16 2019
+            pg_service_name: postgresql-x64-13
+            deps_version: 0
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Start Pg
+        shell: pwsh
+        run: Set-Service ${{ matrix.pg_service_name }} -StartupType Manual;Start-Service ${{ matrix.pg_service_name }}
+
+      - name: Test Pg
+        shell: pwsh
+        run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "SELECT 1"
+
+      - name: Create Build Environment
+        run: cmake -E make_directory ${{ github.workspace }}/build
+
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-vcpkg
+        with:
+          path: $env:VCPKG_INSTALLATION_ROOT
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.deps_version }}
+
+      - name: Install dependencies
+        shell: pwsh
+        run: vcpkg install boost-filesystem[core]:${{ matrix.triplet }} boost-system[core]:${{ matrix.triplet }} boost-test[core]:${{ matrix.triplet }} curl:${{ matrix.triplet }} libpq:${{ matrix.triplet }}
+
+      - name: Configure CMake
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/build
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_TOOLCHAIN_FILE:FILEPATH="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} ${{ github.workspace }}
+
+      - name: Build
+        working-directory: ${{ github.workspace }}/build
+        shell: pwsh
+        run: cmake --build . --config $BUILD_TYPE
+
+      - name: Test
+        working-directory: ${{ github.workspace }}/build
+        shell: pwsh
+        run: ctest -C $BUILD_TYPE
