@@ -53,7 +53,7 @@ jobs:
 
       - name: Add Pg test database
         shell: bash
-        run: sudo -u postgres psql -d postgres -c "CREATE DATABASE 'libjstack_test' OWNER libjstack"
+        run: sudo -u postgres psql -d postgres -c "CREATE DATABASE libjstack_test OWNER libjstack"
 
       - name: Test
         working-directory: ${{ github.workspace }}/build
