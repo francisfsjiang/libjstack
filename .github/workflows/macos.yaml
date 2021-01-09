@@ -51,6 +51,14 @@ jobs:
         shell: pwsh
         run: cmake --build . --config $BUILD_TYPE
 
+      - name: Add Pg test user
+        shell: bash
+        run: psql -c "CREATE USER libjstack WITH PASSWORD 'libjstack'" postgres
+
+      - name: Add Pg test database
+        shell: bash
+        run: psql -c "CREATE DATABASE libjstack_test OWNER libjstack" postgres
+
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
