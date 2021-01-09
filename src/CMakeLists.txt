@@ -5,7 +5,7 @@
         net/http/client/curl_easy.cpp
         net/http/client/sync_client.cpp
         )
-# Add source to this project's executable.
+
 add_library(libjstack STATIC ${SRC_FILES} )
 add_library(libjstack_dynamic SHARED ${SRC_FILES})
 
