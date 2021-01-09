@@ -58,11 +58,11 @@ jobs:
         run: cmake --build . --config $BUILD_TYPE
 
       - name: Add Pg test user
-        shell: bash
+        shell: pwsh
         run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "CREATE USER libjstack WITH PASSWORD 'libjstack'" postgres
 
       - name: Add Pg test database
-        shell: bash
+        shell: pwsh
         run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "CREATE DATABASE libjstack_test OWNER libjstack" postgres
 
       - name: Test
