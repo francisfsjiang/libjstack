@@ -28,7 +28,7 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug)
     endif()
 
 
-ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
+ELSEIF (CMAKE_BUILD_TYPE MATCHES Release)
     message("Building in release mode.")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
@@ -87,8 +87,6 @@ if (WIN32)
             )
 
     set(LIBS ${LIBS}
-#            libcurl
-#            libcrypto
             )
 
 elseif (UNIX)
@@ -102,8 +100,6 @@ elseif (UNIX)
             )
 
     set(LIBS ${LIBS}
-            #            libcurl
-            #            libcrypto
             )
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
