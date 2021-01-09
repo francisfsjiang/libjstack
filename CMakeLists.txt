@@ -69,8 +69,12 @@ set(LIB_DIRS        ${LIB_DIRS}
         )
 
 set(LIBS        ${LIBS}
-        ${OPENSSL_LIBRARIES}
+        ${Boost_FILESYSTEM_LIBRARY}
+        ${Boost_SYSTEM_LIBRARY}
+        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
         ${CURL_LIBRARIES}
+        ${PostgreSQL_LIBRARIES}
+        ${OPENSSL_LIBRARIES}
         )
 
 
