@@ -1,4 +1,5 @@
 ﻿IF (CODE_COVERAGE STREQUAL "On")
+    MESSAGE("Building with code coverage report.")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
 ENDIF()
