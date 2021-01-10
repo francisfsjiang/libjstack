@@ -1,7 +1,4 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
 project ("libjstack")
 
@@ -28,7 +25,7 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug)
     endif()
 
 
-ELSEIF (CMAKE_BUILD_TYPE MATCHES RELEASE)
+ELSEIF (CMAKE_BUILD_TYPE MATCHES Release)
     message("Building in release mode.")
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
@@ -47,7 +44,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 set (Boost_USE_STATIC_LIBS OFF)
 find_package (Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
-include_directories ()
 
 find_package(OpenSSL REQUIRED)
 
@@ -87,8 +83,6 @@ if (WIN32)
             )
 
     set(LIBS ${LIBS}
-#            libcurl
-#            libcrypto
             )
 
 elseif (UNIX)
@@ -102,8 +96,6 @@ elseif (UNIX)
             )
 
     set(LIBS ${LIBS}
-            #            libcurl
-            #            libcrypto
             )
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
@@ -117,6 +109,12 @@ message("Libs ${LIBS}")
 #link_directories(${CURL_LIBRARIES})
 
 include_directories(${INCLUDE_DIRS})
+
+IF (CODE_COVERAGE STREQUAL "On")
+    MESSAGE("Building with code coverage report.")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
+ENDIF()
 
 # Include sub-projects.
 add_subdirectory ("src")

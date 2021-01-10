@@ -1,8 +1,8 @@
-name: ubuntu
+name: ubuntu-llvm
 on: [push]
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   build:
@@ -35,12 +35,12 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: sudo apt-get install python3-pip libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev
+        run: sudo apt-get install python3-pip libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev llvm
 
       - name: Configure CMake
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/gcc-10" -DCMAKE_CXX_COMPILER="/usr/bin/g++-10" ${{ github.workspace }}
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DCODE_COVERAGE=On ${{ github.workspace }}
 
       - name: Build
         working-directory: ${{ github.workspace }}/build
@@ -58,4 +58,18 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: bash
+        env:
+          LLVM_PROFILE_FILE: "/tmp/llvm_profile/profile-%p.profraw"
         run: ctest -C $BUILD_TYPE -V
+
+      - name: Cov
+        working-directory: ${{ github.workspace }}/build
+        run: llvm-profdata merge -sparse /tmp/llvm_profile/profile-*.profraw -o coverage.profdata
+
+      - name: Cov
+        working-directory: ${{ github.workspace }}/build
+        run: llvm-cov show ./test/libjstack.tests -instr-profile=coverage.profdata > coverage.txt
+
+      - name: Upload codecov
+        working-directory: ${{ github.workspace }}/build
+        run: bash <(curl -s https://codecov.io/bash)

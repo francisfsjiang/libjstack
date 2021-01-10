@@ -1,6 +1,4 @@
-﻿# Add source to this project's executable.
-
-SET(TEST_SRC
+﻿SET(TEST_SRC
         main.test.cpp
         crypto/crypto.test.cpp
         net/http/client/curl_easy.test.cpp

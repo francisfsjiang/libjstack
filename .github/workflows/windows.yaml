@@ -11,9 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [windows-2019]
         include:
-          - os: windows-latest
+          - os: windows-2019
             triplet: x64-windows
             generator: Visual Studio 16 2019
             pg_service_name: postgresql-x64-13
