@@ -38,16 +38,12 @@ endif()
 
 set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
-IF (CODE_COVERAGE)
-ENDIF()
-
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 
 set (Boost_USE_STATIC_LIBS OFF)
 find_package (Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
-include_directories ()
 
 find_package(OpenSSL REQUIRED)
 
@@ -106,7 +102,7 @@ elseif (UNIX)
 
 endif()
 
-IF (CODE_COVERAGE)
+IF (CODE_COVERAGE STREQUAL "On")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
 ENDIF()
