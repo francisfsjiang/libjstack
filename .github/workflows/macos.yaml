@@ -11,9 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [macos-11.0]
         include:
-          - os: macos-latest
+          - os: macos-11.0
             triplet: x64-osx
             generator: Unix Makefiles
 
@@ -62,4 +62,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
-        run: ctest -C $BUILD_TYPE
+        run: ctest -C $BUILD_TYPE  -V

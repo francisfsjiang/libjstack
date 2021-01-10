@@ -41,6 +41,12 @@ endif()
 
 set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
+IF (CODE_COVERAGE)
+    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/CMake-codecov/cmake" ${CMAKE_MODULE_PATH})
+    find_package(codecov)
+    SET(ENABLE_COVERAGE ON)
+ENDIF()
+
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)

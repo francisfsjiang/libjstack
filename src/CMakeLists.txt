@@ -7,10 +7,15 @@
         )
 
 add_library(libjstack STATIC ${SRC_FILES} )
-add_library(libjstack_dynamic SHARED ${SRC_FILES})
+add_library(libjstack.dynamic SHARED ${SRC_FILES})
 
-set_target_properties(libjstack_dynamic PROPERTIES OUTPUT_NAME libjstack)
-target_link_libraries(libjstack_dynamic ${LIBS})
 
 target_link_libraries(libjstack ${LIBS})
 
+set_target_properties(libjstack.dynamic PROPERTIES OUTPUT_NAME libjstack)
+target_link_libraries(libjstack.dynamic ${LIBS})
+
+IF (CODE_COVERAGE)
+    add_coverage(libjstack)
+    add_coverage(libjstack.dynamic)
+ENDIF()

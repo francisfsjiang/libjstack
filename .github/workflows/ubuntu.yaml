@@ -35,7 +35,11 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: sudo apt-get install libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev
+        run: sudo apt-get install python3-pip libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev
+
+      - name: Install Codecov
+        shell: bash
+        run: sudo pip3 install codecov
 
       - name: Configure CMake
         shell: bash
@@ -58,4 +62,13 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: bash
-        run: ctest -C $BUILD_TYPE
+        run: ctest -C $BUILD_TYPE -V
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ./coverage1.xml,./coverage2.xml # optional
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
