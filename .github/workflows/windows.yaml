@@ -24,9 +24,13 @@ jobs:
         with:
           submodules: true
 
+      - name: ls
+        shell: pwsh
+        run: ls "C:\Program Files\Docker\Docker"
+
       - name: DockerCli
         shell: pwsh
-        run: DockerCli -SwitchDaemon -SwitchLinuxEngine
+        run: ."C:\Program Files\Docker\Docker\DockerCli.exe" -SwitchDaemon -SwitchLinuxEngine
 
       - name: Start docker
         shell: pwsh
