@@ -1,4 +1,4 @@
-name: ubuntu
+name: ubuntu-llvm
 on: [push]
 
 env:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: sudo apt-get install python3-pip libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev llvm llvm-11
+        run: sudo apt-get install python3-pip libboost-filesystem-dev libboost-system-dev libboost-test-dev libssl-dev libpq-dev libpqtypes-dev postgresql-server-dev-all libcurl4-openssl-dev llvm
 
       - name: Configure CMake
         shell: bash
