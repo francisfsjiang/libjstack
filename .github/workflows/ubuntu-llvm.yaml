@@ -40,7 +40,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/gcc-10" -DCMAKE_CXX_COMPILER="/usr/bin/g++-10" ${{ github.workspace }}
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" ${{ github.workspace }}
 
       - name: Build
         working-directory: ${{ github.workspace }}/build
@@ -58,13 +58,15 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: bash
+        env:
+          LLVM_PROFILE_FILE: "/tmp/llvm_profile/profile-%p.profraw"
         run: ctest -C $BUILD_TYPE -V
 
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ./coverage1.xml,./coverage2.xml # optional
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+      - name: Cov
+        run: llvm-profdata merge -sparse /tmp/llvm_profile/profile-*.profraw -o coverage.profdata
+
+      - name: Cov
+        run: llvm-cov show ./hello -instr-profile=coverage.profdata > coverage.txt
+
+      - name: Upload codecov
+        run: bash <(curl -s https://codecov.io/bash)
