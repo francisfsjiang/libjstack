@@ -24,6 +24,10 @@ jobs:
         with:
           submodules: true
 
+      - name: DockerCli
+        shell: pwsh
+        run: DockerCli -SwitchDaemon -SwitchLinuxEngine
+
       - name: Start docker
         shell: pwsh
         run: docker pull redis:6
