@@ -63,10 +63,13 @@ jobs:
         run: ctest -C $BUILD_TYPE -V
 
       - name: Cov
+        working-directory: ${{ github.workspace }}/build
         run: llvm-profdata merge -sparse /tmp/llvm_profile/profile-*.profraw -o coverage.profdata
 
       - name: Cov
+        working-directory: ${{ github.workspace }}/build
         run: llvm-cov show ./test/libjstack.tests -instr-profile=coverage.profdata > coverage.txt
 
       - name: Upload codecov
+        working-directory: ${{ github.workspace }}/build
         run: bash <(curl -s https://codecov.io/bash)

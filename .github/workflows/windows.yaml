@@ -24,6 +24,14 @@ jobs:
         with:
           submodules: true
 
+      - name: Start Pg
+        shell: pwsh
+        run: Set-Service ${{ matrix.pg_service_name }} -StartupType Manual;Start-Service ${{ matrix.pg_service_name }}
+
+      - name: Test Pg
+        shell: pwsh
+        run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "SELECT 1"
+
       - name: Create Build Environment
         run: cmake -E make_directory ${{ github.workspace }}/build
 
@@ -49,14 +57,6 @@ jobs:
         shell: pwsh
         run: cmake --build . --config $BUILD_TYPE
 
-      - name: Start Pg
-        shell: pwsh
-        run: Set-Service ${{ matrix.pg_service_name }} -StartupType Manual;Start-Service ${{ matrix.pg_service_name }}
-
-      - name: Test Pg
-        shell: pwsh
-        run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "SELECT 1"
-
       - name: Add Pg test user
         shell: pwsh
         run: $env:PGPASSWORD="root";."$env:PGBIN\psql.exe" -U postgres -d postgres -c "CREATE USER libjstack WITH PASSWORD 'libjstack'" postgres
@@ -68,4 +68,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
-        run: ctest -C $BUILD_TYPE -V
+        run: ctest -C $BUILD_TYPE
