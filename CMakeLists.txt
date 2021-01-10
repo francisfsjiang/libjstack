@@ -1,7 +1,4 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
 
 project ("libjstack")
 
@@ -42,9 +39,6 @@ endif()
 set(LIBRARY_OUTPUT_PATH    ${PROJECT_SOURCE_DIR}/lib)
 
 IF (CODE_COVERAGE)
-    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/externals/CMake-codecov/cmake" ${CMAKE_MODULE_PATH})
-    find_package(codecov)
-    SET(ENABLE_COVERAGE ON)
 ENDIF()
 
 enable_testing()
@@ -111,6 +105,12 @@ elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
 
 endif()
+
+IF (CODE_COVERAGE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
+ENDIF()
+
 
 message("Include dirs ${INCLUDE_DIRS}")
 message("Lib dirs ${LIB_DIRS}")

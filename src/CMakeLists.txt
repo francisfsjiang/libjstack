@@ -14,8 +14,3 @@ target_link_libraries(libjstack ${LIBS})
 
 set_target_properties(libjstack.dynamic PROPERTIES OUTPUT_NAME libjstack)
 target_link_libraries(libjstack.dynamic ${LIBS})
-
-IF (CODE_COVERAGE)
-    add_coverage(libjstack)
-    add_coverage(libjstack.dynamic)
-ENDIF()
