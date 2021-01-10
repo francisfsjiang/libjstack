@@ -26,7 +26,7 @@ jobs:
 
       - name: ls
         shell: pwsh
-        run: ls "C:\Program Files\Docker\Docker"
+        run: where docker
 
       - name: DockerCli
         shell: pwsh
