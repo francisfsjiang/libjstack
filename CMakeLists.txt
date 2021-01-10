@@ -102,12 +102,6 @@ elseif (UNIX)
 
 endif()
 
-IF (CODE_COVERAGE STREQUAL "On")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
-ENDIF()
-
-
 message("Include dirs ${INCLUDE_DIRS}")
 message("Lib dirs ${LIB_DIRS}")
 message("Libs ${LIBS}")

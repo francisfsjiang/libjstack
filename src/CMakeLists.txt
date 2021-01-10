@@ -1,4 +1,9 @@
-﻿set(SRC_FILES
+﻿IF (CODE_COVERAGE STREQUAL "On")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoverage-mapping")
+ENDIF()
+
+set(SRC_FILES
         types.cpp
         crypto/md5.cpp
         crypto/sha.cpp
@@ -8,7 +13,6 @@
 
 add_library(libjstack STATIC ${SRC_FILES} )
 add_library(libjstack.dynamic SHARED ${SRC_FILES})
-
 
 target_link_libraries(libjstack ${LIBS})
 
