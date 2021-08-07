@@ -1,9 +1,6 @@
 name: ubuntu-llvm
 on: [push]
 
-env:
-  BUILD_TYPE: Debug
-
 jobs:
   build:
     name: ${{ matrix.os }}-libjstack-build
@@ -12,9 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
+        build_type: [Debug, Release]
+        clang_version: [11]
         include:
-          - os: ubuntu-20.04
-            triplet: x64-linux
+          - triplet: x64-linux
             generator: Unix Makefiles
 
     steps:
@@ -40,12 +38,12 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_CXX_COMPILER="/usr/bin/clang++" -DCODE_COVERAGE=On ${{ github.workspace }}
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER="/usr/bin/clang-${{ matrix.clang_version }}" -DCMAKE_CXX_COMPILER="/usr/bin/clang++-${{ matrix.clang_version }}" -DCODE_COVERAGE=On ${{ github.workspace }}
 
       - name: Build
         working-directory: ${{ github.workspace }}/build
         shell: bash
-        run: cmake --build . --config $BUILD_TYPE
+        run: cmake --build . --config ${{ matrix.build_type }}
 
       - name: Add Pg test user
         shell: bash
@@ -59,17 +57,26 @@ jobs:
         working-directory: ${{ github.workspace }}/build
         shell: bash
         env:
-          LLVM_PROFILE_FILE: "/tmp/llvm_profile/profile-%p.profraw"
-        run: ctest -C $BUILD_TYPE -V
+          LLVM_PROFILE_FILE: ${{ github.workspace }}/build/profile.profraw
+        run: ctest -C ${{ matrix.build_type }} -V
+
+      - name: Debug
+        run: llvm-profdata-${{ matrix.clang_version }} merge --version
 
       - name: Cov
+        if: ${{ matrix.build_type == 'Debug' }}
         working-directory: ${{ github.workspace }}/build
-        run: llvm-profdata merge -sparse /tmp/llvm_profile/profile-*.profraw -o coverage.profdata
+        shell: bash
+        env:
+          LLVM_PROFILE_FILE: ${{ github.workspace }}/build/profile.profraw
+        run: llvm-profdata-${{ matrix.clang_version }} merge -sparse $LLVM_PROFILE_FILE -o coverage.profdata
 
       - name: Cov
+        if: ${{ matrix.build_type == 'Debug' }}
         working-directory: ${{ github.workspace }}/build
-        run: llvm-cov show ./test/libjstack.tests -instr-profile=coverage.profdata > coverage.txt
+        run: llvm-cov-${{ matrix.clang_version }} show ./test/libjstack.tests -instr-profile=coverage.profdata > coverage.txt
 
       - name: Upload codecov
+        if: ${{ matrix.build_type == 'Debug' }}
         working-directory: ${{ github.workspace }}/build
         run: bash <(curl -s https://codecov.io/bash)

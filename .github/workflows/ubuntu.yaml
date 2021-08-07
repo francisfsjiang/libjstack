@@ -1,8 +1,22 @@
 name: ubuntu
-on: [push]
-
-env:
-  BUILD_TYPE: Release
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  # Also trigger on page_build, as well as release created events
+  page_build:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 0,12 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,11 +26,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
+        build_type: [Debug, Release]
         include:
-          - os: ubuntu-20.04
-            triplet: x64-linux
+          - triplet: x64-linux
             generator: Unix Makefiles
-
     steps:
       - uses: actions/checkout@v2
         with:
@@ -40,12 +53,12 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER="/usr/bin/gcc-10" -DCMAKE_CXX_COMPILER="/usr/bin/g++-10" ${{ github.workspace }}
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_C_COMPILER="/usr/bin/gcc-10" -DCMAKE_CXX_COMPILER="/usr/bin/g++-10" ${{ github.workspace }}
 
       - name: Build
         working-directory: ${{ github.workspace }}/build
         shell: bash
-        run: cmake --build . --config $BUILD_TYPE
+        run: cmake --build . --config ${{ matrix.build_type }}
 
       - name: Add Pg test user
         shell: bash
@@ -58,4 +71,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: bash
-        run: ctest -C $BUILD_TYPE -V
+        run: ctest -C ${{ matrix.build_type }} -V

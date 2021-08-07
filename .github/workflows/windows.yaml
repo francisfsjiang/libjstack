@@ -1,8 +1,22 @@
 name: windows
-on: [push]
-
-env:
-  BUILD_TYPE: Release
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  # Also trigger on page_build, as well as release created events
+  page_build:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 0,12 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,9 +26,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-2019]
+        build_type: [Debug, Release]
         include:
-          - os: windows-2019
-            triplet: x64-windows
+          - triplet: x64-windows
             generator: Visual Studio 16 2019
             pg_service_name: postgresql-x64-13
             deps_version: 0
@@ -50,12 +64,16 @@ jobs:
       - name: Configure CMake
         shell: pwsh
         working-directory: ${{ github.workspace }}/build
-        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_TOOLCHAIN_FILE:FILEPATH="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} ${{ github.workspace }}
+        run: cmake -G "${{ matrix.generator }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE:FILEPATH="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} ${{ github.workspace }}
+
+      - name: Debug
+        working-directory: ${{ github.workspace }}/build
+        run: cmake --version
 
       - name: Build
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
-        run: cmake --build . --config $BUILD_TYPE
+        run: cmake --build . --config ${{ matrix.build_type }}
 
       - name: Add Pg test user
         shell: pwsh
@@ -68,4 +86,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
-        run: ctest -C $BUILD_TYPE
+        run: ctest -C ${{ matrix.build_type }}
