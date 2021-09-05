@@ -58,12 +58,12 @@ jobs:
         shell: bash
         env:
           LLVM_PROFILE_FILE: ${{ github.workspace }}/build/profile.profraw
-        run: ctest -C ${{ matrix.build_type }} -V
+        run: ctest -C ${{ matrix.build_type }} -V --extra-verbose --rerun-failed --output-on-failure
 
-      - name: Debug
+      - name: Cov-0
         run: llvm-profdata-${{ matrix.clang_version }} merge --version
 
-      - name: Cov
+      - name: Cov-1
         if: ${{ matrix.build_type == 'Debug' }}
         working-directory: ${{ github.workspace }}/build
         shell: bash
@@ -71,7 +71,7 @@ jobs:
           LLVM_PROFILE_FILE: ${{ github.workspace }}/build/profile.profraw
         run: llvm-profdata-${{ matrix.clang_version }} merge -sparse $LLVM_PROFILE_FILE -o coverage.profdata
 
-      - name: Cov
+      - name: Cov-2
         if: ${{ matrix.build_type == 'Debug' }}
         working-directory: ${{ github.workspace }}/build
         run: llvm-cov-${{ matrix.clang_version }} show ./test/libjstack.tests -instr-profile=coverage.profdata > coverage.txt
