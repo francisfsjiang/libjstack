@@ -86,4 +86,4 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}/build
         shell: pwsh
-        run: ctest -C ${{ matrix.build_type }}
+        run: ctest -C ${{ matrix.build_type }} -V --extra-verbose --rerun-failed --output-on-failure
